@@ -23,26 +23,7 @@ public class DriveMotors {
                      DcMotor backLeft,
                      DcMotor backRight) {
     this.leftTread = new Tread(frontLeft, backLeft);
-    this.rightTread = new Tread(frontRight, backRight);
-  }
-  
-  
-  private void Reset() {
-    this.leftTread.Reset();
-    this.rightTread.Reset();
-  }
-  
-  
-  private void SetToRunPosition() {
-    this.leftTread.SetToRunPosition();
-    this.rightTread.SetToRunPosition();
-  }
-  
-  
-  private void MotorInit() {
-    this.Reset();
-    this.SetTargetPositions(0, 0);
-    this.SetToRunPosition();
+    this.rightTread = new Tread(frontRight, backRight, true); // right tread runs in reverse
   }
 
   
@@ -50,28 +31,20 @@ public class DriveMotors {
     this.leftTread.SetPower(power);
     this.rightTread.SetPower(power);
   }
-  
-  
-  private void SetTargetPositions(int left, int right) {
-    this.leftTread.SetTargetPosition(left);
-    this.rightTread.SetTargetPosition(-right); // motors in right tread run backwards by default
-  }
 
 
   public void Move(Direction direction, int distance) {
-    this.MotorInit();
-    
-    this.SetPower(Config.MIN_SPEED);
     switch(direction) {
       case FORWARD:
-        this.SetTargetPositions(distance, distance);
+        this.leftTread.Move(distance);
+        this.rightTread.Move(distance);
         break;
   
       case BACKWARD:
-        this.SetTargetPositions(-distance, -distance);
+        this.leftTread.Move(-distance);
+        this.rightTread.Move(-distance);
         break;
     }
-    // while motors are running, correct power with gyro angle
     this.WaitForMotors(distance);
   }
   
@@ -79,9 +52,8 @@ public class DriveMotors {
   public void Turn(int angle) {
     int distance = (int)((angle * Config.TICKS_PER_360_DEG) / 360);
     
-    this.MotorInit();
-    this.SetPower(Config.MIN_SPEED);
-    this.SetTargetPositions(distance, -distance); // turning right means right tread moves backward
+    this.leftTread.Move(distance);
+    this.rightTread.Move(-distance); // turning right means right tread moves backward
     
     this.WaitForMotors(angle);
   }
