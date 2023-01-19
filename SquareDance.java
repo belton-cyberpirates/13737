@@ -51,15 +51,7 @@ public class SquareDance extends LinearOpMode {
       
       // Do-Si-Do
       driveMotors.Move(Direction.FORWARD, Config.TILE_LENGTH);
-      driveMotors.Move(Direction.RIGHT, Config.TILE_LENGTH);
       driveMotors.Move(Direction.BACKWARD, Config.TILE_LENGTH);
-      driveMotors.Move(Direction.LEFT, Config.TILE_LENGTH);
-      
-      // Spicy Do-Si-Do
-      driveMotors.Move(Direction.FRONT_RIGHT, Config.D_TILE_LENGTH);
-      driveMotors.Move(Direction.BACK_RIGHT, Config.D_TILE_LENGTH);
-      driveMotors.Move(Direction.BACK_LEFT, Config.D_TILE_LENGTH);
-      driveMotors.Move(Direction.FRONT_LEFT, Config.D_TILE_LENGTH);
       
       // Do a twirl
       driveMotors.Turn(360);

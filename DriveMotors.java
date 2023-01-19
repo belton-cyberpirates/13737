@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -80,9 +81,6 @@ public class DriveMotors {
                 // assume back wheels are indicative of whole movement
                 int x = Math.abs(this.leftTread.GetCurrentPosition());
                 this.SetPower(this.GetPower(x, distance));
-                if (direction != null) {
-                  GyroCorrect(direction, initialPos);
-                }
               }
   }
 }
