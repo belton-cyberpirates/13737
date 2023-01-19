@@ -13,10 +13,8 @@ import org.firstinspires.ftc.teamcode.Config;
 
 
 public class DriveMotors {
-  private DcMotor frontLeft;
-  private DcMotor frontRight;
-  private DcMotor backLeft;
-  private DcMotor backRight;
+  private Tread leftTread;
+  private Tread rightTread;
   static Orientation angles;
 
 
@@ -24,172 +22,57 @@ public class DriveMotors {
                      DcMotor frontLeft,
                      DcMotor backLeft,
                      DcMotor backRight) {
-    this.frontRight = frontRight;
-    this.frontLeft = frontLeft;
-    this.backLeft = backLeft;
-    this.backRight = backRight;
+    this.leftTread = new Tread(frontLeft, backLeft);
+    this.rightTread = new Tread(frontRight, backRight);
   }
   
   
   private void Reset() {
-    this.frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    this.frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    this.backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    this.backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    this.leftTread.Reset();
+    this.rightTread.Reset();
   }
   
   
   private void SetToRunPosition() {
-    this.frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    this.frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    this.backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    this.backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    this.leftTread.SetToRunPosition();
+    this.rightTread.SetToRunPosition();
   }
   
   
   private void MotorInit() {
     this.Reset();
-    this.SetTargetPositions(0, 0, 0, 0);
+    this.SetTargetPositions(0, 0);
     this.SetToRunPosition();
   }
 
   
-  private void MotorInitTurn() {
-    this.Reset();
-    this.frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
-    this.frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
-    this.backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
-    this.backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
-  }
-
-  
   private void SetPower(double power) {
-    this.frontLeft.setPower(power);
-    this.frontRight.setPower(power);
-    this.backLeft.setPower(power);
-    this.backRight.setPower(power);
+    this.leftTread.SetPower(power);
+    this.rightTread.SetPower(power);
   }
   
   
-  private void SetTargetPositions(int fr, int fl, int bl, int br) {
-    this.frontRight.setTargetPosition(fr);
-    this.frontLeft.setTargetPosition(fl);
-    this.backLeft.setTargetPosition(bl);
-    this.backRight.setTargetPosition(br);
-  }
-
-
- /**
-   * Pivots around the back-right wheel as if turning
-   * @param angle the angle of the expected pivot
-   */
-  public void Pivot(int angle) {
-    int distance = (int)((angle * Config.PIVOT_TICKS_PER_360_DEG) / 360);
-    this.MotorInit();
-
-    this.frontLeft.setPower(Config.AUTO_PIVOT_POWER);
-    this.backRight.setPower(0.9); // become rock
-
-    // set target positions manually to keep front-right and back-left dead
-    this.frontLeft.setTargetPosition(distance);
-    this.backRight.setTargetPosition(0); // DON'T MOVE
-
-    while (!!(this.frontLeft.isBusy() ||
-    this.backRight.isBusy() )) {}
+  private void SetTargetPositions(int left, int right) {
+    this.leftTread.SetTargetPosition(left);
+    this.rightTread.SetTargetPosition(-right); // motors in right tread run backwards by default
   }
 
 
   public void Move(Direction direction, int distance) {
     this.MotorInit();
-    angles = AutoLeft.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-    double initialPos = angles.firstAngle;
-    // AutoLeft.imu.resetYaw(); //should work according to FTC but doesnt?
     
     this.SetPower(Config.MIN_SPEED);
     switch(direction) {
       case FORWARD:
-        this.SetTargetPositions(-distance, distance, distance, -distance);
+        this.SetTargetPositions(distance, distance);
         break;
   
       case BACKWARD:
-        this.SetTargetPositions(distance, -distance, -distance, distance);
-        break;
-  
-      case LEFT:
-        this.SetTargetPositions(-distance, -distance, distance, distance);
-        break;
-  
-      case RIGHT:
-        this.SetTargetPositions(distance, distance, -distance, -distance);
-        break;
-        
-      case FRONT_RIGHT:
-        this.SetTargetPositions(0, distance, 0, -distance);
-        break;
-        
-      case BACK_LEFT:
-        this.SetTargetPositions(0, -distance, 0, distance);
-        break;
-        
-      case FRONT_LEFT:
-        this.SetTargetPositions(-distance, 0, distance, 0);
-        break;
-        
-      case BACK_RIGHT:
-        this.SetTargetPositions(distance, 0, -distance, 0);
+        this.SetTargetPositions(-distance, -distance);
         break;
     }
     // while motors are running, correct power with gyro angle
-    this.WaitForMotors(distance, direction);
-  }
-
-
-  private void GyroCorrect(Direction direction, double initial) {
-    angles = AutoLeft.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-    double correction = (angles.firstAngle - initial) * Config.GYRO_CORRECTION;
-    //left drift is positive angle, right is negative
-    switch(direction) {
-      case FORWARD:
-        this.setCorrection(-correction, correction, correction, -correction);
-        break;
-
-      case BACKWARD:
-        this.setCorrection(correction, -correction, -correction, correction);
-        break;
-
-      case LEFT:
-        this.setCorrection(-correction, -correction, correction, correction);
-        break;
-
-      case RIGHT:
-        this.setCorrection(correction, correction, -correction, -correction);
-        break;
-
-      case FRONT_RIGHT:
-        this.setCorrection(0, -correction, 0, correction);
-        break;
-
-      case FRONT_LEFT:
-        this.setCorrection(correction, 0, -correction, 0);
-        break;
-
-      case BACK_LEFT:
-        this.setCorrection(0, correction, 0, -correction);
-        break;
-
-      case BACK_RIGHT:
-        this.setCorrection(-correction, 0, correction, 0);
-        break;
-
-    }
-  }
-
-
-  private void setCorrection(double fr, double fl, double bl, double br) {
-    this.frontRight.setPower(this.frontRight.getPower() + fr);
-    this.frontLeft.setPower(this.frontLeft.getPower() + fl);
-    this.backLeft.setPower(this.backLeft.getPower() + bl);
-    this.backRight.setPower(this.backRight.getPower() + br);
+    this.WaitForMotors(distance);
   }
   
   
@@ -198,30 +81,9 @@ public class DriveMotors {
     
     this.MotorInit();
     this.SetPower(Config.MIN_SPEED);
-    this.SetTargetPositions(distance, distance, distance, distance);
+    this.SetTargetPositions(distance, -distance); // turning right means right tread moves backward
     
     this.WaitForMotors(angle);
-  }
-
-
-  public void TurnGyro(int angle) {
-    this.MotorInitTurn();
-    angles = AutoLeft.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-    
-    int initialAngle = (int)(angles.firstAngle);
-    int target = initialAngle + angle;
-    if (target >= 180) {
-      target -= 360;
-    } else if (target <= -180) {
-      target += 360;
-    }
-    
-    while(!(angles.firstAngle == target)) {
-      angles = AutoLeft.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-      this.SetPower(Config.MIN_SPEED);
-    }
-    this.SetPower(0);
-    
   }
   
 
@@ -237,25 +99,15 @@ public class DriveMotors {
   }
 
 
-
-  private void WaitForMotors(int distance) {
-    this.WaitForMotors(distance, null);
-  }
-
-
   /**
    * Wait until motion is complete
    * @param distance target distance meant to be reached
    */
-  private void WaitForMotors(int distance, Direction direction) {
-    angles = AutoLeft.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-    int initialPos = (int)angles.firstAngle;
-    while (!!(this.frontLeft.isBusy() ||
-              this.frontRight.isBusy() ||
-              this.backLeft.isBusy() ||
-              this.backRight.isBusy() )) {
+  private void WaitForMotors(int distance) {
+    while (!!(this.leftTread.IsBusy() ||
+              this.rightTread.IsBusy()) {
                 // assume back wheels are indicative of whole movement
-                int x = Math.max(Math.abs(this.backLeft.getCurrentPosition()), Math.abs(this.backRight.getCurrentPosition()));
+                int x = Math.abs(this.leftTread.getCurrentPosition());
                 this.SetPower(this.GetPower(x, distance));
                 if (direction != null) {
                   GyroCorrect(direction, initialPos);
