@@ -52,6 +52,8 @@ public class DriveMotors {
     this.SetTargetPositions(0, 0, 0, 0);
     this.SetToRunPosition();
   }
+
+  
   private void MotorInitTurn() {
     this.Reset();
     this.frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
@@ -61,15 +63,11 @@ public class DriveMotors {
   }
 
   
-  private void SetPower(double power, double compensation) {
-    this.frontLeft.setPower(power * compensation);
-    this.frontRight.setPower(power * compensation);
+  private void SetPower(double power) {
+    this.frontLeft.setPower(power);
+    this.frontRight.setPower(power);
     this.backLeft.setPower(power);
     this.backRight.setPower(power);
-  }
-
-  private void SetPower(double power) {
-    this.SetPower(power, 1);
   }
   
   
@@ -118,8 +116,8 @@ public class DriveMotors {
         break;
   
       case LEFT:
-      this.SetTargetPositions(-distance, -distance, distance, distance);
-      break;
+        this.SetTargetPositions(-distance, -distance, distance, distance);
+        break;
   
       case RIGHT:
         this.SetTargetPositions(distance, distance, -distance, -distance);
