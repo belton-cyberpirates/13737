@@ -173,35 +173,39 @@ public class AutoLeft extends LinearOpMode {
       CloseClaw(); // grab initial cone
       arm.Move(Config.CRUISING_HEIGHT);
 
-      // move to low pole
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .1));
-      driveMotors.Move(Direction.RIGHT, Config.INITIAL_CORRECTION + (int)(1.5*Config.TILE_LENGTH));
+      // move to high pole
+      driveMotors.Move(Direction.FORWARD, Config.INITIAL_CORRECTION + (int)(2*Config.TILE_LENGTH));
       
       // deposit cone
-      arm.Move(Config.LOW_POLE_HEIGHT, true);
+      driveMotors.Turn(45);
+      arm.Move(Config.HIGH_POLE_HEIGHT, true);
       driveMotors.Move(Direction.FORWARD, Config.BUMP);
-      arm.Move(Config.BOTTOM);
-      sleep(1000);
+      arm.Move(Config.MID_POLE_HEIGHT);
+      sleep(500);
       OpenClaw();
-      driveMotors.Move(Direction.BACK_RIGHT, Config.DIAGONAL_BUMP);
+      driveMotors.Move(Direction.BACKWARD, Config.BUMP);
   
       // go for 2nd cone
+      driveMotors.Turn(-135);
       driveMotors.Move(Direction.FORWARD, Config.TILE_LENGTH);
       arm.Move(Config.SIDE_STACK_HEIGHT, true);
-      driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .25));
+      driveMotors.Move(Direction.FORWARD, Config.BUMP);
       arm.Move(Config.SIDE_STACK_HEIGHT - 3);
       sleep(500);
       CloseClaw();
-      arm.Move(Config.MID_POLE_HEIGHT);
+      arm.Move(Config.MID_POLE_HEIGHT, true);
       
       
       // place 2nd cone
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.5));
-      arm.Move(Config.TOP);
-      driveMotors.Turn(90);
-      driveMotors.Move(Direction.FORWARD, Config.BUMP * 2);
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH 1.2));
+      arm.Move(Config.TOP, true);
+      driveMotors.Turn(135);
+      driveMotors.Move(Direction.FORWARD, Config.BUMP);
+      arm.Move(Config.MID_POLE_HEIGHT);
+      sleep(500);
       OpenClaw();
-      driveMotors.Move(Direction.BACKWARD, Config.BUMP * 2);
+      driveMotors.Move(Direction.BACKWARD, Config.BUMP);
+      driveMotors.Turn(-45);
       arm.Move(Config.CRUISING_HEIGHT, true);
 
       // Third cone?
