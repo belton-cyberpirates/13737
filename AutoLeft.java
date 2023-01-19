@@ -197,7 +197,7 @@ public class AutoLeft extends LinearOpMode {
       
       
       // place 2nd cone
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH 1.2));
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.2));
       arm.Move(Config.TOP, true);
       driveMotors.Turn(135);
       driveMotors.Move(Direction.FORWARD, Config.BUMP);
@@ -224,17 +224,17 @@ public class AutoLeft extends LinearOpMode {
     switch(target) {
     case EYES:
       telemetry.addData("Parking", "PARKING EYES");
-      driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 1.6));
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.6));
       break;
       
     case GEARS:
       telemetry.addData("Parking", "PARKING GEARS");
-      driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * .3));
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .3));
       break;
       
     case ROBOTS:
       telemetry.addData("Parking", "PARKING ROBOTS");
-      driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * .3));
+      driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .3));
     }
     telemetry.update();
   }

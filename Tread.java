@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.Config;
+
 
 public class Tread {
     private DcMotor front;
@@ -45,6 +47,11 @@ public class Tread {
     private void SetToRunPosition() {
         this.front.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         this.back.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+
+    public int GetCurrentPosition() {
+        return this.front.getCurrentPosition();
     }
 
 
