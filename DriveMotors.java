@@ -80,7 +80,7 @@ public class DriveMotors {
               this.rightTread.IsBusy())) {
                 // assume back wheels are indicative of whole movement
                 int x = Math.abs(this.leftTread.GetCurrentPosition());
-                this.SetPower(this.GetPower(x, distance));
+                this.SetPower(this.GetPower(x, Math.abs(distance)));
               }
   }
 }
