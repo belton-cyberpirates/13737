@@ -61,7 +61,6 @@ public class Tread {
 
     public void Move(int distance) {
         this.Init();
-        this.SetPower(Config.MIN_SPEED);
         this.SetTargetPosition(distance);
     }
 
