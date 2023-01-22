@@ -132,9 +132,6 @@ public class AutoLeft extends LinearOpMode {
    */
   @Override
   public void runOpMode() {
-
-
-
   imu = hardwareMap.get(BNO055IMU.class, "imu");
   // Create new IMU Parameters object.
     imuParameters = new BNO055IMU.Parameters();
@@ -186,7 +183,7 @@ public class AutoLeft extends LinearOpMode {
       driveMotors.Move(Direction.BACKWARD, Config.BUMP);
   
       // go for 2nd cone
-      driveMotors.Turn(-135);`
+      driveMotors.Turn(-135);
       driveMotors.Move(Direction.FORWARD, Config.TILE_LENGTH);
       arm.Move(Config.SIDE_STACK_HEIGHT, true);
       driveMotors.Move(Direction.FORWARD, Config.BUMP);
