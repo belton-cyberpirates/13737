@@ -7,7 +7,13 @@ import org.firstinspires.ftc.teamcode.Config;
 public class Tread {
     private DcMotor front;
     private DcMotor back;
+    private DcMotor encoder; // not a DcMotor, but will work for now
     private int direction;
+
+    // PID loop values
+    private double error_prior = 0;
+    private double integral_prior = 0;
+    private double bias = 0;
 
 
     public Tread(DcMotor front, DcMotor back) {
@@ -25,48 +31,31 @@ public class Tread {
     }
 
 
-    private void Init() {
-        this.Reset();
-        this.SetTargetPosition(0);
-        this.SetToRunPosition();
-    }
-
-
-    private void Reset() {
-        this.front.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.back.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    }
-
-
-    private void SetTargetPosition(int distance) {
-        this.front.setTargetPosition(this.direction * distance);
-        this.back.setTargetPosition(this.direction * distance);
-    }
-
-
-    private void SetToRunPosition() {
-        this.front.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        this.back.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    }
-
-
     public int GetCurrentPosition() {
-        return this.front.getCurrentPosition();
+        return this.encoder.getCurrentPosition();
     }
 
 
     public boolean IsBusy() {
-        return this.front.isBusy() || this.back.isBusy();
+        int pos = this.encoder.getCurrentPosition();
+        return pos != this.targetPosition;
     }
 
     public void Move(int distance) {
-        this.Init();
-        this.SetTargetPosition(distance);
+        this.SetTargetPosition(this.direction * distance);
     }
 
 
-    public void SetPower(double power) {
-        this.front.setPower(power);
-        this.back.setPower(power);
+    public void Update() {
+        double error = this.targetPosition - this.encoder.getCurrentPosition();
+        double integral = integral_prior + error;
+        double derivative = (error - error_prior);
+        double power = Config.KP*error + Config.KI*integral + Config.KD*derivative + bias;
+
+        this.front.setPower(this.direction * power);
+        this.back.setPower(this.direction * power);
+
+        this.error_prior = error;
+        this.integral_prior = integral;
     }
   }
