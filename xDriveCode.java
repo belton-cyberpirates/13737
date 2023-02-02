@@ -57,7 +57,7 @@ public class xDriveCode extends LinearOpMode {
     if (opModeIsActive()) {
       while (opModeIsActive()) {
         double rightTriggerCorrection = gamepad1.right_trigger > 0.2 ? gamepad1.right_trigger -0.2 : 0; // if right trigger, speed up
-        double leftTriggerCorrection  = gamepad1.left_trigger > 0.2 ? 0.2 - gamepad1.left_trigger : 0; // if left trigger, slow down
+        double leftTriggerCorrection  = gamepad1.left_trigger > 0.2 ? 02 - (gamepad1.left_trigger * .7) : 0; // if left trigger, slow down
         double armCorrection = armpot.getVoltage() < 0.715 ? - 0.3 : 0; // if arm up, slow down
 
         double SpeedupVal = 1 + rightTriggerCorrection + leftTriggerCorrection + armCorrection;
@@ -73,15 +73,15 @@ public class xDriveCode extends LinearOpMode {
           arm1.setPower(-(gamepad2.right_stick_y / 3));
           arm2.setPower(-(gamepad2.right_stick_y / 3));
         } else if (gamepad2.left_bumper) {
-          arm1.setPower(-0.3);
-          arm2.setPower(-0.3);
+          arm1.setPower(-0.5);
+          arm2.setPower(-0.5);
         } else if (gamepad2.right_bumper) {
           if (armpot.getVoltage() < 0.5) {
             arm1.setPower(0.3);
             arm2.setPower(0.3);
           } else {
-            arm1.setPower(0.8);
-            arm2.setPower(0.8);
+            arm1.setPower(0.9);
+            arm2.setPower(0.9);
           }
         } else if (armpot.getVoltage() > 1.45) {
           arm1.setPower(0);

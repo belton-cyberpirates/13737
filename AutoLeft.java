@@ -33,7 +33,9 @@ public class AutoLeft extends LinearOpMode {
   private DcMotor claw;
   public static BNO055IMU imu;
   public static BNO055IMU.Parameters imuParameters;
+  int ParkingPosition;
   Recognition recognition;
+  ParkingSpot parkingSpot = ParkingSpot.EYES;
   
 
 
@@ -42,9 +44,9 @@ public class AutoLeft extends LinearOpMode {
    */
   private void MotorSetup() {
     arm.DropArm();
-    sleep(200);
+    sleep(500);
+    CloseClaw();
     arm.Initialize();
-    claw.setPower(0.5);
    }
    
   /**
@@ -76,6 +78,7 @@ public class AutoLeft extends LinearOpMode {
     // If your model is based on SSD MobileNet V1 FPN 640x640 or
     // SSD MobileNet V2 FPNLite 640x640, the image size is 640.
     tfod.useModelFromFile("EGRR.tflite", JavaUtil.createListWith("EYES", "GEARS", "GEARS", "ROBOTS"), true, true, 320);
+    // tfod.useModelFromFile("13737TF2.tflite", JavaUtil.createListWith("EYES", "GEARS", "ROBOTS"), true, true, 320);
     tfod.initialize(vuforiaPOWERPLAY, (float) 0.7, true, true);
     tfod.activate();
     tfod.setZoom(1, 16 / 9);
@@ -87,43 +90,77 @@ public class AutoLeft extends LinearOpMode {
   /**
    * Describe this function...
    */
-  private ParkingSpot doTF() {
-    for (int cycles = 0; cycles < 25; cycles += 1) {
+  private void doTF() {
+    // while (1 == 1) {
 
-      // retrieve recognitions from TensorFlow
-      List<Recognition> recognitions = tfod.getRecognitions();
+    //   // retrieve recognitions from TensorFlow
+  List<Recognition> recognitions = tfod.getRecognitions();
       
-      // Check if we've detected anything
-      if (JavaUtil.listLength(recognitions) > 0) {
-        // Log *all* detections
-        telemetry.addData("Detected", recognitions);
-        telemetry.update();
+    //   // Check if we've detected anything
+    //   if (JavaUtil.listLength(recognitions) > 0) {
+    //     // Log *all* detections
+    //     telemetry.addData("Detected", recognitions);
+    //     telemetry.update();
         
-        // use *last* recognition to determine parking spot
-        switch(recognitions.get(recognitions.size() - 1).getLabel()) {
-          case "ROBOTS":
-            return ParkingSpot.ROBOTS;
+    //     // use *last* recognition to determine parking spot
+    //     switch(recognitions.get(recognitions.size() - 1).getLabel()) {
+    //       case "ROBOTS":
+    //         return ParkingSpot.ROBOTS;
       
-          case "GEARS":
-            return ParkingSpot.GEARS;
+    //       case "GEARS":
+    //         return ParkingSpot.GEARS;
       
-          case "EYES":
-            return ParkingSpot.EYES;
+    //       case "EYES":
+    //         return ParkingSpot.EYES;
             
-          default:
-          // We detected something, but it has a label we don't recognize
-            telemetry.addData("Detected", "[ERROR-BAD_LABEL], returning EYES");
-            telemetry.update();
-            return ParkingSpot.EYES;
-        }
-      }
-    } // end for loop
+    //       default:
+    //       // We detected something, but it has a label we don't recognize
+    //         telemetry.addData("Detected", "[ERROR-BAD_LABEL], returning EYES");
+    //         telemetry.update();
+    //         return ParkingSpot.EYES;
+    //     }
+    //   }
+    // } // end for loop
   
     // if we didn't find anything after however many tries, assume eyes,
     //  since we have trouble detecting it.
-    telemetry.addData("Detected", "none detected -- assuming EYES");
-    telemetry.update();
-    return ParkingSpot.EYES;
+    // telemetry.addData("Detected", "none detected -- assuming EYES");
+    // telemetry.update();
+    // return ParkingSpot.EYES;
+    boolean objectdetected;
+    int index;
+    
+    objectdetected = false;
+    //for (int e; e < 1000; e++) {
+    while (objectdetected == false) {
+      recognitions = tfod.getRecognitions();
+      if (JavaUtil.listLength(recognitions) == 0) {
+        telemetry.addData("TF", "none detected");
+      } else {
+        index = 0;
+        for (Recognition recognition_item : recognitions) {
+          recognition = recognition_item;
+          displayInfo(index);
+          index = index + 1;
+          telemetry.addData("Detected", recognition.getLabel());
+        }
+        objectdetected = true;
+      }
+      telemetry.update();
+    }
+  }
+  private void displayInfo(int i) {
+    
+
+    telemetry.addData("label" + i, recognition.getLabel());
+    if (recognition.getLabel().equals("ROBOTS")) {
+      parkingSpot = ParkingSpot.ROBOTS;
+    } else if (recognition.getLabel().equals("GEARS")) {
+      parkingSpot = ParkingSpot.GEARS;
+    } else {
+      parkingSpot = ParkingSpot.EYES;
+    }
+    
   }
   
 
@@ -132,6 +169,9 @@ public class AutoLeft extends LinearOpMode {
    */
   @Override
   public void runOpMode() {
+
+
+
   imu = hardwareMap.get(BNO055IMU.class, "imu");
   // Create new IMU Parameters object.
     imuParameters = new BNO055IMU.Parameters();
@@ -163,77 +203,86 @@ public class AutoLeft extends LinearOpMode {
 
     TFInitialize();
     waitForStart();
-    MotorSetup();
+    try {
     if (opModeIsActive()) {
-      ParkingSpot parkingSpot = doTF();
-      
-      CloseClaw(); // grab initial cone
+      doTF();
+      MotorSetup();
       arm.Move(Config.CRUISING_HEIGHT);
 
-      // move to high pole
-      driveMotors.Move(Direction.FORWARD, Config.INITIAL_CORRECTION + (int)(2*Config.TILE_LENGTH));
+      // move to MID pole
+      driveMotors.Move(Direction.FORWARD, Config.INITIAL_CORRECTION + (int)(2.05*Config.TILE_LENGTH));
       
       // deposit cone
-      driveMotors.Turn(45);
-      arm.Move(Config.HIGH_POLE_HEIGHT, true);
+      driveMotors.Turn(130);
+      arm.Move(Config.MID_POLE_HEIGHT, true);
       driveMotors.Move(Direction.FORWARD, Config.BUMP);
-      arm.Move(Config.MID_POLE_HEIGHT);
+      arm.Move(Config.SIDE_STACK_HEIGHT);
       sleep(500);
       OpenClaw();
-      driveMotors.Move(Direction.BACKWARD, Config.BUMP);
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP * 1.1));
+      driveMotors.Turn(138); //130 + 140 = 270 (90*3=270)
+      
+      //park because were out of time to work on auto
+      Park(parkingSpot);
+      sleep(50000);
+      
+      
   
       // go for 2nd cone
-      driveMotors.Turn(-135);
-      driveMotors.Move(Direction.FORWARD, Config.TILE_LENGTH);
-      arm.Move(Config.SIDE_STACK_HEIGHT, true);
-      driveMotors.Move(Direction.FORWARD, Config.BUMP);
-      arm.Move(Config.SIDE_STACK_HEIGHT - 3);
-      sleep(500);
+      driveMotors.Move(Direction.FORWARD, (int)(1*Config.TILE_LENGTH));
+      arm.Move((int)(Config.SIDE_STACK_HEIGHT-3), true);
       CloseClaw();
       arm.Move(Config.MID_POLE_HEIGHT, true);
       
       
       // place 2nd cone
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.2));
-      arm.Move(Config.TOP, true);
-      driveMotors.Turn(135);
-      driveMotors.Move(Direction.FORWARD, Config.BUMP);
-      arm.Move(Config.MID_POLE_HEIGHT);
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .5));
+      arm.Move(Config.LOW_POLE_HEIGHT, true);
+      driveMotors.Turn(-90);
+      driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP*.22));
+      arm.Move(Config.LOW_POLE_HEIGHT+10);
       sleep(500);
       OpenClaw();
       driveMotors.Move(Direction.BACKWARD, Config.BUMP);
-      driveMotors.Turn(-45);
+      driveMotors.Turn(90);
       arm.Move(Config.CRUISING_HEIGHT, true);
-
-      // Third cone?
+ 
       
       // Park
-      Park(parkingSpot);
+        Park(parkingSpot);
     }
     
+    } catch(Exception e) {
+      //hopefully we dont see this, this will catch if AutoLeft cant run
+      telemetry.addData("Error", "Something went wrong running AutoLeft");
+      telemetry.update();
+    }
     vuforiaPOWERPLAY.close();
     tfod.close();
   }
   
-  
   private void Park(ParkingSpot target) {
-    
-    switch(target) {
-    case EYES:
-      telemetry.addData("Parking", "PARKING EYES");
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.6));
-      break;
-      
-    case GEARS:
-      telemetry.addData("Parking", "PARKING GEARS");
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .3));
-      break;
-      
-    case ROBOTS:
-      telemetry.addData("Parking", "PARKING ROBOTS");
-      driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .3));
+    try {
+      switch(target) {
+      case EYES:
+        telemetry.addData("Parking", "PARKING EYES");
+        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.2));
+        break;
+        
+      case GEARS:
+        telemetry.addData("Parking", "PARKING GEARS");
+        driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * .05));
+        break;
+        
+      case ROBOTS:
+        telemetry.addData("Parking", "PARKING ROBOTS");
+        driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1));
+      }
+      telemetry.update();
+    } catch(Exception e) {
+        telemetry.addData("Park", "Couldn't Park");
+        telemetry.update();
     }
-    telemetry.update();
   }
   
   private void OpenClaw() {
@@ -246,7 +295,8 @@ public class AutoLeft extends LinearOpMode {
   
   private void CloseClaw() {
     claw.setPower(0.9);
-    sleep(200);
+    sleep(500);
     claw.setPower(0.3);
   }
 }
+//too far forward and too low before stack

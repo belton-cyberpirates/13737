@@ -29,6 +29,7 @@ public class SquareDance extends LinearOpMode {
   public void runOpMode() {
     // argument order *must* be fr-fl-bl-br
     driveMotors = new DriveMotors(
+      telemetry,
       hardwareMap.get(DcMotor.class, "m2"),
       hardwareMap.get(DcMotor.class, "m3"),
       hardwareMap.get(DcMotor.class, "m4"),
