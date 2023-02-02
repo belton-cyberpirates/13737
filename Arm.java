@@ -40,7 +40,7 @@ public class Arm {
   }
   
   public void Move(int position) {
-    final float power = .95f /*position < 10 ? 0.5f : 0.9f*/;
+    final float power = .95f;
     this.SetPower(power);
     
     this.arm1.setTargetPosition(position);
@@ -57,7 +57,6 @@ public class Arm {
   }
   
   private void WaitForMotors() {
-        // TODO: do we need this "!!"?
     while (this.arm1.isBusy() || this.arm2.isBusy()) {}
   }
 }

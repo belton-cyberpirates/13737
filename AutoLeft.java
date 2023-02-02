@@ -91,42 +91,8 @@ public class AutoLeft extends LinearOpMode {
    * Describe this function...
    */
   private void doTF() {
-    // while (1 == 1) {
-
-    //   // retrieve recognitions from TensorFlow
   List<Recognition> recognitions = tfod.getRecognitions();
-      
-    //   // Check if we've detected anything
-    //   if (JavaUtil.listLength(recognitions) > 0) {
-    //     // Log *all* detections
-    //     telemetry.addData("Detected", recognitions);
-    //     telemetry.update();
-        
-    //     // use *last* recognition to determine parking spot
-    //     switch(recognitions.get(recognitions.size() - 1).getLabel()) {
-    //       case "ROBOTS":
-    //         return ParkingSpot.ROBOTS;
-      
-    //       case "GEARS":
-    //         return ParkingSpot.GEARS;
-      
-    //       case "EYES":
-    //         return ParkingSpot.EYES;
-            
-    //       default:
-    //       // We detected something, but it has a label we don't recognize
-    //         telemetry.addData("Detected", "[ERROR-BAD_LABEL], returning EYES");
-    //         telemetry.update();
-    //         return ParkingSpot.EYES;
-    //     }
-    //   }
-    // } // end for loop
   
-    // if we didn't find anything after however many tries, assume eyes,
-    //  since we have trouble detecting it.
-    // telemetry.addData("Detected", "none detected -- assuming EYES");
-    // telemetry.update();
-    // return ParkingSpot.EYES;
     boolean objectdetected;
     int index;
     
@@ -150,8 +116,6 @@ public class AutoLeft extends LinearOpMode {
     }
   }
   private void displayInfo(int i) {
-    
-
     telemetry.addData("label" + i, recognition.getLabel());
     if (recognition.getLabel().equals("ROBOTS")) {
       parkingSpot = ParkingSpot.ROBOTS;
@@ -160,30 +124,13 @@ public class AutoLeft extends LinearOpMode {
     } else {
       parkingSpot = ParkingSpot.EYES;
     }
-    
   }
-  
 
   /**
    * This function is executed when this Op Mode is selected from the Driver Station.
    */
   @Override
   public void runOpMode() {
-
-
-
-  imu = hardwareMap.get(BNO055IMU.class, "imu");
-  // Create new IMU Parameters object.
-    imuParameters = new BNO055IMU.Parameters();
-    // Use degrees as angle unit.
-    imuParameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-    // Express acceleration as m/s^2.
-    imuParameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-    // Disable logging.
-    imuParameters.loggingEnabled = false;
-    // Initialize IMU.
-    imu.initialize(imuParameters);
-    
     vuforiaPOWERPLAY = new VuforiaCurrentGame();
     tfod = new Tfod();
 
@@ -253,7 +200,7 @@ public class AutoLeft extends LinearOpMode {
     }
     
     } catch(Exception e) {
-      //hopefully we dont see this, this will catch if AutoLeft cant run
+      // hopefully we dont see this, this will catch if AutoLeft cant run
       telemetry.addData("Error", "Something went wrong running AutoLeft");
       telemetry.update();
     }
@@ -299,4 +246,3 @@ public class AutoLeft extends LinearOpMode {
     claw.setPower(0.3);
   }
 }
-//too far forward and too low before stack
