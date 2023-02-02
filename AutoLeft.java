@@ -97,7 +97,6 @@ public class AutoLeft extends LinearOpMode {
     int index;
     
     objectdetected = false;
-    //for (int e; e < 1000; e++) {
     while (objectdetected == false) {
       recognitions = tfod.getRecognitions();
       if (JavaUtil.listLength(recognitions) == 0) {
