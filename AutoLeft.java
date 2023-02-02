@@ -97,7 +97,7 @@ public class AutoLeft extends LinearOpMode {
     int index;
     
     objectdetected = false;
-    while (objectdetected == false) {
+    for (int attempt = 0; attempt < 100; attempt++) {
       recognitions = tfod.getRecognitions();
       if (JavaUtil.listLength(recognitions) == 0) {
         telemetry.addData("TF", "none detected");
@@ -109,11 +109,13 @@ public class AutoLeft extends LinearOpMode {
           index = index + 1;
           telemetry.addData("Detected", recognition.getLabel());
         }
-        objectdetected = true;
+        return; // found object, can stop early
       }
       telemetry.update();
     }
   }
+
+
   private void displayInfo(int i) {
     telemetry.addData("label" + i, recognition.getLabel());
     if (recognition.getLabel().equals("ROBOTS")) {
