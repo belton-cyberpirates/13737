@@ -100,13 +100,8 @@ public class DriveMotors {
     this.backRight.isBusy() )) {}
   }
   
-  
+
   public void Move(Direction direction, int distance) {
-    Move(direction, distance, false);
-  }
-
-
-  public void Move(Direction direction, int distance, boolean ramp) {
     this.MotorInit();
 
     switch(direction) {
@@ -144,7 +139,7 @@ public class DriveMotors {
     }
     // while motors are running, correct power with gyro angle
     this.SetPower(Config.MIN_SPEED);
-    this.WaitForMotors(distance, direction, ramp);
+    this.WaitForMotors();
   }
   
   
@@ -155,12 +150,7 @@ public class DriveMotors {
     this.SetPower(Config.MIN_SPEED);
     this.SetTargetPositions(distance, distance, distance, distance);
     
-    this.WaitForMotors(angle);
-  }
-
-
-  private void WaitForMotors(int distance) {
-    this.WaitForMotors(distance);
+    this.WaitForMotors();
   }
 
 
@@ -168,9 +158,7 @@ public class DriveMotors {
    * Wait until motion is complete
    * @param distance target distance meant to be reached
    */
-  private void WaitForMotors(int distance) {
-    angles = AutoLeft.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-    int initialPos = (int)angles.firstAngle;
+  private void WaitForMotors() {
     while ((this.frontLeft.isBusy() ||
             this.frontRight.isBusy() ||
             this.backLeft.isBusy() ||
