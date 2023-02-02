@@ -167,13 +167,7 @@ public class AutoLeft extends LinearOpMode {
       OpenClaw();
       driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP * 1.1));
       driveMotors.Turn(138); //130 + 140 = 270 (90*3=270)
-      
-      //park because were out of time to work on auto
-      Park(parkingSpot);
-      sleep(50000);
-      
-      
-  
+
       // go for 2nd cone
       driveMotors.Move(Direction.FORWARD, (int)(1*Config.TILE_LENGTH));
       arm.Move((int)(Config.SIDE_STACK_HEIGHT-3), true);
