@@ -62,6 +62,9 @@ public class xDriveCode extends LinearOpMode {
 
         double SpeedupVal = 1 + rightTriggerCorrection + leftTriggerCorrection + armCorrection;
 
+        telemetry.addData("gamepad info", gamepad2);
+        telemetry.update();
+
         m2.setPower(((gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x) * SpeedupVal) / slowness * compensation);
         m3.setPower(((-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x) * SpeedupVal) / slowness);
         m4.setPower(((-gamepad1.left_stick_y + -gamepad1.left_stick_x + gamepad1.right_stick_x) * SpeedupVal) / slowness);
