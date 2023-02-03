@@ -87,9 +87,9 @@ public class AutoLeft extends LinearOpMode {
   }
   
 
-  /**
-   * Describe this function...
-   */
+ /**
+ * Describe this function...
+ */
   private void doTF() {
   List<Recognition> recognitions = tfod.getRecognitions();
   
@@ -114,8 +114,7 @@ public class AutoLeft extends LinearOpMode {
       telemetry.update();
     }
   }
-
-
+  
   private void displayInfo(int i) {
     telemetry.addData("label" + i, recognition.getLabel());
     if (recognition.getLabel().equals("ROBOTS")) {
@@ -163,33 +162,35 @@ public class AutoLeft extends LinearOpMode {
       // deposit cone
       driveMotors.Turn(130);
       arm.Move(Config.MID_POLE_HEIGHT, true);
-      driveMotors.Move(Direction.FORWARD, Config.BUMP);
+      driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP*1.1));
       arm.Move(Config.SIDE_STACK_HEIGHT);
       sleep(500);
       OpenClaw();
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP * 1.1));
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP*1.2));
       driveMotors.Turn(138); //130 + 140 = 270 (90*3=270)
 
       // go for 2nd cone
-      driveMotors.Move(Direction.FORWARD, (int)(1*Config.TILE_LENGTH));
-      arm.Move((int)(Config.SIDE_STACK_HEIGHT-3), true);
+      OpenClaw();
+      arm.Move(Config.SIDE_STACK_HEIGHT - 3, true);
+      driveMotors.Move(Direction.FORWARD, (int)(0.95*Config.TILE_LENGTH));
       CloseClaw();
-      arm.Move(Config.MID_POLE_HEIGHT, true);
+      arm.Move(Config.LOW_POLE_HEIGHT, true);
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .4));
       
       
       // place 2nd cone
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .5));
-      arm.Move(Config.LOW_POLE_HEIGHT, true);
       driveMotors.Turn(-90);
-      driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP*.22));
-      arm.Move(Config.LOW_POLE_HEIGHT+10);
-      sleep(500);
+      driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP*.3));
+      arm.Move(Config.LOW_POLE_HEIGHT - 25, true);
       OpenClaw();
-      driveMotors.Move(Direction.BACKWARD, Config.BUMP);
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP*0.5));
       driveMotors.Turn(90);
       arm.Move(Config.CRUISING_HEIGHT, true);
+
+
+      // return to center of tile to prepare to park
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 0.5));
  
-      
       // Park
         Park(parkingSpot);
     }
