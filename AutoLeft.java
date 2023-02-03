@@ -93,10 +93,7 @@ public class AutoLeft extends LinearOpMode {
   private void doTF() {
   List<Recognition> recognitions = tfod.getRecognitions();
   
-    boolean objectdetected;
     int index;
-    
-    objectdetected = false;
     for (int attempt = 0; attempt < 100; attempt++) {
       recognitions = tfod.getRecognitions();
       if (JavaUtil.listLength(recognitions) == 0) {
@@ -109,6 +106,7 @@ public class AutoLeft extends LinearOpMode {
           index = index + 1;
           telemetry.addData("Detected", recognition.getLabel());
         }
+        telemetry.update();
         return; // found object, can stop early
       }
       telemetry.update();
@@ -171,25 +169,22 @@ public class AutoLeft extends LinearOpMode {
 
       // go for 2nd cone
       OpenClaw();
-      arm.Move(Config.SIDE_STACK_HEIGHT - 3, true);
+      arm.Move(Config.SIDE_STACK_HEIGHT, true);
       driveMotors.Move(Direction.FORWARD, (int)(0.95*Config.TILE_LENGTH));
       CloseClaw();
       arm.Move(Config.LOW_POLE_HEIGHT, true);
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .4));
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .45));
       
       
       // place 2nd cone
       driveMotors.Turn(-90);
+      arm.Move(Config.LOW_POLE_HEIGHT + 15);
       driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP*.3));
       arm.Move(Config.LOW_POLE_HEIGHT - 25, true);
       OpenClaw();
       driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP*0.5));
       driveMotors.Turn(90);
       arm.Move(Config.CRUISING_HEIGHT, true);
-
-
-      // return to center of tile to prepare to park
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 0.5));
  
       // Park
         Park(parkingSpot);
@@ -209,17 +204,17 @@ public class AutoLeft extends LinearOpMode {
       switch(target) {
       case EYES:
         telemetry.addData("Parking", "PARKING EYES");
-        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.2));
+        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 0.5));
         break;
         
       case GEARS:
         telemetry.addData("Parking", "PARKING GEARS");
-        driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * .05));
+        driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 0.5));
         break;
         
       case ROBOTS:
         telemetry.addData("Parking", "PARKING ROBOTS");
-        driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1));
+        driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.5));
       }
       telemetry.update();
     } catch(Exception e) {
