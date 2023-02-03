@@ -185,8 +185,9 @@ public class Park extends LinearOpMode {
         
       case ROBOTS:
         telemetry.addData("Parking", "PARKING ROBOTS");
-        driveMotors.Move(Direction.BACKWARD, Config.TILE_LENGTH);
+        driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.1));
       }
+      OpenClaw();
       telemetry.update();
     } catch(Exception e) {
         telemetry.addData("Park", "Couldn't Park");
