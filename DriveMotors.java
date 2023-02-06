@@ -27,9 +27,9 @@ public class DriveMotors {
   }
 
   
-  private void SetPower(double power) {
-    this.leftTread.SetPower(power);
-    this.rightTread.SetPower(power);
+  private void Update() {
+    this.leftTread.Update();
+    this.rightTread.Update();
   }
 
 
@@ -57,18 +57,6 @@ public class DriveMotors {
     
     this.WaitForMotors(angle);
   }
-  
-
-  /**
-   * power should follow quadratic curve with mins at 0.1 and max at 0.9
-   * @param x current distance/position
-   * @param distance total target distance
-   * @return y=c*x(x-distance) + 0.1 where c is calculated as 4(MIN-MAX)/(d^2)
-   */
-  private double GetPower(int x, int distance) {
-    double speed = -x*(x-distance) + Config.MIN_SPEED;
-    return speed > Config.MAX_SPEED ? Config.MAX_SPEED : speed; // do not go higher than MAX_SPEED
-  }
 
 
   /**
@@ -78,9 +66,7 @@ public class DriveMotors {
   private void WaitForMotors(int distance) {
     while (!!(this.leftTread.IsBusy() ||
               this.rightTread.IsBusy())) {
-                // assume back wheels are indicative of whole movement
-                int x = Math.abs(this.leftTread.GetCurrentPosition());
-                this.SetPower(this.GetPower(x, Math.abs(distance)));
+                this.Update();
               }
   }
 }
