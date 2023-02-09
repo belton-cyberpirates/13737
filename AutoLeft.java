@@ -42,8 +42,9 @@ public class AutoLeft extends LinearOpMode {
   private boolean CameraError = false;
 
   public AutoLeft() {
-    int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-    camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+    //int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+    WebcamName camName = hardwareMap.get(WebcamName.class, "Webcam 1");
+    camera = OpenCvCameraFactory.getInstance().createWebcam(camName);
     aprilTagDetectionPipeline = new AprilTagDetectionPipeline(Config.TAGSIZE, Config.FX, Config.FY, Config.CX, Config.CY);
 
     camera.setPipeline(aprilTagDetectionPipeline);
@@ -97,10 +98,10 @@ public class AutoLeft extends LinearOpMode {
       // If we haven't seen a tag for a few frames, lower the decimation
       // so we can hopefully pick one up if we're e.g. far back
       if(numFramesWithoutDetection >= Config.NUM_FRAMES_BEFORE_LOW_DECIMATION) {
-          aprilTagDetectionPipeline.setDecimation(Config.lDECIMATION_LOW);
+          aprilTagDetectionPipeline.setDecimation(Config.DECIMATION_LOW);
       }
 
-      if (detections == null == detections.size() == 0) {
+      if (detections == null || detections.size() == 0) {
         // pass if there's no new frame or we didn't detect anything
         sleep(20); // give the camera a chance to process the frame
         continue;
@@ -162,6 +163,7 @@ public class AutoLeft extends LinearOpMode {
         int parkingSpot = CameraError ? -1 : RunDetection(); // retrieve our expected parking spot (or -1 if we failed to open the camera)
         sleep(1000);
       }
+    }
   }
   
   
@@ -182,7 +184,7 @@ public class AutoLeft extends LinearOpMode {
 
     default:
       telemetry.addLine(String.format("ERROR: Target %d not in range 1-3", target));
-      telemetry.addLine(String.format("PARKING IN DEFAULT SPOT (%d)", Config.DEFAULT_PARKING_SPOT))
+      telemetry.addLine(String.format("PARKING IN DEFAULT SPOT (%d)", Config.DEFAULT_PARKING_SPOT));
       driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.6));
       break;
     }
