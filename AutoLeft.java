@@ -150,8 +150,9 @@ public class AutoLeft extends LinearOpMode {
     );
     claw = hardwareMap.get(DcMotor.class, "claw");
 
-    TFInitialize();
+    // Wait for the game to start (driver presses PLAY)
     waitForStart();
+
     telemetry.setMsTransmissionInterval(50);
     MotorSetup();
 
@@ -202,9 +203,6 @@ public class AutoLeft extends LinearOpMode {
       // Park
       Park(parkingSpot);
     }
-    
-    vuforiaPOWERPLAY.close();
-    tfod.close();
   }
   
   
