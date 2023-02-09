@@ -165,7 +165,7 @@ public class OneCone extends LinearOpMode {
       sleep(500);
       OpenClaw();
       driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP*1.2));
-      driveMotors.Turn(136); //130 + 140 = 270 (90*3=270)
+      driveMotors.Turn(-45); //130 + 140 = 270 (90*3=270)
 /*
       // go for 2nd cone
       OpenClaw();
@@ -203,7 +203,6 @@ public class OneCone extends LinearOpMode {
       switch(target) {
       case EYES:
         telemetry.addData("Parking", "PARKING EYES");
-        driveMotors.Turn(130);
         driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH));
         break;
         
@@ -213,7 +212,6 @@ public class OneCone extends LinearOpMode {
         
       case ROBOTS:
         telemetry.addData("Parking", "PARKING ROBOTS");
-        driveMotors.Turn(-130);
         driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH));
       }
       telemetry.update();
