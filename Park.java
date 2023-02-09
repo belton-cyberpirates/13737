@@ -24,13 +24,13 @@ import org.firstinspires.ftc.teamcode.Direction;
 import org.firstinspires.ftc.teamcode.ParkingSpot;
 import org.firstinspires.ftc.teamcode.Config;
 
-@Autonomous(name = "AutoLeft"/*, preselectTeleOp = "xDriveCode"*/)
-public class AutoLeft extends LinearOpMode {
-  public VuforiaCurrentGame vuforiaPOWERPLAY;
-  public Tfod tfod;
-  public DriveMotors driveMotors;
-  public Arm arm;
-  public DcMotor claw;
+@Autonomous(name = "Park")
+public class Park extends LinearOpMode {
+  private VuforiaCurrentGame vuforiaPOWERPLAY;
+  private Tfod tfod;
+  private DriveMotors driveMotors;
+  private Arm arm;
+  private DcMotor claw;
   public static BNO055IMU imu;
   public static BNO055IMU.Parameters imuParameters;
   int ParkingPosition;
@@ -42,7 +42,7 @@ public class AutoLeft extends LinearOpMode {
   /**
    * Set reliable initial configuration for robot motors
    */
-  public void MotorSetup() {
+  private void MotorSetup() {
     arm.DropArm();
     sleep(500);
     CloseClaw();
@@ -52,7 +52,7 @@ public class AutoLeft extends LinearOpMode {
   /**
    * Describe this function...
    */
-  public void TFInitialize() {
+  private void TFInitialize() {
     vuforiaPOWERPLAY.initialize(
         "", // vuforiaLicenseKey
         hardwareMap.get(WebcamName.class, "Webcam 1"), // cameraName
@@ -90,7 +90,7 @@ public class AutoLeft extends LinearOpMode {
  /**
  * Describe this function...
  */
-  public void doTF() {
+  private void doTF() {
   List<Recognition> recognitions = tfod.getRecognitions();
   
     int index;
@@ -149,48 +149,20 @@ public class AutoLeft extends LinearOpMode {
     TFInitialize();
     waitForStart();
     try {
-    if (opModeIsActive()) { // <----------------------------------------------------------------
+    if (opModeIsActive()) {
       doTF();
       MotorSetup();
       arm.Move(Config.CRUISING_HEIGHT);
 
-      // move to MID pole
-      driveMotors.Move(Direction.FORWARD, Config.INITIAL_CORRECTION + (int)(2.05*Config.TILE_LENGTH));
-      
-      // deposit cone
-      driveMotors.Turn(130);
-      arm.Move(Config.MID_POLE_HEIGHT, true);
-      driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP*1.1));
-      arm.Move(Config.SIDE_STACK_HEIGHT);
-      sleep(500);
-      OpenClaw();
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP*1.2));
-      driveMotors.Turn(136); //130 + 140 = 270 (90*3=270)
-
-      // go for 2nd cone
-      OpenClaw();
-      arm.Move(Config.SIDE_STACK_HEIGHT, true);
-      driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .98));
-      CloseClaw();
-      arm.Move(Config.LOW_POLE_HEIGHT, true);
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .48));
-      
-      
-      // place 2nd cone
-      driveMotors.Turn(-90);
-      arm.Move(Config.LOW_POLE_HEIGHT + 20);
-      driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP*.3));
-      arm.Move(Config.LOW_POLE_HEIGHT - 25, true);
-      OpenClaw();
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP*0.5));
-      arm.Move(Config.CRUISING_HEIGHT, true);
+      // move
+      driveMotors.Move(Direction.FORWARD, (int)(2.15 * Config.TILE_LENGTH));
  
-      // Park
+      // park
         Park(parkingSpot);
     }
     
     } catch(Exception e) {
-      // this will catch if AutoLeft cant run
+      // hopefully we dont see this, this will catch if AutoLeft cant run
       telemetry.addData("Error", "Something went wrong running AutoLeft");
       telemetry.update();
     }
@@ -198,25 +170,24 @@ public class AutoLeft extends LinearOpMode {
     tfod.close();
   }
   
-  public void Park(ParkingSpot target) {
+  private void Park(ParkingSpot target) {
     try {
       switch(target) {
       case EYES:
         telemetry.addData("Parking", "PARKING EYES");
-        driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 0.5));
-        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .25));
+        driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 1));
+        driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .5));
         break;
         
       case GEARS:
         telemetry.addData("Parking", "PARKING GEARS");
-        driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 0.5));
-        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .25));
+        driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .5));
         break;
         
       case ROBOTS:
         telemetry.addData("Parking", "PARKING ROBOTS");
-        driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 1.5));
-        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .25));
+        driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 1));
+        driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .5));
       }
       telemetry.update();
     } catch(Exception e) {
@@ -225,7 +196,7 @@ public class AutoLeft extends LinearOpMode {
     }
   }
   
-  public void OpenClaw() {
+  private void OpenClaw() {
     sleep(200);
     claw.setPower(-0.3);
     sleep(200);
@@ -233,7 +204,7 @@ public class AutoLeft extends LinearOpMode {
   }
   
   
-  public void CloseClaw() {
+  private void CloseClaw() {
     claw.setPower(0.9);
     sleep(500);
     claw.setPower(0.3);

@@ -1,16 +1,17 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
-
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Direction;
 
 
 public class Arm {
-  
+  Telemetry telemetry;
   private DcMotor arm1;
   private DcMotor arm2;
-  
+
   public Arm(DcMotor arm1, DcMotor arm2) {
     this.arm1 = arm1;
     this.arm2 = arm2;
@@ -19,8 +20,8 @@ public class Arm {
   public void DropArm(){
     this.arm1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     this.arm2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    this.arm1.setPower(-.9);
-    this.arm2.setPower(.9);
+    this.arm1.setPower(-.95);
+    this.arm2.setPower(.95);
   }
 
   
@@ -39,7 +40,7 @@ public class Arm {
   }
   
   public void Move(int position) {
-    final float power = position < 10 ? 0.5f : 0.9f;
+    final float power = .95f;
     this.SetPower(power);
     
     this.arm1.setTargetPosition(position);
@@ -56,7 +57,6 @@ public class Arm {
   }
   
   private void WaitForMotors() {
-        // TODO: do we need this "!!"?
-    while (!!(this.arm1.isBusy() || this.arm2.isBusy())) {}
+    while (this.arm1.isBusy() || this.arm2.isBusy()) {}
   }
 }
