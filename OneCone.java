@@ -203,20 +203,18 @@ public class OneCone extends LinearOpMode {
       switch(target) {
       case EYES:
         telemetry.addData("Parking", "PARKING EYES");
-        driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 0.5));
-        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .25));
+        driveMotors.Turn(130);
+        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH));
         break;
         
       case GEARS:
         telemetry.addData("Parking", "PARKING GEARS");
-        driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 0.5));
-        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .25));
         break;
         
       case ROBOTS:
         telemetry.addData("Parking", "PARKING ROBOTS");
-        driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 1.5));
-        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .25));
+        driveMotors.Turn(-130);
+        driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH));
       }
       telemetry.update();
     } catch(Exception e) {

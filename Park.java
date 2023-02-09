@@ -170,7 +170,7 @@ public class Park extends LinearOpMode {
     tfod.close();
   }
   
-  private void Park(ParkingSpot target) {
+  public void Park(ParkingSpot target) {
     try {
       switch(target) {
       case EYES:
