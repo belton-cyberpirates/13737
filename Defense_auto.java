@@ -155,7 +155,7 @@ public class Defense_auto extends LinearOpMode {
     
 
       // start up defense
-
+      CloseClaw();
 
       // move to forward
       driveMotors.Move(Direction.FORWARD, Config.TILE_LENGTH * 3);
