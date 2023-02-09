@@ -158,7 +158,7 @@ public class oneCone extends LinearOpMode {
       driveMotors.Move(Direction.FORWARD, Config.INITIAL_CORRECTION + (int)(2.05*Config.TILE_LENGTH));
       
       // deposit cone
-      driveMotors.Turn(130);
+      driveMotors.Turn(128);
       arm.Move(Config.MID_POLE_HEIGHT, true);
       driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP*1.1));
       arm.Move(Config.SIDE_STACK_HEIGHT);
@@ -167,10 +167,6 @@ public class oneCone extends LinearOpMode {
       driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP*1.2));
       driveMotors.Turn(136); //130 + 140 = 270 (90*3=270)
 
-     
-      // deposit cone
-     // driveMotors.Turn(130);
-      //arm.Move(Config.HIGH_POLE_HEIGHT, true);
       
       // Park
         Park(parkingSpot);
@@ -192,13 +188,10 @@ public class oneCone extends LinearOpMode {
         telemetry.addData("Parking", "PARKING EYES");
        
         driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .5));
-         driveMotors.Turn(-45);
-         driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .5));
         break;
         
       case GEARS:
         telemetry.addData("Parking", "PARKING GEARS");
-        driveMotors.Turn(-45);
          driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .5));
        
         break;
@@ -206,8 +199,6 @@ public class oneCone extends LinearOpMode {
       case ROBOTS:
         telemetry.addData("Parking", "PARKING ROBOTS");
         driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.5));
-       driveMotors.Turn(-45);
-         driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .5));
       }
       telemetry.update();
     } catch(Exception e) {
