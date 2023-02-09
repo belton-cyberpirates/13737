@@ -40,6 +40,8 @@ public class AutoLeft extends LinearOpMode {
   private Arm arm;
   private DcMotor claw;
 
+  private boolean CameraError = false;
+
 
   int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
   camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
@@ -57,7 +59,9 @@ public class AutoLeft extends LinearOpMode {
       @Override
       public void onError(int errorCode)
       {
-
+        telemetry.addData("Error", "Camera failed to open with error " + errorCode);
+        telemetry.update();
+        CameraError = true;
       }
   });
 
@@ -152,8 +156,7 @@ public class AutoLeft extends LinearOpMode {
     MotorSetup();
 
     if (opModeIsActive()) {
-
-      int parkingSpot = RunDetection(); // retrieve our expected parking spot
+      int parkingSpot = CameraError ? -1 : RunDetection(); // retrieve our expected parking spot (or -1 if we failed to open the camera)
 
       // begin autonomous
       CloseClaw(); // grab initial cone
