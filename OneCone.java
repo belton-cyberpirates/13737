@@ -24,8 +24,8 @@ import org.firstinspires.ftc.teamcode.Direction;
 import org.firstinspires.ftc.teamcode.ParkingSpot;
 import org.firstinspires.ftc.teamcode.Config;
 
-@Autonomous(name = "AutoLeft"/*, preselectTeleOp = "xDriveCode"*/)
-public class AutoLeft extends LinearOpMode {
+@Autonomous(name = "OneCone"/*, preselectTeleOp = "xDriveCode"*/)
+public class OneCone extends LinearOpMode {
   public VuforiaCurrentGame vuforiaPOWERPLAY;
   public Tfod tfod;
   public DriveMotors driveMotors;
@@ -166,7 +166,7 @@ public class AutoLeft extends LinearOpMode {
       OpenClaw();
       driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP*1.2));
       driveMotors.Turn(136); //130 + 140 = 270 (90*3=270)
-
+/*
       // go for 2nd cone
       OpenClaw();
       arm.Move(Config.SIDE_STACK_HEIGHT, true);
@@ -184,7 +184,7 @@ public class AutoLeft extends LinearOpMode {
       OpenClaw();
       driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP*0.5));
       arm.Move(Config.CRUISING_HEIGHT, true);
- 
+ */
       // Park
         Park(parkingSpot);
     }
