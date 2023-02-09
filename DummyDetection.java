@@ -93,6 +93,7 @@ public class AutoLeft extends LinearOpMode {
       telemetry.addLine(String.format("Rotation Yaw: %.2f", detection.pose.yaw));
       telemetry.addLine(String.format("Rotation Pitch: %.2f", detection.pose.pitch));
       telemetry.addLine(String.format("Rotation Roll: %.2f", detection.pose.roll));
+      telemetry.addLine(String.format("Attempts: %d", numFramesWithoutDetection));
       telemetry.update();
 
       return detection.id;
