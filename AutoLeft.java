@@ -151,6 +151,7 @@ public class AutoLeft extends LinearOpMode {
     claw = hardwareMap.get(DcMotor.class, "claw");
 
     // Wait for the game to start (driver presses PLAY)
+    //? Can we do detection before this?
     waitForStart();
 
     telemetry.setMsTransmissionInterval(50);
