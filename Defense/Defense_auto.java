@@ -149,7 +149,7 @@ public class Defense_auto extends LinearOpMode {
     TFInitialize();
     waitForStart();
     try {
-    if (opModeIsActive()) { // <----------------------------------------------------------------
+    if (opModeIsActive()) { // <------------------------------------------------------------------------------------------------- 
       doTF();
       MotorSetup();
     
@@ -158,29 +158,12 @@ public class Defense_auto extends LinearOpMode {
 
 
       // move to forward
-      driveMotors.Move(Direction.FORWARD, Config.INITIAL_CORRECTION + (int)(2.05*Config.TILE_LENGTH));
+      driveMotors.Move(Direction.FORWARD, Config.TILE_LENGTH * 3);
       
-      // turn 
+      sleep(15000); // wait 15 seconds
+      
+      driveMotors.Move(Direction.BACKWARD, Config.TILE_LENGTH);
       driveMotors.Turn(90);
-      
-      //Drive infront of stack
-            driveMotors.Move(Direction., (int)BACKWARD(Config.BUMP*1));     
-      
-      // turn     
-      driveMotors.Turn(90);
-      
-      //forward
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP*1.1));
-
-      //sleep
-      sleep(5000);
-
-     // backward in front of our stack
-      driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP*1.1));
-
-      //turn to be able to park
-      driveMotors.Turn(90);
-
 
       //end of code
 
@@ -203,17 +186,17 @@ public class Defense_auto extends LinearOpMode {
       switch(target) {
       case EYES:
         telemetry.addData("Parking", "PARKING EYES");        
-        driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .25));
+        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.1));
         break;
         
       case GEARS:
         telemetry.addData("Parking", "PARKING GEARS");
-        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.1));
+        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 0.25));
         break;
 
       case ROBOTS:
         telemetry.addData("Parking", "PARKING ROBOTS");
-        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 2.25));
+        driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.1));
       }
       telemetry.update();
     } catch(Exception e) {
