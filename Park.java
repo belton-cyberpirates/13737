@@ -175,19 +175,16 @@ public class Park extends LinearOpMode {
       switch(target) {
       case EYES:
         telemetry.addData("Parking", "PARKING EYES");
-        driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 1));
-        driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .5));
+        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH));
         break;
         
       case GEARS:
         telemetry.addData("Parking", "PARKING GEARS");
-        driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .5));
         break;
         
       case ROBOTS:
         telemetry.addData("Parking", "PARKING ROBOTS");
-        driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 1));
-        driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .5));
+        driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH));
       }
       telemetry.update();
     } catch(Exception e) {
