@@ -42,11 +42,16 @@ public class Config {
   * UNITS ARE PIXELS
   * NOTE: this calibration is for the C920 webcam at 800x448.
   * You will need to do your own calibration for other configurations!
+
+  Resolution: 1280x720
+Pixel Size: 2.8um
+Sensor Size: 3.58x2.02mm
+Stock lens focal length: 4.2mm
   *****************************************************************************/
-  public static final double FX = 578.272;
-  public static final double FY = 578.272;
-  public static final double CX = 402.145;
-  public static final double CY = 221.506;
+  public static final double FX = 1430;
+  public static final double FY = 1430;
+  public static final double CX = 480;
+  public static final double CY = 620;
 
   public static final double TAGSIZE = 0.166;
   // ---------------------------------------------------------------------------
