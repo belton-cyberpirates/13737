@@ -192,13 +192,13 @@ public class oneCone extends LinearOpMode {
         telemetry.addData("Parking", "PARKING EYES");
        
         driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .5));
-         driveMotors.Turn(-90);
+         driveMotors.Turn(-45);
          driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .5));
         break;
         
       case GEARS:
         telemetry.addData("Parking", "PARKING GEARS");
-        driveMotors.Turn(-90);
+        driveMotors.Turn(-45);
          driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .5));
        
         break;
@@ -206,7 +206,7 @@ public class oneCone extends LinearOpMode {
       case ROBOTS:
         telemetry.addData("Parking", "PARKING ROBOTS");
         driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.5));
-       driveMotors.Turn(-90);
+       driveMotors.Turn(-45);
          driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .5));
       }
       telemetry.update();
