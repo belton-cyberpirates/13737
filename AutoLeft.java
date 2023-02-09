@@ -28,7 +28,6 @@ import org.openftc.easyopencv.OpenCvInternalCamera2;
 import org.firstinspires.ftc.teamcode.DriveMotors;
 import org.firstinspires.ftc.teamcode.Arm;
 import org.firstinspires.ftc.teamcode.Direction;
-import org.firstinspires.ftc.teamcode.ParkingSpot;
 import org.firstinspires.ftc.teamcode.Config;
 
 @Autonomous(name = "AutoLeft")
@@ -42,28 +41,29 @@ public class AutoLeft extends LinearOpMode {
 
   private boolean CameraError = false;
 
+  public AutoLeft() {
+    int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+    camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+    aprilTagDetectionPipeline = new AprilTagDetectionPipeline(Config.TAGSIZE, Config.FX, Config.FY, Config.CX, Config.CY);
 
-  int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-  camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-  aprilTagDetectionPipeline = new AprilTagDetectionPipeline(Config.TAGSIZE, Config.FX, Config.FY, Config.CX, Config.CY);
+    camera.setPipeline(aprilTagDetectionPipeline);
+    camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+    {
+        @Override
+        public void onOpened()
+        {
+            camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
+        }
 
-  camera.setPipeline(aprilTagDetectionPipeline);
-  camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-  {
-      @Override
-      public void onOpened()
-      {
-          camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
-      }
-
-      @Override
-      public void onError(int errorCode)
-      {
-        telemetry.addData("Error", "Camera failed to open with error " + errorCode);
-        telemetry.update();
-        CameraError = true;
-      }
-  });
+        @Override
+        public void onError(int errorCode)
+        {
+          telemetry.addData("Error", "Camera failed to open with error " + errorCode);
+          telemetry.update();
+          CameraError = true;
+        }
+    });
+  }
 
 
   /**
@@ -162,50 +162,6 @@ public class AutoLeft extends LinearOpMode {
         int parkingSpot = CameraError ? -1 : RunDetection(); // retrieve our expected parking spot (or -1 if we failed to open the camera)
         sleep(1000);
       }
-      // begin autonomous
-      CloseClaw(); // grab initial cone
-      arm.Move(Config.CRUISING_HEIGHT);
-
-      // move to high pole
-      driveMotors.Move(Direction.FORWARD, Config.INITIAL_CORRECTION + (int)(2*Config.TILE_LENGTH));
-      
-      // deposit cone
-      driveMotors.Turn(45);
-      arm.Move(Config.HIGH_POLE_HEIGHT, true);
-      driveMotors.Move(Direction.FORWARD, Config.BUMP);
-      arm.Move(Config.MID_POLE_HEIGHT);
-      sleep(500);
-      OpenClaw();
-      driveMotors.Move(Direction.BACKWARD, Config.BUMP);
-  
-      // go for 2nd cone
-      driveMotors.Turn(-135);
-      driveMotors.Move(Direction.FORWARD, Config.TILE_LENGTH);
-      arm.Move(Config.SIDE_STACK_HEIGHT, true);
-      driveMotors.Move(Direction.FORWARD, Config.BUMP);
-      arm.Move(Config.SIDE_STACK_HEIGHT - 3);
-      sleep(500);
-      CloseClaw();
-      arm.Move(Config.MID_POLE_HEIGHT, true);
-      
-      
-      // place 2nd cone
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.2));
-      arm.Move(Config.TOP, true);
-      driveMotors.Turn(135);
-      driveMotors.Move(Direction.FORWARD, Config.BUMP);
-      arm.Move(Config.MID_POLE_HEIGHT);
-      sleep(500);
-      OpenClaw();
-      driveMotors.Move(Direction.BACKWARD, Config.BUMP);
-      driveMotors.Turn(-45);
-      arm.Move(Config.CRUISING_HEIGHT, true);
-
-      // Third cone?
-      
-      // Park
-      Park(parkingSpot);
-    }
   }
   
   
