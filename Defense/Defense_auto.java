@@ -191,7 +191,7 @@ public class Defense_auto extends LinearOpMode {
         
       case GEARS:
         telemetry.addData("Parking", "PARKING GEARS");
-        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 0.25));
+        driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 0.25));
         break;
 
       case ROBOTS:
