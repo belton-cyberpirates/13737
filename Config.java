@@ -23,10 +23,6 @@ public class Config {
   public static final int TILE_LENGTH = 800;
   public static final int D_TILE_LENGTH = 1300;
   public static final int INITIAL_CORRECTION = (int)(TILE_LENGTH * 0.10);
-<<<<<<< HEAD
   public static final int BUMP = 250;
-=======
-  public static final int BUMP = 270;
->>>>>>> d7121e19acc935a2145a021e236e81e68c9877a5
   public static final int DIAGONAL_BUMP = 400;
 }

@@ -217,6 +217,7 @@ public class OneCone extends LinearOpMode {
       telemetry.update();
     } catch(Exception e) {
         telemetry.addData("Park", "Couldn't Park");
+        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH));
         telemetry.update();
     }
   }
