@@ -159,8 +159,8 @@ public class AutoLeft extends LinearOpMode {
 
     if (opModeIsActive()) {
       for (;;) {
-      int parkingSpot = CameraError ? -1 : RunDetection(); // retrieve our expected parking spot (or -1 if we failed to open the camera)
-      sleep(1000);
+        int parkingSpot = CameraError ? -1 : RunDetection(); // retrieve our expected parking spot (or -1 if we failed to open the camera)
+        sleep(1000);
       }
       // begin autonomous
       CloseClaw(); // grab initial cone
