@@ -30,7 +30,7 @@ import org.firstinspires.ftc.teamcode.Arm;
 import org.firstinspires.ftc.teamcode.Direction;
 import org.firstinspires.ftc.teamcode.Config;
 
-@Autonomous(name = "AutoLeft")
+@Autonomous(name = "DummyDetection")
 public class AutoLeft extends LinearOpMode {
 
   private OpenCvCamera camera;
@@ -38,33 +38,6 @@ public class AutoLeft extends LinearOpMode {
   private DriveMotors driveMotors;
   private Arm arm;
   private DcMotor claw;
-
-  private boolean CameraError = false;
-
-  public AutoLeft() {
-    //int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-    WebcamName camName = hardwareMap.get(WebcamName.class, "Webcam 1");
-    camera = OpenCvCameraFactory.getInstance().createWebcam(camName);
-    aprilTagDetectionPipeline = new AprilTagDetectionPipeline(Config.TAGSIZE, Config.FX, Config.FY, Config.CX, Config.CY);
-
-    camera.setPipeline(aprilTagDetectionPipeline);
-    camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-    {
-        @Override
-        public void onOpened()
-        {
-            camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
-        }
-
-        @Override
-        public void onError(int errorCode)
-        {
-          telemetry.addData("Error", "Camera failed to open with error " + errorCode);
-          telemetry.update();
-          CameraError = true;
-        }
-    });
-  }
 
 
   /**
@@ -136,6 +109,27 @@ public class AutoLeft extends LinearOpMode {
    */
   @Override
   public void runOpMode() {
+    
+    WebcamName camName = hardwareMap.get(WebcamName.class, "Webcam 1");
+    camera = OpenCvCameraFactory.getInstance().createWebcam(camName);
+    aprilTagDetectionPipeline = new AprilTagDetectionPipeline(Config.TAGSIZE, Config.FX, Config.FY, Config.CX, Config.CY);
+
+    camera.setPipeline(aprilTagDetectionPipeline);
+    camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+    {
+        @Override
+        public void onOpened()
+        {
+            camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
+        }
+
+        @Override
+        public void onError(int errorCode)
+        {
+          telemetry.addData("Error", "Camera failed to open with error " + errorCode);
+          telemetry.update();
+        }
+    });
 
     // argument order *must* be fr-fl-bl-br
     driveMotors = new DriveMotors(
@@ -159,10 +153,8 @@ public class AutoLeft extends LinearOpMode {
     MotorSetup();
 
     if (opModeIsActive()) {
-      for (;;) {
-        int parkingSpot = CameraError ? -1 : RunDetection(); // retrieve our expected parking spot (or -1 if we failed to open the camera)
-        sleep(1000);
-      }
+        int parkingSpot = RunDetection(); // retrieve our expected parking spot (or -1 if we failed to open the camera)
+        sleep(3000);
     }
   }
   
