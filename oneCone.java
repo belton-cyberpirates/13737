@@ -154,15 +154,19 @@ public class oneCone extends LinearOpMode {
       MotorSetup();
       arm.Move(Config.CRUISING_HEIGHT);
 
-      // move to MID pole
-      driveMotors.Move(Direction.FORWARD, Config.INITIAL_CORRECTION + (int)(3.05*Config.TILE_LENGTH));
+     // move to MID pole
+      driveMotors.Move(Direction.FORWARD, Config.INITIAL_CORRECTION + (int)(2.05*Config.TILE_LENGTH));
+      
+      // deposit cone
       driveMotors.Turn(130);
-      arm.Move(Config.HIGH_POLE_HEIGHT, true);
-      driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP*1.1));
       arm.Move(Config.MID_POLE_HEIGHT, true);
+      driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP*1.1));
+      arm.Move(Config.SIDE_STACK_HEIGHT);
+      sleep(500);
       OpenClaw();
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP*1.1));
-      driveMotors.Turn(52);
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP*1.2));
+      driveMotors.Turn(136); //130 + 140 = 270 (90*3=270)
+
      
       // deposit cone
      // driveMotors.Turn(130);
@@ -188,19 +192,22 @@ public class oneCone extends LinearOpMode {
         telemetry.addData("Parking", "PARKING EYES");
        
         driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .5));
-        driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 0.25));
+         driveMotors.Turn(-90);
+         driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .5));
         break;
         
       case GEARS:
         telemetry.addData("Parking", "PARKING GEARS");
-        driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 0.25));
+        driveMotors.Turn(-90);
+         driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .5));
        
         break;
         
       case ROBOTS:
         telemetry.addData("Parking", "PARKING ROBOTS");
         driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.5));
-        driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 0.25));
+       driveMotors.Turn(-90);
+         driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .5));
       }
       telemetry.update();
     } catch(Exception e) {
