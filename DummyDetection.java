@@ -2,10 +2,12 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import java.util.Set;
+import java.util.ArrayList;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import java.util.List;
@@ -16,16 +18,21 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaCurrentGame;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.Tfod;
+import org.openftc.apriltag.AprilTagDetection;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvInternalCamera;
+import org.openftc.easyopencv.OpenCvInternalCamera2;
 
 import org.firstinspires.ftc.teamcode.DriveMotors;
 import org.firstinspires.ftc.teamcode.Arm;
 import org.firstinspires.ftc.teamcode.Direction;
-import org.firstinspires.ftc.teamcode.ParkingSpot;
 import org.firstinspires.ftc.teamcode.Config;
 
-
-@Autonomous(name = "AutoLeft")
+@Autonomous(name = "DummyDetection")
 public class AutoLeft extends LinearOpMode {
+
   private OpenCvCamera camera;
   private AprilTagDetectionPipeline aprilTagDetectionPipeline;
   private DriveMotors driveMotors;
@@ -36,10 +43,9 @@ public class AutoLeft extends LinearOpMode {
   /**
    * Set reliable initial configuration for robot motors
    */
-  public void MotorSetup() {
+  private void MotorSetup() {
     arm.DropArm();
-    sleep(500);
-    CloseClaw();
+    sleep(200);
     arm.Initialize();
     claw.setPower(0.5);
   }
@@ -104,6 +110,28 @@ public class AutoLeft extends LinearOpMode {
    */
   @Override
   public void runOpMode() {
+    
+    WebcamName camName = hardwareMap.get(WebcamName.class, "Webcam 1");
+    camera = OpenCvCameraFactory.getInstance().createWebcam(camName);
+    aprilTagDetectionPipeline = new AprilTagDetectionPipeline(Config.TAGSIZE, Config.FX, Config.FY, Config.CX, Config.CY);
+
+    camera.setPipeline(aprilTagDetectionPipeline);
+    camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+    {
+        @Override
+        public void onOpened()
+        {
+            camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
+        }
+
+        @Override
+        public void onError(int errorCode)
+        {
+          telemetry.addData("Error", "Camera failed to open with error " + errorCode);
+          telemetry.update();
+        }
+    });
+
     // argument order *must* be fr-fl-bl-br
     driveMotors = new DriveMotors(
       hardwareMap.get(DcMotor.class, "m2"),
@@ -118,78 +146,45 @@ public class AutoLeft extends LinearOpMode {
     );
     claw = hardwareMap.get(DcMotor.class, "claw");
 
+    // Wait for the game to start (driver presses PLAY)
+    //? Can we do detection before this?
     waitForStart();
 
-    if (opModeIsActive()) { // <----------------------------------------------------------------
-      int parkingSpot = RunDetection();
+    telemetry.setMsTransmissionInterval(50);
+    MotorSetup();
 
-      MotorSetup();
-      arm.Move(Config.CRUISING_HEIGHT);
-
-      // move to MID pole
-      driveMotors.Move(Direction.FORWARD, Config.INITIAL_CORRECTION + (int)(2.05*Config.TILE_LENGTH));
-      
-      // deposit cone
-      driveMotors.Turn(130);
-      arm.Move(Config.MID_POLE_HEIGHT, true);
-      driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP*1.1));
-      arm.Move(Config.SIDE_STACK_HEIGHT);
-      sleep(500);
-      OpenClaw();
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP*1.2));
-      driveMotors.Turn(136); //130 + 140 = 270 (90*3=270)
-
-      // go for 2nd cone
-      OpenClaw();
-      arm.Move(Config.SIDE_STACK_HEIGHT, true);
-      driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .98));
-      CloseClaw();
-      arm.Move(Config.LOW_POLE_HEIGHT, true);
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .48));
-      
-      
-      // place 2nd cone
-      driveMotors.Turn(-90);
-      arm.Move(Config.LOW_POLE_HEIGHT + 20);
-      driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP*.3));
-      arm.Move(Config.LOW_POLE_HEIGHT - 25, true);
-      OpenClaw();
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP*0.5));
-      arm.Move(Config.CRUISING_HEIGHT, true);
- 
-      // Park
-        Park(parkingSpot);
+    if (opModeIsActive()) {
+        int parkingSpot = RunDetection(); // retrieve our expected parking spot (or -1 if we failed to open the camera)
+        sleep(3000);
     }
   }
   
-  public void Park(ParkingSpot target) {
-    try {
-      switch(target) {
-      case EYES:
-        telemetry.addData("Parking", "PARKING EYES");
-        driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 0.5));
-        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .25));
-        break;
-        
-      case GEARS:
-        telemetry.addData("Parking", "PARKING GEARS");
-        driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 0.5));
-        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .25));
-        break;
-        
-      case ROBOTS:
-        telemetry.addData("Parking", "PARKING ROBOTS");
-        driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 1.5));
-        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .25));
-      }
-      telemetry.update();
-    } catch(Exception e) {
-        telemetry.addData("Park", "Couldn't Park");
-        telemetry.update();
+  
+  private void Park(int target) {
+    telemetry.addData("Parking", String.format("PARKING IN SPOT %d", target));
+
+    switch(target) {
+    case 1:
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.6));
+      break;
+      
+    case 2:
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .3));
+      break;
+      
+    case 3:
+      driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .3));
+
+    default:
+      telemetry.addLine(String.format("ERROR: Target %d not in range 1-3", target));
+      telemetry.addLine(String.format("PARKING IN DEFAULT SPOT (%d)", Config.DEFAULT_PARKING_SPOT));
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.6));
+      break;
     }
+    telemetry.update();
   }
   
-  public void OpenClaw() {
+  private void OpenClaw() {
     sleep(200);
     claw.setPower(-0.3);
     sleep(200);
@@ -197,9 +192,9 @@ public class AutoLeft extends LinearOpMode {
   }
   
   
-  public void CloseClaw() {
+  private void CloseClaw() {
     claw.setPower(0.9);
-    sleep(500);
+    sleep(200);
     claw.setPower(0.3);
   }
 }
