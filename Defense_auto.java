@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
@@ -23,8 +24,8 @@ import org.firstinspires.ftc.teamcode.Direction;
 import org.firstinspires.ftc.teamcode.ParkingSpot;
 import org.firstinspires.ftc.teamcode.Config;
 
-@Autonomous(name = "AutoLeft"/*, preselectTeleOp = "xDriveCode"*/)
-public class AutoLeft extends LinearOpMode {
+@Autonomous(name = "Defense_auto"/*, preselectTeleOp = "xDriveCode"*/)
+public class Defense_auto extends LinearOpMode {
   public VuforiaCurrentGame vuforiaPOWERPLAY;
   public Tfod tfod;
   public DriveMotors driveMotors;
@@ -148,42 +149,25 @@ public class AutoLeft extends LinearOpMode {
     TFInitialize();
     waitForStart();
     try {
-    if (opModeIsActive()) { // <----------------------------------------------------------------
+    if (opModeIsActive()) { // <------------------------------------------------------------------------------------------------- 
       doTF();
       MotorSetup();
-      arm.Move(Config.CRUISING_HEIGHT);
+    
 
-      // move to MID pole
-      driveMotors.Move(Direction.FORWARD, Config.INITIAL_CORRECTION + (int)(2.05*Config.TILE_LENGTH));
-      
-      // deposit cone
-      driveMotors.Turn(130);
-      arm.Move(Config.MID_POLE_HEIGHT, true);
-      driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP*1.1));
-      arm.Move(Config.SIDE_STACK_HEIGHT);
-      sleep(500);
-      OpenClaw();
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP*1.2));
-      driveMotors.Turn(136); //130 + 140 = 270 (90*3=270)
-
-      // go for 2nd cone
-      OpenClaw();
-      arm.Move(Config.SIDE_STACK_HEIGHT, true);
-      driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .98));
+      // start up defense
       CloseClaw();
-      arm.Move(Config.LOW_POLE_HEIGHT, true);
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .48));
+
+      // move to forward
+      driveMotors.Move(Direction.FORWARD, Config.TILE_LENGTH * 3);
       
+      sleep(15000); // wait 15 seconds
       
-      // place 2nd cone
-      driveMotors.Turn(-90);
-      arm.Move(Config.LOW_POLE_HEIGHT + 20);
-      driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP*.3));
-      arm.Move(Config.LOW_POLE_HEIGHT - 25, true);
-      OpenClaw();
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP*0.5));
-      arm.Move(Config.CRUISING_HEIGHT, true);
- 
+      driveMotors.Move(Direction.BACKWARD, Config.TILE_LENGTH);
+      driveMotors.Turn(90);
+
+      //end of code
+
+
       // Park
         Park(parkingSpot);
     }
@@ -201,21 +185,18 @@ public class AutoLeft extends LinearOpMode {
     try {
       switch(target) {
       case EYES:
-        telemetry.addData("Parking", "PARKING EYES");
-        driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 0.5));
-        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .25));
+        telemetry.addData("Parking", "PARKING EYES");        
+        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.1));
         break;
         
       case GEARS:
         telemetry.addData("Parking", "PARKING GEARS");
-        driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 0.5));
-        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .25));
+        driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 0.25));
         break;
-        
+
       case ROBOTS:
         telemetry.addData("Parking", "PARKING ROBOTS");
-        driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 1.5));
-        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .25));
+        driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.1));
       }
       telemetry.update();
     } catch(Exception e) {
