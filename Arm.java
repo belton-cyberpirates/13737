@@ -20,8 +20,8 @@ public class Arm {
   public void DropArm(){
     this.arm1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     this.arm2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    this.arm1.setPower(-.95);
-    this.arm2.setPower(.95);
+    this.arm1.setPower(-0.95);
+    this.arm2.setPower(0.95);
   }
 
   
@@ -34,14 +34,14 @@ public class Arm {
     this.arm2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
   }
   
-  private void SetPower(float power) {
-    this.arm1.setPower(power);
-    this.arm2.setPower(power);
+  private void setVelocity(int velocity) {
+    this.arm1.setVelocity(velocity);
+    this.arm2.setVelocity(velocity);
   }
   
   public void Move(int position) {
-    final float power = .95f;
-    this.SetPower(power);
+    final int velocity = 950;
+    this.setVelocity(velocity);
     
     this.arm1.setTargetPosition(position);
     this.arm2.setTargetPosition(-position);

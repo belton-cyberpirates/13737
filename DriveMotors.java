@@ -29,29 +29,31 @@ public class DriveMotors {
     this.backLeft = backLeft;
     this.backRight = backRight;
   }
-  
-  
+
+
   private void Reset() {
     this.frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     this.frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     this.backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     this.backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
   }
-  
-  
+
+
   private void SetToRunPosition() {
     this.frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     this.frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     this.backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     this.backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
   }
-  
-  
+
+
   private void MotorInit() {
     this.Reset();
     this.SetTargetPositions(0, 0, 0, 0);
     this.SetToRunPosition();
   }
+
+
   private void MotorInitTurn() {
     this.Reset();
     this.frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
@@ -61,43 +63,19 @@ public class DriveMotors {
   }
 
   
-  private void SetPower(double power, double compensation) {
-    this.frontLeft.setPower(power * compensation);
-    this.frontRight.setPower(power * compensation);
-    this.backLeft.setPower(power);
-    this.backRight.setPower(power);
+  private void setVelocity(int velocity) {
+    this.frontLeft.setVelocity(velocity);
+    this.frontRight.setVelocity(velocity);
+    this.backLeft.setVelocity(velocity);
+    this.backRight.setVelocity(velocity);
   }
 
-  private void SetPower(double power) {
-    this.SetPower(power, 1);
-  }
-  
-  
+
   private void SetTargetPositions(int fr, int fl, int bl, int br) {
     this.frontRight.setTargetPosition(fr);
     this.frontLeft.setTargetPosition(fl);
     this.backLeft.setTargetPosition(bl);
     this.backRight.setTargetPosition(br);
-  }
-
-
- /**
-   * Pivots around the back-right wheel as if turning
-   * @param angle the angle of the expected pivot
-   */
-  public void Pivot(int angle) {
-    int distance = (int)((angle * Config.PIVOT_TICKS_PER_360_DEG) / 360);
-    this.MotorInit();
-
-    this.frontLeft.setPower(Config.AUTO_PIVOT_POWER);
-    this.backRight.setPower(0.9); // become rock
-
-    // set target positions manually to keep front-right and back-left dead
-    this.frontLeft.setTargetPosition(distance);
-    this.backRight.setTargetPosition(0); // DON'T MOVE
-
-    while (!!(this.frontLeft.isBusy() ||
-    this.backRight.isBusy() )) {}
   }
   
 
@@ -138,7 +116,7 @@ public class DriveMotors {
         break;
     }
     // while motors are running, correct power with gyro angle
-    this.SetPower(Config.MIN_SPEED);
+    this.setVelocity(Config.CRUISE_SPEED);
     this.WaitForMotors();
   }
   
@@ -147,7 +125,7 @@ public class DriveMotors {
     int distance = (int)((angle * Config.TICKS_PER_360_DEG) / 360);
     
     this.MotorInit();
-    this.SetPower(Config.MIN_SPEED);
+    this.setVelocity(Config.CRUISE_SPEED);
     this.SetTargetPositions(distance, distance, distance, distance);
     
     this.WaitForMotors();
