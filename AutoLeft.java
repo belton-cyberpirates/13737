@@ -23,6 +23,7 @@ import org.firstinspires.ftc.teamcode.Direction;
 import org.firstinspires.ftc.teamcode.ParkingSpot;
 import org.firstinspires.ftc.teamcode.Config;
 
+
 @Autonomous(name = "AutoLeft")
 public class AutoLeft extends LinearOpMode {
   private OpenCvCamera camera;
@@ -35,9 +36,10 @@ public class AutoLeft extends LinearOpMode {
   /**
    * Set reliable initial configuration for robot motors
    */
-  private void MotorSetup() {
+  public void MotorSetup() {
     arm.DropArm();
-    sleep(200);
+    sleep(500);
+    CloseClaw();
     arm.Initialize();
     claw.setPower(0.5);
   }

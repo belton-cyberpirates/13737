@@ -8,7 +8,7 @@ public class Config {
   public static final int TICKS_PER_360_DEG = 2009;
   public static final int TILE_LENGTH = 800;
   public static final int INITIAL_CORRECTION = (int)(TILE_LENGTH * 0.10);
-  public static final int BUMP = 175;
+  public static final int BUMP = 270;
   public static final int DIAGONAL_BUMP = 400;
 
   public static final int DEFAULT_PARKING_SPOT = 3;
@@ -28,12 +28,12 @@ public class Config {
   ** ARM CALIBRATION CONSTANTS
   *****************************************************************************/
   public static final int LOW_POLE_HEIGHT = 70;
-  public static final int MID_POLE_HEIGHT = 90;
+  public static final int MID_POLE_HEIGHT = 100;
   public static final int HIGH_POLE_HEIGHT = 120;
-  public static final int SIDE_STACK_HEIGHT = 45;
+  public static final int SIDE_STACK_HEIGHT = 40;
   
   public static final int BOTTOM = 0;
-  public static final int CRUISING_HEIGHT = 25;
+  public static final int CRUISING_HEIGHT = 30;
   public static final int TOP = 125;
   // ---------------------------------------------------------------------------
 
@@ -68,5 +68,4 @@ Stock lens focal length: 4.2mm
   public static final int NUM_FRAMES_BEFORE_LOW_DECIMATION = 4;
   public static final int MAX_NUM_FRAMES_NO_DETECTION = 100; // How many attempts to detect before giving up
   // ---------------------------------------------------------------------------
-
 }
