@@ -2,10 +2,12 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import java.util.Set;
+import java.util.ArrayList;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import java.util.List;
@@ -16,11 +18,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaCurrentGame;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.Tfod;
+import org.openftc.apriltag.AprilTagDetection;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvInternalCamera;
+import org.openftc.easyopencv.OpenCvInternalCamera2;
 
 import org.firstinspires.ftc.teamcode.DriveMotors;
 import org.firstinspires.ftc.teamcode.Arm;
 import org.firstinspires.ftc.teamcode.Direction;
-import org.firstinspires.ftc.teamcode.ParkingSpot;
 import org.firstinspires.ftc.teamcode.Config;
 
 
@@ -137,9 +144,9 @@ public class AutoLeft extends LinearOpMode {
       sleep(500);
       OpenClaw();
       driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP*1.2));
-      driveMotors.Turn(136); //130 + 140 = 270 (90*3=270)
+      driveMotors.Turn(136);
 
-      // go for 2nd cone
+      // retrieve 2nd cone
       OpenClaw();
       arm.Move(Config.SIDE_STACK_HEIGHT, true);
       driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .98));
@@ -161,42 +168,41 @@ public class AutoLeft extends LinearOpMode {
         Park(parkingSpot);
     }
   }
-  
-  public void Park(ParkingSpot target) {
-    try {
-      switch(target) {
-      case EYES:
-        telemetry.addData("Parking", "PARKING EYES");
-        driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 0.5));
-        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .25));
-        break;
-        
-      case GEARS:
-        telemetry.addData("Parking", "PARKING GEARS");
-        driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 0.5));
-        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .25));
-        break;
-        
-      case ROBOTS:
-        telemetry.addData("Parking", "PARKING ROBOTS");
-        driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 1.5));
-        driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .25));
-      }
-      telemetry.update();
-    } catch(Exception e) {
-        telemetry.addData("Park", "Couldn't Park");
-        telemetry.update();
+
+
+  private void Park(int target) {
+    telemetry.addData("Parking", String.format("PARKING IN SPOT %d", target));
+
+    switch(target) {
+    case 1:
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.6));
+      break;
+      
+    case 2:
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .3));
+      break;
+      
+    case 3:
+      driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .3));
+
+    default:
+      telemetry.addLine(String.format("ERROR: Target %d not in range 1-3", target));
+      telemetry.addLine(String.format("PARKING IN DEFAULT SPOT (%d)", Config.DEFAULT_PARKING_SPOT));
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.6));
+      break;
     }
+    telemetry.update();
   }
-  
+
+
   public void OpenClaw() {
     sleep(200);
     claw.setPower(-0.3);
     sleep(200);
     claw.setPower(0);
   }
-  
-  
+
+
   public void CloseClaw() {
     claw.setPower(0.9);
     sleep(500);

@@ -46,9 +46,9 @@ public class Config {
   * You will need to do your own calibration for other configurations!
 
   Resolution: 1280x720
-Pixel Size: 2.8um
-Sensor Size: 3.58x2.02mm
-Stock lens focal length: 4.2mm
+  Pixel Size: 2.8um
+  Sensor Size: 3.58x2.02mm
+  Stock lens focal length: 4.2mm
   *****************************************************************************/
   public static final double FX = 1430;
   public static final double FY = 1430;
