@@ -31,7 +31,7 @@ import org.firstinspires.ftc.teamcode.Direction;
 import org.firstinspires.ftc.teamcode.Config;
 
 @Autonomous(name = "DummyDetection")
-public class AutoLeft extends LinearOpMode {
+public class DummyDetection extends LinearOpMode {
 
   private OpenCvCamera camera;
   private AprilTagDetectionPipeline aprilTagDetectionPipeline;

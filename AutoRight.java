@@ -32,7 +32,7 @@ import org.firstinspires.ftc.teamcode.Config;
 
 
 @Autonomous(name = "AutoRight")
-public class AutoLeft extends LinearOpMode {
+public class AutoRight extends LinearOpMode {
   private OpenCvCamera camera;
   private AprilTagDetectionPipeline aprilTagDetectionPipeline;
   private DriveMotors driveMotors;

@@ -31,7 +31,7 @@ import org.firstinspires.ftc.teamcode.Direction;
 import org.firstinspires.ftc.teamcode.Config;
 
 @Autonomous(name = "DefenseAuto")
-public class Defense_auto extends LinearOpMode {
+public class DefenseAuto extends LinearOpMode {
   private OpenCvCamera camera;
   private AprilTagDetectionPipeline aprilTagDetectionPipeline;
   private DriveMotors driveMotors;
@@ -146,8 +146,6 @@ public class Defense_auto extends LinearOpMode {
       // Park
         Park(parkingSpot);
     }
-    vuforiaPOWERPLAY.close();
-    tfod.close();
   }
   
   private void Park(int target) {
