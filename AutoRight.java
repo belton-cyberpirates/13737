@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -113,15 +114,15 @@ public class AutoRight extends LinearOpMode {
   public void runOpMode() {
     // argument order *must* be fr-fl-bl-br
     driveMotors = new DriveMotors(
-      hardwareMap.get(DcMotor.class, "m2"),
-      hardwareMap.get(DcMotor.class, "m3"),
-      hardwareMap.get(DcMotor.class, "m4"),
-      hardwareMap.get(DcMotor.class, "m1")
+      hardwareMap.get(DcMotorEx.class, "m2"),
+      hardwareMap.get(DcMotorEx.class, "m3"),
+      hardwareMap.get(DcMotorEx.class, "m4"),
+      hardwareMap.get(DcMotorEx.class, "m1")
     );
     
     arm = new Arm(
-      hardwareMap.get(DcMotor.class, "arm1"),
-      hardwareMap.get(DcMotor.class, "arm2")
+      hardwareMap.get(DcMotorEx.class, "arm1"),
+      hardwareMap.get(DcMotorEx.class, "arm2")
     );
     claw = hardwareMap.get(DcMotor.class, "claw");
 

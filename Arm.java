@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -9,10 +10,10 @@ import org.firstinspires.ftc.teamcode.Direction;
 
 public class Arm {
   Telemetry telemetry;
-  private DcMotor arm1;
-  private DcMotor arm2;
+  private DcMotorEx arm1;
+  private DcMotorEx arm2;
 
-  public Arm(DcMotor arm1, DcMotor arm2) {
+  public Arm(DcMotorEx arm1, DcMotorEx arm2) {
     this.arm1 = arm1;
     this.arm2 = arm2;
   }
