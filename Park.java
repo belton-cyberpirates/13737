@@ -7,6 +7,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import java.util.Set;
+import java.util.ArrayList;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import java.util.List;
@@ -27,7 +28,6 @@ import org.openftc.easyopencv.OpenCvInternalCamera2;
 import org.firstinspires.ftc.teamcode.DriveMotors;
 import org.firstinspires.ftc.teamcode.Arm;
 import org.firstinspires.ftc.teamcode.Direction;
-import org.firstinspires.ftc.teamcode.ParkingSpot;
 import org.firstinspires.ftc.teamcode.Config;
 
 @Autonomous(name = "Park")
@@ -108,8 +108,6 @@ public class Park extends LinearOpMode {
    */
   @Override
   public void runOpMode() {
-    vuforiaPOWERPLAY = new VuforiaCurrentGame();
-    tfod = new Tfod();
 
     // argument order *must* be fr-fl-bl-br
     driveMotors = new DriveMotors(
@@ -145,34 +143,30 @@ public class Park extends LinearOpMode {
       telemetry.addData("Error", "Something went wrong running AutoLeft");
       telemetry.update();
     }
-    vuforiaPOWERPLAY.close();
-    tfod.close();
   }
   
-  private void Park(ParkingSpot target) {
-    try {
-      switch(target) {
-      case EYES:
-        telemetry.addData("Parking", "PARKING EYES");
-        driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 1));
-        driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .5));
-        break;
-        
-      case GEARS:
-        telemetry.addData("Parking", "PARKING GEARS");
-        driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .5));
-        break;
-        
-      case ROBOTS:
-        telemetry.addData("Parking", "PARKING ROBOTS");
-        driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 1));
-        driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .5));
-      }
-      telemetry.update();
-    } catch(Exception e) {
-        telemetry.addData("Park", "Couldn't Park");
-        telemetry.update();
+  private void Park(int target) {
+    telemetry.addData("Parking", String.format("PARKING IN SPOT %d", target));
+
+    switch(target) {
+    case 1:
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.6));
+      break;
+      
+    case 2:
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .3));
+      break;
+      
+    case 3:
+      driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .3));
+
+    default:
+      telemetry.addLine(String.format("ERROR: Target %d not in range 1-3", target));
+      telemetry.addLine(String.format("PARKING IN DEFAULT SPOT (%d)", Config.DEFAULT_PARKING_SPOT));
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.6));
+      break;
     }
+    telemetry.update();
   }
   
   private void OpenClaw() {
