@@ -1,29 +1,31 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 
 import org.firstinspires.ftc.teamcode.Direction;
 import org.firstinspires.ftc.teamcode.Config;
 
 
 public class DriveMotors {
-  private DcMotor frontLeft;
-  private DcMotor frontRight;
-  private DcMotor backLeft;
-  private DcMotor backRight;
+  private DcMotorEx frontLeft;
+  private DcMotorEx frontRight;
+  private DcMotorEx backLeft;
+  private DcMotorEx backRight;
   static Orientation angles;
 
 
-  public DriveMotors(DcMotor frontRight,
-                     DcMotor frontLeft,
-                     DcMotor backLeft,
-                     DcMotor backRight) {
+  public DriveMotors(DcMotorEx frontRight,
+                     DcMotorEx frontLeft,
+                     DcMotorEx backLeft,
+                     DcMotorEx backRight) {
     this.frontRight = frontRight;
     this.frontLeft = frontLeft;
     this.backLeft = backLeft;

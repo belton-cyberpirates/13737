@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import java.util.Set;
+import java.util.ArrayList;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import java.util.List;
@@ -17,25 +19,25 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaCurrentGame;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.Tfod;
+import org.openftc.apriltag.AprilTagDetection;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvInternalCamera;
+import org.openftc.easyopencv.OpenCvInternalCamera2;
 
 import org.firstinspires.ftc.teamcode.DriveMotors;
 import org.firstinspires.ftc.teamcode.Arm;
 import org.firstinspires.ftc.teamcode.Direction;
-import org.firstinspires.ftc.teamcode.ParkingSpot;
 import org.firstinspires.ftc.teamcode.Config;
 
 @Autonomous(name = "Park")
 public class Park extends LinearOpMode {
-  private VuforiaCurrentGame vuforiaPOWERPLAY;
-  private Tfod tfod;
+  private OpenCvCamera camera;
+  private AprilTagDetectionPipeline aprilTagDetectionPipeline;
   private DriveMotors driveMotors;
   private Arm arm;
   private DcMotor claw;
-  public static BNO055IMU imu;
-  public static BNO055IMU.Parameters imuParameters;
-  int ParkingPosition;
-  Recognition recognition;
-  ParkingSpot parkingSpot = ParkingSpot.EYES;
   
 
 
@@ -48,80 +50,58 @@ public class Park extends LinearOpMode {
     CloseClaw();
     arm.Initialize();
    }
-   
-  /**
-   * Describe this function...
-   */
-  private void TFInitialize() {
-    vuforiaPOWERPLAY.initialize(
-        "", // vuforiaLicenseKey
-        hardwareMap.get(WebcamName.class, "Webcam 1"), // cameraName
-        "", // webcamCalibrationFilename
-        false, // useExtendedTracking
-        true, // enableCameraMonitoring
-        VuforiaLocalizer.Parameters.CameraMonitorFeedback.NONE, // cameraMonitorFeedback
-        0, // dx
-        0, // dy
-        0, // dz
-        AxesOrder.XZY, // axesOrder
-        90, // firstAngle
-        90, // secondAngle
-        0, // thirdAngle
-        true); // useCompetitionFieldTargetLocations
-    // Set isModelTensorFlow2 to true if you used a TensorFlow 2 tool,
-    // such as ftc-ml, to create the model. Set isModelQuantized to
-    // true if the model is quantized. Models created with ftc-ml are
-    // quantized. Set inputSize to the image size corresponding to
-    // the model. If your model is based on SSD MobileNet v2 320x320,
-    // the image size is 300 (srsly!). If your model is based on
-    // SSD MobileNet V2 FPNLite 320x320, the image size is 320.
-    // If your model is based on SSD MobileNet V1 FPN 640x640 or
-    // SSD MobileNet V2 FPNLite 640x640, the image size is 640.
-    tfod.useModelFromFile("EGRR.tflite", JavaUtil.createListWith("EYES", "GEARS", "GEARS", "ROBOTS"), true, true, 320);
-    // tfod.useModelFromFile("13737TF2.tflite", JavaUtil.createListWith("EYES", "GEARS", "ROBOTS"), true, true, 320);
-    tfod.initialize(vuforiaPOWERPLAY, (float) 0.7, true, true);
-    tfod.activate();
-    tfod.setZoom(1, 16 / 9);
-    telemetry.addData("tfready", "camera dots");
-    telemetry.update();
-  }
-  
 
  /**
  * Describe this function...
  */
-  private void doTF() {
-  List<Recognition> recognitions = tfod.getRecognitions();
-  
-    int index;
-    for (int attempt = 0; attempt < 100; attempt++) {
-      recognitions = tfod.getRecognitions();
-      if (JavaUtil.listLength(recognitions) == 0) {
-        telemetry.addData("TF", "none detected");
-      } else {
-        index = 0;
-        for (Recognition recognition_item : recognitions) {
-          recognition = recognition_item;
-          displayInfo(index);
-          index = index + 1;
-          telemetry.addData("Detected", recognition.getLabel());
-        }
-        telemetry.update();
-        return; // found object, can stop early
-      }
+  private int RunDetection() {
+    for (int numFramesWithoutDetection = 0; numFramesWithoutDetection < Config.MAX_NUM_FRAMES_NO_DETECTION; numFramesWithoutDetection++) {
+      // Calling getDetectionsUpdate() will only return an object if there was a new frame
+      // processed since the last time we called it. Otherwise, it will return null. This
+      // enables us to only run logic when there has been a new frame, as opposed to the
+      // getLatestDetections() method which will always return an object.
+      ArrayList<AprilTagDetection> detections = aprilTagDetectionPipeline.getDetectionsUpdate();
+
+      // add camera stats to telemetry
+      telemetry.addData("FPS", camera.getFps());
+      telemetry.addData("Overhead ms", camera.getOverheadTimeMs());
+      telemetry.addData("Pipeline ms", camera.getPipelineTimeMs());
       telemetry.update();
+
+      // If we haven't seen a tag for a few frames, lower the decimation
+      // so we can hopefully pick one up if we're e.g. far back
+      if(numFramesWithoutDetection >= Config.NUM_FRAMES_BEFORE_LOW_DECIMATION) {
+          aprilTagDetectionPipeline.setDecimation(Config.DECIMATION_LOW);
+      }
+
+      if (detections == null || detections.size() == 0) {
+        // pass if there's no new frame or we didn't detect anything
+        sleep(20); // give the camera a chance to process the frame
+        continue;
+      }
+
+      // If we're here, we have a new frame and we detected at least one tag
+      // turn on high decimation to increase the frame rate
+      aprilTagDetectionPipeline.setDecimation(Config.DECIMATION_HIGH);
+
+
+      AprilTagDetection detection = detections.get(0);
+      telemetry.addLine(String.format("\n!!---[[ DETECTED ID=%d]]---!!", detection.id));
+      telemetry.addLine(String.format("Translation X: %.2f", detection.pose.x));
+      telemetry.addLine(String.format("Translation Y: %.2f", detection.pose.y));
+      telemetry.addLine(String.format("Translation Z: %.2f", detection.pose.z));
+      telemetry.addLine(String.format("Rotation Yaw: %.2f", detection.pose.yaw));
+      telemetry.addLine(String.format("Rotation Pitch: %.2f", detection.pose.pitch));
+      telemetry.addLine(String.format("Rotation Roll: %.2f", detection.pose.roll));
+      telemetry.addLine(String.format("Attempts: %d", numFramesWithoutDetection));
+      telemetry.update();
+
+      return detection.id;
     }
-  }
-  
-  private void displayInfo(int i) {
-    telemetry.addData("label" + i, recognition.getLabel());
-    if (recognition.getLabel().equals("ROBOTS")) {
-      parkingSpot = ParkingSpot.ROBOTS;
-    } else if (recognition.getLabel().equals("GEARS")) {
-      parkingSpot = ParkingSpot.GEARS;
-    } else {
-      parkingSpot = ParkingSpot.EYES;
-    }
+
+    telemetry.addLine(String.format("!!---[[ NO TAG DETECTED AFTER %d ATTEMPTS ]]---!!", Config.MAX_NUM_FRAMES_NO_DETECTION));
+    telemetry.update();
+    return -1; // no tag detected; godspeed
   }
 
   /**
@@ -129,28 +109,26 @@ public class Park extends LinearOpMode {
    */
   @Override
   public void runOpMode() {
-    vuforiaPOWERPLAY = new VuforiaCurrentGame();
-    tfod = new Tfod();
 
     // argument order *must* be fr-fl-bl-br
     driveMotors = new DriveMotors(
-      hardwareMap.get(DcMotor.class, "m2"),
-      hardwareMap.get(DcMotor.class, "m3"),
-      hardwareMap.get(DcMotor.class, "m4"),
-      hardwareMap.get(DcMotor.class, "m1")
+      hardwareMap.get(DcMotorEx.class, "m2"),
+      hardwareMap.get(DcMotorEx.class, "m3"),
+      hardwareMap.get(DcMotorEx.class, "m4"),
+      hardwareMap.get(DcMotorEx.class, "m1")
     );
     
     arm = new Arm(
-      hardwareMap.get(DcMotor.class, "arm1"),
-      hardwareMap.get(DcMotor.class, "arm2")
+      hardwareMap.get(DcMotorEx.class, "arm1"),
+      hardwareMap.get(DcMotorEx.class, "arm2")
     );
     claw = hardwareMap.get(DcMotor.class, "claw");
 
-    TFInitialize();
     waitForStart();
     try {
     if (opModeIsActive()) {
-      doTF();
+      int parkingSpot = RunDetection();
+
       MotorSetup();
       arm.Move(Config.CRUISING_HEIGHT);
 
@@ -166,34 +144,30 @@ public class Park extends LinearOpMode {
       telemetry.addData("Error", "Something went wrong running AutoLeft");
       telemetry.update();
     }
-    vuforiaPOWERPLAY.close();
-    tfod.close();
   }
   
-  private void Park(ParkingSpot target) {
-    try {
-      switch(target) {
-      case EYES:
-        telemetry.addData("Parking", "PARKING EYES");
-        driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 1));
-        driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .5));
-        break;
-        
-      case GEARS:
-        telemetry.addData("Parking", "PARKING GEARS");
-        driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .5));
-        break;
-        
-      case ROBOTS:
-        telemetry.addData("Parking", "PARKING ROBOTS");
-        driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 1));
-        driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .5));
-      }
-      telemetry.update();
-    } catch(Exception e) {
-        telemetry.addData("Park", "Couldn't Park");
-        telemetry.update();
+  private void Park(int target) {
+    telemetry.addData("Parking", String.format("PARKING IN SPOT %d", target));
+
+    switch(target) {
+    case 1:
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.6));
+      break;
+      
+    case 2:
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .3));
+      break;
+      
+    case 3:
+      driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .3));
+
+    default:
+      telemetry.addLine(String.format("ERROR: Target %d not in range 1-3", target));
+      telemetry.addLine(String.format("PARKING IN DEFAULT SPOT (%d)", Config.DEFAULT_PARKING_SPOT));
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.6));
+      break;
     }
+    telemetry.update();
   }
   
   private void OpenClaw() {
