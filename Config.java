@@ -5,7 +5,7 @@ public class Config {
   /*****************************************************************************
   ** DISTANCE CALIBRATION CONSTANTS
   *****************************************************************************/
-  public static final int TICKS_PER_360_DEG = 2009;
+  public static final int TICKS_PER_360_DEG = 2150;
   public static final int TILE_LENGTH = 800;
   public static final int INITIAL_CORRECTION = (int)(TILE_LENGTH * 0.10);
   public static final int BUMP = 270;

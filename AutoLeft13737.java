@@ -31,8 +31,9 @@ import org.firstinspires.ftc.teamcode.Arm;
 import org.firstinspires.ftc.teamcode.Direction;
 import org.firstinspires.ftc.teamcode.Config;
 
-@Autonomous(name = "DefenseAuto")
-public class DefenseAuto extends LinearOpMode {
+
+@Autonomous(name = "AutoLeft")
+public class AutoLeft13737 extends LinearOpMode {
   private OpenCvCamera camera;
   private AprilTagDetectionPipeline aprilTagDetectionPipeline;
   private DriveMotors driveMotors;
@@ -48,10 +49,11 @@ public class DefenseAuto extends LinearOpMode {
     sleep(500);
     CloseClaw();
     arm.Initialize();
-   }
+    claw.setPower(0.5);
+  }
 
 
-     /**
+  /**
    * Attempt to recognize the AprilTag and return which tag we see
    */
   private int RunDetection() {
@@ -126,29 +128,49 @@ public class DefenseAuto extends LinearOpMode {
 
     waitForStart();
 
-    if (opModeIsActive()) {
+    if (opModeIsActive()) { // <----------------------------------------------------------------
       int parkingSpot = RunDetection();
+
       MotorSetup();
+      arm.Move(Config.CRUISING_HEIGHT);
 
-      // start up defense
+      // move to MID pole
+      driveMotors.Move(Direction.FORWARD, Config.INITIAL_CORRECTION + (int)(2.05*Config.TILE_LENGTH));
+      
+      // deposit cone
+      driveMotors.Turn(130);
+      arm.Move(Config.MID_POLE_HEIGHT, true);
+      driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP*1.1));
+      arm.Move(Config.SIDE_STACK_HEIGHT);
+      sleep(500);
+      OpenClaw();
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP*1.2));
+      driveMotors.Turn(136);
+
+      // retrieve 2nd cone
+      OpenClaw();
+      arm.Move(Config.SIDE_STACK_HEIGHT, true);
+      driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .98));
       CloseClaw();
-
-      // move to forward
-      driveMotors.Move(Direction.FORWARD, Config.TILE_LENGTH * 3);
+      arm.Move(Config.LOW_POLE_HEIGHT, true);
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .48));
       
-      sleep(15000); // wait 15 seconds
       
-      driveMotors.Move(Direction.BACKWARD, Config.TILE_LENGTH);
-      driveMotors.Turn(90);
-
-      //end of code
-
-
+      // place 2nd cone
+      driveMotors.Turn(-90);
+      arm.Move(Config.LOW_POLE_HEIGHT + 20);
+      driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP*.3));
+      arm.Move(Config.LOW_POLE_HEIGHT - 25, true);
+      OpenClaw();
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP*0.5));
+      arm.Move(Config.CRUISING_HEIGHT, true);
+ 
       // Park
         Park(parkingSpot);
     }
   }
-  
+
+
   private void Park(int target) {
     telemetry.addData("Parking", String.format("PARKING IN SPOT %d", target));
 
@@ -172,15 +194,16 @@ public class DefenseAuto extends LinearOpMode {
     }
     telemetry.update();
   }
-  
+
+
   public void OpenClaw() {
     sleep(200);
     claw.setPower(-0.3);
     sleep(200);
     claw.setPower(0);
   }
-  
-  
+
+
   public void CloseClaw() {
     claw.setPower(0.9);
     sleep(500);
