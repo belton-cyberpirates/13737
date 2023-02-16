@@ -56,7 +56,7 @@ public class Arm {
     }
   }
 
-  Public void Move(int position, boolean waitForDone, double newVelocity) {
+  public void Move(int position, boolean waitForDone, int newVelocity) {
     this.setVelocity(newVelocity);
 
     this.arm1.setTargetPosition(position);
