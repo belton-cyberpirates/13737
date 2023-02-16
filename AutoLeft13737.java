@@ -112,7 +112,6 @@ public class AutoLeft13737 extends LinearOpMode {
    */
   @Override
   public void runOpMode() {
-    
     WebcamName camName = hardwareMap.get(WebcamName.class, "Webcam 1");
     camera = OpenCvCameraFactory.getInstance().createWebcam(camName);
     aprilTagDetectionPipeline = new AprilTagDetectionPipeline(Config.TAGSIZE, Config.FX, Config.FY, Config.CX, Config.CY);
