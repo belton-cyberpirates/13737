@@ -115,6 +115,22 @@ public class oneCone extends LinearOpMode {
     camera = OpenCvCameraFactory.getInstance().createWebcam(camName);
     aprilTagDetectionPipeline = new AprilTagDetectionPipeline(Config.TAGSIZE, Config.FX, Config.FY, Config.CX, Config.CY);
 
+    camera.setPipeline(aprilTagDetectionPipeline);
+    camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+    {
+        @Override
+        public void onOpened()
+        {
+            camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
+        }
+
+        @Override
+        public void onError(int errorCode)
+        {
+          telemetry.addData("Error", "Camera failed to open with error " + errorCode);
+          telemetry.update();
+        }
+    });
     // argument order *must* be fr-fl-bl-br
     driveMotors = new DriveMotors(
       hardwareMap.get(DcMotor.class, "m2"),
