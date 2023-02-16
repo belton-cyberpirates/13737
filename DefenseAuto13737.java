@@ -136,8 +136,9 @@ public class DefenseAuto13737 extends LinearOpMode {
       // move to forward
       driveMotors.Move(Direction.FORWARD, Config.TILE_LENGTH * 3);
       
-      sleep(15000); // wait 15 seconds
+      driveMotors.Turn(45);
       
+      DriveMotors.BUMP
       driveMotors.Move(Direction.BACKWARD, Config.TILE_LENGTH);
       driveMotors.Turn(90);
 
