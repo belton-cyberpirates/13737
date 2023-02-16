@@ -7,8 +7,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import java.util.Set;
-import java.util.ArrayList;
+import java.util.*;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import java.util.List;
@@ -134,9 +133,28 @@ public class AutoLeft13737 extends LinearOpMode {
       MotorSetup();
       arm.Move(Config.CRUISING_HEIGHT);
 
-      // pirate auto stuff here
- 
+      // bump off wall and turn
+      driveMotors.Move(Direction.FORWARD, Config.BUMP);
+      driveMotors.Turn(90);
+
+      // if parking 1, move 2 tiles to be out of the way
+      driveMotors.Move(Direction.FORWARD, Config.INITIAL_CORRECTION * (parkingSpot == 1 ? 2 : 1));
+      driveMotors.Turn(-90);
+      driveMotors.Move(Direction.FORWARD, Config.TILE_LENGTH * 4);
+
+      // line up and score
+      driveMotors.Turn(parkingSpot == 1 ? -45 : 45);
+      driveMotors.Move(Direction.FORWARD, Config.BUMP);
+      arm.Move(0);
+      OpenClaw();
+
+      // reverse, reverse
+      driveMotors.Move(Direction.BACKWARD, Config.BUMP);
+      driveMotors.Turn(parkingSpot == 1 ? 45 : -45);
+      driveMotors.Move(Direction.BACKWARD, Config.TILE_LENGTH * 2)
+
       // Park
+      driveMotors.Turn(-90)
       Park(parkingSpot);
     }
   }
