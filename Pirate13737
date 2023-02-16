@@ -165,11 +165,11 @@ public class AutoLeft13737 extends LinearOpMode {
 
     switch(target) {
     case 1:
-      driveMotors.Move(Direction.BACKWARD, Config.TILE_LENGTH * 2);
+      driveMotors.Move(Direction.FORWARD, Config.TILE_LENGTH * 2);
       break;
       
     case 2:
-      driveMotors.Move(Direction.BACKWARD, Config.TILE_LENGTH);
+      driveMotors.Move(Direction.FORWARD, Config.TILE_LENGTH);
       break;
       
     case 3:
@@ -178,7 +178,6 @@ public class AutoLeft13737 extends LinearOpMode {
     default:
       telemetry.addLine(String.format("ERROR: Target %d not in range 1-3", target));
       telemetry.addLine(String.format("PARKING IN DEFAULT SPOT (%d)", Config.DEFAULT_PARKING_SPOT));
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.6));
       break;
     }
     telemetry.update();
