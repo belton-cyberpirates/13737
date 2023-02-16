@@ -138,11 +138,11 @@ public class DefenseAuto13737 extends LinearOpMode {
       
       driveMotors.Turn(115);
       arm.Move(Config.HIGH_POLE_HEIGHT,true);
-      DriveMotors.BUMP
+      driveMotors.Move(Direction.FORWARD,Config.BUMP);
       OpenClaw();
       arm.Move(Config.CRUISING_HEIGHT, true, 500);
-      DriveMotors.Move(Direction.BACKWARD,Config.BUMP)
-      DriveMotors.Turn(-115)
+      driveMotors.Move(Direction.BACKWARD,Config.BUMP);
+      driveMotors.Turn(-115);
       driveMotors.Move(Direction.BACKWARD, Config.TILE_LENGTH);
       driveMotors.Turn(90);
 
