@@ -38,8 +38,6 @@ public class Park extends LinearOpMode {
   private DriveMotors driveMotors;
   private Arm arm;
   private DcMotor claw;
-  
-
 
   /**
    * Set reliable initial configuration for robot motors
@@ -129,7 +127,7 @@ public class Park extends LinearOpMode {
           telemetry.update();
         }
     });
-    
+
     // argument order *must* be fr-fl-bl-br
     driveMotors = new DriveMotors(
       hardwareMap.get(DcMotorEx.class, "m2"),
