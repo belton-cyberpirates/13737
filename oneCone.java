@@ -163,7 +163,7 @@ public class AutoLeft13737 extends LinearOpMode {
 
     switch(target) {
     case 1:
-       driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1));
+       driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 0.5));
       break;
       
     case 2:
@@ -171,7 +171,7 @@ public class AutoLeft13737 extends LinearOpMode {
       break;
       
     case 3:
-       driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1));
+       driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 0.5));
 
     default:
       telemetry.addLine(String.format("ERROR: Target %d not in range 1-3", target));
