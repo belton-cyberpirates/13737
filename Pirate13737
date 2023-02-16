@@ -31,8 +31,8 @@ import org.firstinspires.ftc.teamcode.Direction;
 import org.firstinspires.ftc.teamcode.Config;
 
 
-@Autonomous(name = "AutoLeft")
-public class AutoLeft13737 extends LinearOpMode {
+@Autonomous(name = "Pirate")
+public class Pirate13737 extends LinearOpMode {
   private OpenCvCamera camera;
   private AprilTagDetectionPipeline aprilTagDetectionPipeline;
   private DriveMotors driveMotors;
