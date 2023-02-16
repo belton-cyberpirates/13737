@@ -19,9 +19,9 @@ public class Config {
   ** DRIVE SPEED CONSTANTS
   *****************************************************************************/
   public static final int MIN_SPEED = 450;
-  public static final int CRUISE_SPEED = 600;
+  public static final int CRUISE_SPEED = 1000;
   public static final int MAX_SPEED = 900;
-  public static final int ARM_VELOCITY = 950;
+  public static final int ARM_VELOCITY = 2000;
   // ---------------------------------------------------------------------------
 
 
