@@ -41,8 +41,7 @@ public class Arm {
   }
   
   public void Move(int position) {
-    final int velocity = 950;
-    this.setVelocity(velocity);
+    this.setVelocity(Config.ARM_VELOCITY);
     
     this.arm1.setTargetPosition(position);
     this.arm2.setTargetPosition(-position);
@@ -56,8 +55,21 @@ public class Arm {
       WaitForMotors();
     }
   }
+
+  Public void Move(int position, boolean waitForDone, double newVelocity) {
+    this.setVelocity(newVelocity);
+
+    this.arm1.setTargetPosition(position);
+    this.arm2.setTargetPosition(-position);
+    
+    if (waitForDone){
+      WaitForMotors();
+    }
+
+  }
   
   private void WaitForMotors() {
     while (this.arm1.isBusy() || this.arm2.isBusy()) {}
+    this.setVelocity(Config.ARM_VELOCITY);
   }
 }

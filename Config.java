@@ -21,6 +21,7 @@ public class Config {
   public static final int MIN_SPEED = 450;
   public static final int CRUISE_SPEED = 600;
   public static final int MAX_SPEED = 900;
+  public static final int ARM_VELOCITY = 950;
   // ---------------------------------------------------------------------------
 
 
