@@ -21,8 +21,9 @@ public class Tread {
         this.front = front;
         this.back = back;
         this.encoder = encoder;
-        
         this.direction = 1;
+
+        this.init();
     }
 
     public int GetCurrentPosition() {
@@ -53,8 +54,15 @@ public class Tread {
         this.front = front;
         this.back = back;
         this.encoder = encoder;
-
         this.direction = reverse ? -1 : 1;
+
+        this.init();
+    }
+
+    private void init() {
+        this.front.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        this.back.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        this.encoder.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER)
     }
 
     public void SetPower(double power) {
