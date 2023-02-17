@@ -20,7 +20,7 @@ public class Tread {
     public Tread(DcMotorEx front, DcMotorEx back, DcMotorEx encoder) {
         this.front = front;
         this.back = back;
-        this.encoder = encoder
+        this.encoder = encoder;
         
         this.direction = 1;
     }
