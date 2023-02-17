@@ -127,7 +127,7 @@ public class Pirate13737 extends LinearOpMode {
 
     waitForStart();
 
-    if (opModeIsActive()) { // <----------------------------------------------------------------
+    if (opModeIsActive()) { // <-------------------start Pirate---------------------------------------------
       int parkingSpot = RunDetection();
 
       MotorSetup();
@@ -137,24 +137,22 @@ public class Pirate13737 extends LinearOpMode {
       driveMotors.Move(Direction.FORWARD, Config.BUMP);
       driveMotors.Turn(90);
 
-      // if parking 1, move 2 tiles to be out of the way
-      driveMotors.Move(Direction.FORWARD, Config.INITIAL_CORRECTION * (parkingSpot == 1 ? 2 : 1));
-      driveMotors.Turn(-90);
-      driveMotors.Move(Direction.FORWARD, Config.TILE_LENGTH * 4);
-
-      // line up and score
-      driveMotors.Turn(parkingSpot == 1 ? -45 : 45);
-      driveMotors.Move(Direction.FORWARD, Config.BUMP);
-      arm.Move(0);
+      // line up to go to the other side
+      driveMotors.Move(Direction.FORWARD,Config.TILE_LENGTH);
+      driveMotors.turn(-90);
+      // drive other side
+      driveMotors.Move(direction.FORWARD,(int)(Config.TILE_LENGTH*4));
+      // deposit cone
+      driveMotors.Turn(45);
+      driveMotors.Move(Direction.Config,FORWARD.BUMP,true);
       OpenClaw();
-
-      // reverse, reverse
-      driveMotors.Move(Direction.BACKWARD, Config.BUMP);
-      driveMotors.Turn(parkingSpot == 1 ? 45 : -45);
-      driveMotors.Move(Direction.BACKWARD, Config.TILE_LENGTH * 2)
+      driveMotors.Move(Direction.Config,BACKWARD.BUMP);
+      //prepare to park
+     driveMotors.Turn(-45);
+     driveMotors.Move(direction.Config,(int)(BACKWARD.TILE_LENGTH*4));
 
       // Park
-      driveMotors.Turn(-90)
+      driveMotors.Turn(-90);
       Park(parkingSpot);
     }
   }
