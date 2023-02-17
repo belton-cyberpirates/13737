@@ -143,12 +143,12 @@ public class Pirate13737 extends LinearOpMode {
       // drive other side
       driveMotors.Move(direction.FORWARD,(int)(Config.TILE_LENGTH*4));
       // deposit cone
-      driveMotors.Turn(45);
+      driveMotors.Turn(45);// probably has to be changed
       driveMotors.Move(Direction.Config,FORWARD.BUMP,true);
       OpenClaw();
       driveMotors.Move(Direction.Config,BACKWARD.BUMP);
       //prepare to park
-     driveMotors.Turn(-45);
+     driveMotors.Turn(-45);// Probably has to be changed
      driveMotors.Move(direction.Config,(int)(BACKWARD.TILE_LENGTH*4));
 
       // Park
