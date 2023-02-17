@@ -26,8 +26,8 @@ public class DriveMotors {
                      DcMotorEx backRight,
                      DcMotorEx encoderL,
                      DcMotorEx encoderR) {
-    this.leftTread = new Tread(frontLeft, backLeft);
-    this.rightTread = new Tread(frontRight, backRight, true); // right tread runs in reverse
+    this.leftTread = new Tread(frontLeft, backLeft, encoderL);
+    this.rightTread = new Tread(frontRight, backRight, encoderR, true); // right tread runs in reverse
   }
 
   
