@@ -69,4 +69,13 @@ public class Config {
   public static final int NUM_FRAMES_BEFORE_LOW_DECIMATION = 4;
   public static final int MAX_NUM_FRAMES_NO_DETECTION = 100; // How many attempts to detect before giving up
   // ---------------------------------------------------------------------------
+
+
+  /*****************************************************************************
+  ** PID LOOP CONSTANTS
+  *****************************************************************************/
+  public static final double KI = 1;
+  public static final double KD = 1;
+  public static final double KP = 1;
+  // ---------------------------------------------------------------------------
 }

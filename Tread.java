@@ -1,69 +1,61 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.teamcode.Config;
 
 
 public class Tread {
-    private DcMotor front;
-    private DcMotor back;
+    private DcMotorEx front;
+    private DcMotorEx back;
+    private DcMotorEx encoder;
     private int direction;
+    private int targetPosition;
+
+    // PID loop values
+    private double error_prior = 0;
+    private double integral_prior = 0;
+    private double bias = 0;
 
 
-    public Tread(DcMotor front, DcMotor back) {
-        this.direction = 1;
+    public Tread(DcMotorEx front, DcMotorEx back, DcMotorEx encoder) {
         this.front = front;
         this.back = back;
+        this.encoder = encoder
+        
+        this.direction = 1;
     }
 
+    public int GetCurrentPosition() {
+        return this.encoder.getCurrentPosition();
+    }
 
-    public Tread(DcMotor front, DcMotor back, boolean reverse) {
+    public void Update() {
+        double error = this.targetPosition - this.encoder.getCurrentPosition();
+        double integral = integral_prior + error;
+        double derivative = (error - error_prior);
+        double power = Config.KP*error + Config.KI*integral + Config.KD*derivative + bias;
+
+        this.front.setPower(this.direction * power);
+        this.back.setPower(this.direction * power);
+
+        this.error_prior = error;
+        this.integral_prior = integral;
+    }
+
+    private boolean isBusy() {
+        // theres probably a shorter way to do this
+        // returns false if higher than target and direction is 1, or if lower than target and direction is -1
+        return !(((encoder.getCurrentPosition() > targetPosition) && (direction == 1)) ||
+                 ((encoder.getCurrentPosition() < targetPosition) && (direction == -1)));
+    }
+
+    public Tread(DcMotorEx front, DcMotorEx back, DcMotorEx encoder, boolean reverse) {
         this.front = front;
         this.back = back;
+        this.encoder = encoder;
 
         this.direction = reverse ? -1 : 1;
     }
-
-
-    private void Init() {
-        this.Reset();
-        this.SetTargetPosition(0);
-        this.SetToRunPosition();
-    }
-
-
-    private void Reset() {
-        this.front.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.back.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    }
-
-
-    private void SetTargetPosition(int distance) {
-        this.front.setTargetPosition(this.direction * distance);
-        this.back.setTargetPosition(this.direction * distance);
-    }
-
-
-    private void SetToRunPosition() {
-        this.front.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        this.back.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    }
-
-
-    public int GetCurrentPosition() {
-        return this.front.getCurrentPosition();
-    }
-
-
-    public boolean IsBusy() {
-        return this.front.isBusy() || this.back.isBusy();
-    }
-
-    public void Move(int distance) {
-        this.Init();
-        this.SetTargetPosition(distance);
-    }
-
 
     public void SetPower(double power) {
         this.front.setPower(power);
