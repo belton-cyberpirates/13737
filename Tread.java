@@ -26,6 +26,10 @@ public class Tread {
         this.init();
     }
 
+    public void Move(int targetPos) {
+        this.targetPosition = targetPos;
+    }
+
     public int GetCurrentPosition() {
         return this.encoder.getCurrentPosition();
     }
