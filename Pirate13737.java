@@ -111,6 +111,26 @@ public class Pirate13737 extends LinearOpMode {
    */
   @Override
   public void runOpMode() {
+    WebcamName camName = hardwareMap.get(WebcamName.class, "Webcam 1");
+    camera = OpenCvCameraFactory.getInstance().createWebcam(camName);
+    aprilTagDetectionPipeline = new AprilTagDetectionPipeline(Config.TAGSIZE, Config.FX, Config.FY, Config.CX, Config.CY);
+
+    camera.setPipeline(aprilTagDetectionPipeline);
+    camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+    {
+        @Override
+        public void onOpened()
+        {
+            camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
+        }
+
+        @Override
+        public void onError(int errorCode)
+        {
+          telemetry.addData("Error", "Camera failed to open with error " + errorCode);
+          telemetry.update();
+        }
+    });
     // argument order *must* be fr-fl-bl-br
     driveMotors = new DriveMotors(
       hardwareMap.get(DcMotorEx.class, "m2"),
@@ -134,27 +154,28 @@ public class Pirate13737 extends LinearOpMode {
       arm.Move(Config.CRUISING_HEIGHT);
 
       // bump off wall and turn
-      driveMotors.Move(Direction.FORWARD, Config.BUMP);
-      driveMotors.Turn(90);
+      driveMotors.Move(Direction.FORWARD, Config.INITIAL_CORRECTION + (int)(Config.TILE_LENGTH * 1.03));
+      driveMotors.Turn(92);
 
       // if parking 1, move 2 tiles to be out of the way
-      driveMotors.Move(Direction.FORWARD, Config.INITIAL_CORRECTION * (parkingSpot == 1 ? 2 : 1));
+      driveMotors.Move(Direction.FORWARD, Config.TILE_LENGTH * (parkingSpot == 1 ? 2 : 1));
       driveMotors.Turn(-90);
-      driveMotors.Move(Direction.FORWARD, Config.TILE_LENGTH * 4);
+      driveMotors.Move(Direction.FORWARD, Config.TILE_LENGTH * 3);
 
       // line up and score
       driveMotors.Turn(parkingSpot == 1 ? -45 : 45);
-      driveMotors.Move(Direction.FORWARD, Config.BUMP);
+      driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP * 1.1));
       arm.Move(0);
+      sleep(750);
       OpenClaw();
 
       // reverse, reverse
-      driveMotors.Move(Direction.BACKWARD, Config.BUMP);
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP *1.1));
       driveMotors.Turn(parkingSpot == 1 ? 45 : -45);
-      driveMotors.Move(Direction.BACKWARD, Config.TILE_LENGTH * 2)
+      driveMotors.Move(Direction.BACKWARD, Config.TILE_LENGTH * 2);
 
       // Park
-      driveMotors.Turn(-90)
+      driveMotors.Turn(-90);
       Park(parkingSpot);
     }
   }
@@ -165,14 +186,15 @@ public class Pirate13737 extends LinearOpMode {
 
     switch(target) {
     case 1:
-      driveMotors.Move(Direction.FORWARD, Config.TILE_LENGTH * 2);
+      driveMotors.Move(Direction.FORWARD, Config.TILE_LENGTH * 3);
       break;
       
     case 2:
-      driveMotors.Move(Direction.FORWARD, Config.TILE_LENGTH);
+      driveMotors.Move(Direction.FORWARD, Config.TILE_LENGTH * 2);
       break;
       
     case 3:
+      driveMotors.Move(Direction.FORWARD, Config.TILE_LENGTH);
       break;
 
     default:
