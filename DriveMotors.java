@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -20,10 +20,12 @@ public class DriveMotors {
   
 
 
-  public DriveMotors(DcMotor frontRight,
-                     DcMotor frontLeft,
-                     DcMotor backLeft,
-                     DcMotor backRight) {
+  public DriveMotors(DcMotorEx frontRight,
+                     DcMotorEx frontLeft,
+                     DcMotorEx backLeft,
+                     DcMotorEx backRight,
+                     DcMotorEx encoderL,
+                     DcMotorEx encoderR) {
     this.leftTread = new Tread(frontLeft, backLeft);
     this.rightTread = new Tread(frontRight, backRight, true); // right tread runs in reverse
   }
