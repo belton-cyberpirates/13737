@@ -21,6 +21,8 @@ public class xDriveCode extends LinearOpMode {
   private DcMotor arm1;
   private AnalogInput clawpot;
   private double clawComp = 0;
+  private Servo leftServo;
+  private Servo rightServo;
   
 
   /**
@@ -28,6 +30,8 @@ public class xDriveCode extends LinearOpMode {
    */
   @Override
   public void runOpMode() {
+    leftServo.setPosition(0.5);
+    rightServo.setPosition(0.55);
     int stayClosed;
     double compensation = 1;
 
@@ -41,6 +45,8 @@ public class xDriveCode extends LinearOpMode {
     armpot = hardwareMap.get(AnalogInput.class, "armpot");
     arm1 = hardwareMap.get(DcMotor.class, "arm1");
     clawpot = hardwareMap.get(AnalogInput.class, "clawpot");
+    leftServo = hardwareMap.get(Servo.class, "leftServo");
+    rightServo = hardwareMap.get(Servo.class, "rightServo");
 
     waitForStart();
     // Put initialization blocks here.
@@ -54,6 +60,8 @@ public class xDriveCode extends LinearOpMode {
     double speed = .5;
     androidTextToSpeech.initialize();
     if (opModeIsActive()) {
+      leftServo.setPosition(0.5);
+      rightServo.setPosition(0.5);
       while (opModeIsActive()) {
         telemetry.addData("clawComp", clawComp);
         double rightTriggerCorrection = gamepad1.right_trigger > 0.2 ? gamepad1.right_trigger -0.2 : 0; // if right trigger, speed up

@@ -39,6 +39,8 @@ public class AutoRight13737 extends LinearOpMode {
   private DriveMotors driveMotors;
   private Arm arm;
   private DcMotor claw;
+  private Servo leftServo;
+  private Servo rightServo;
 
 
   /**
@@ -148,7 +150,12 @@ public class AutoRight13737 extends LinearOpMode {
       hardwareMap.get(DcMotorEx.class, "arm2")
     );
     claw = hardwareMap.get(DcMotor.class, "claw");
+    leftServo = hardwareMap.get(Servo.class, "leftServo");
+    rightServo = hardwareMap.get(Servo.class, "rightServo");
 
+    leftServo.setPosition(0.3);
+    rightServo.setPosition(0.75);
+    
     waitForStart();
 
     if (opModeIsActive()) { // <----------------------------------------------------------------

@@ -148,9 +148,15 @@ public class DummyDetection extends LinearOpMode {
       hardwareMap.get(DcMotorEx.class, "arm2")
     );
     claw = hardwareMap.get(DcMotor.class, "claw");
+    leftServo = hardwareMap.get(Servo.class, "leftServo");
+    rightServo = hardwareMap.get(Servo.class, "rightServo");
 
     // Wait for the game to start (driver presses PLAY)
     //? Can we do detection before this?
+
+    leftServo.setPosition(0.3);
+    rightServo.setPosition(0.75);
+
     waitForStart();
 
     telemetry.setMsTransmissionInterval(50);

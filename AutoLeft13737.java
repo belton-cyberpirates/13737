@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -38,7 +39,9 @@ public class AutoLeft13737 extends LinearOpMode {
   private AprilTagDetectionPipeline aprilTagDetectionPipeline;
   private DriveMotors driveMotors;
   private Arm arm;
-  private DcMotor claw;
+  private DcMotorEx claw;
+  private Servo leftServo;
+  private Servo rightServo;
 
 
   /**
@@ -147,7 +150,12 @@ public class AutoLeft13737 extends LinearOpMode {
       hardwareMap.get(DcMotorEx.class, "arm1"),
       hardwareMap.get(DcMotorEx.class, "arm2")
     );
-    claw = hardwareMap.get(DcMotor.class, "claw");
+    claw = hardwareMap.get(DcMotorEx.class, "claw");
+    leftServo = hardwareMap.get(Servo.class, "leftServo");
+    rightServo = hardwareMap.get(Servo.class, "rightServo");
+
+    leftServo.setPosition(0.3);
+    rightServo.setPosition(0.75);
 
     waitForStart();
 
