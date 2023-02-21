@@ -134,19 +134,20 @@ public class oneCone extends LinearOpMode {
 
     // argument order *must* be fr-fl-bl-br
     driveMotors = new DriveMotors(
-      hardwareMap.get(DcMotor.class, "m2"),
-      hardwareMap.get(DcMotor.class, "m3"),
-      hardwareMap.get(DcMotor.class, "m4"),
-      hardwareMap.get(DcMotor.class, "m1")
+      hardwareMap.get(DcMotorEx.class, "m2"),
+      hardwareMap.get(DcMotorEx.class, "m3"),
+      hardwareMap.get(DcMotorEx.class, "m4"),
+      hardwareMap.get(DcMotorEx.class, "m1"),
+      hardwareMap.get(DcMotorEx.class, "claw"),
+      hardwareMap.get(DcMotorEx.class, "DeadWheelR")
     );
     
     arm = new Arm(
-      hardwareMap.get(DcMotor.class, "arm1"),
-      hardwareMap.get(DcMotor.class, "arm2")
+      hardwareMap.get(DcMotorEx.class, "arm1"),
+      hardwareMap.get(DcMotorEx.class, "arm2")
     );
     claw = hardwareMap.get(DcMotor.class, "claw");
 
-    TFInitialize();
     waitForStart();
 
     if (opModeIsActive()) { // <----------------------------------------------------------------

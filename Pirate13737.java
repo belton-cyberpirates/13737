@@ -136,7 +136,9 @@ public class Pirate13737 extends LinearOpMode {
       hardwareMap.get(DcMotorEx.class, "m2"),
       hardwareMap.get(DcMotorEx.class, "m3"),
       hardwareMap.get(DcMotorEx.class, "m4"),
-      hardwareMap.get(DcMotorEx.class, "m1")
+      hardwareMap.get(DcMotorEx.class, "m1"),
+      hardwareMap.get(DcMotorEx.class, "claw"),
+      hardwareMap.get(DcMotorEx.class, "DeadWheelR")
     );
     
     arm = new Arm(
