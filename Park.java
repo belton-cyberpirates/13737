@@ -191,7 +191,7 @@ public class Park extends LinearOpMode {
     default:
       telemetry.addLine(String.format("ERROR: Target %d not in range 1-3", target));
       telemetry.addLine(String.format("PARKING IN DEFAULT SPOT (%d)", Config.DEFAULT_PARKING_SPOT));
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.6));
+      Park(Config.DEFAULT_PARKING_SPOT);
       break;
     }
     telemetry.update();

@@ -209,6 +209,7 @@ public class Pirate13737 extends LinearOpMode {
     default:
       telemetry.addLine(String.format("ERROR: Target %d not in range 1-3", target));
       telemetry.addLine(String.format("PARKING IN DEFAULT SPOT (%d)", Config.DEFAULT_PARKING_SPOT));
+      Park(Config.DEFAULT_PARKING_SPOT);
       break;
     }
     telemetry.update();
