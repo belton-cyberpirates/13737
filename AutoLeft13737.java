@@ -155,7 +155,7 @@ public class AutoLeft13737 extends LinearOpMode {
     rightServo = hardwareMap.get(Servo.class, "rightServo");
 
     leftServo.setPosition(0.3);
-    rightServo.setPosition(0.75);
+    rightServo.setPosition(0.8);
 
     waitForStart();
 

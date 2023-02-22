@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -30,8 +31,6 @@ public class xDriveCode extends LinearOpMode {
    */
   @Override
   public void runOpMode() {
-    leftServo.setPosition(0.5);
-    rightServo.setPosition(0.55);
     int stayClosed;
     double compensation = 1;
 
@@ -48,6 +47,9 @@ public class xDriveCode extends LinearOpMode {
     leftServo = hardwareMap.get(Servo.class, "leftServo");
     rightServo = hardwareMap.get(Servo.class, "rightServo");
 
+    leftServo.setPosition(0.5);
+    rightServo.setPosition(0.55);
+    
     waitForStart();
     // Put initialization blocks here.
     m1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

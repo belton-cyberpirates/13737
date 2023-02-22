@@ -14,7 +14,7 @@ public class Tread {
     // PID loop values
     private double error_prior = 0;
     private double integral_prior = 0;
-    private double bias = 0;
+    private double bias = 0.4;
 
 
     public Tread(DcMotorEx front, DcMotorEx back, DcMotorEx encoder) {
@@ -27,6 +27,7 @@ public class Tread {
     }
 
     public void Move(int targetPos) {
+        this.encoder.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         this.targetPosition = targetPos;
     }
 
@@ -47,7 +48,7 @@ public class Tread {
         this.integral_prior = integral;
     }
 
-    private boolean isBusy() {
+    public boolean IsBusy() {
         // theres probably a shorter way to do this
         // returns false if higher than target and direction is 1, or if lower than target and direction is -1
         return !(((encoder.getCurrentPosition() > targetPosition) && (direction == 1)) ||
@@ -66,7 +67,7 @@ public class Tread {
     private void init() {
         this.front.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         this.back.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        this.encoder.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER)
+        this.encoder.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public void SetPower(double power) {

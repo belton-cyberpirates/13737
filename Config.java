@@ -18,9 +18,9 @@ public class Config {
   /*****************************************************************************
   ** DRIVE SPEED CONSTANTS
   *****************************************************************************/
-  public static final int MIN_SPEED = .3;
-  public static final int CRUISE_SPEED = 0.45;
-  public static final int MAX_SPEED = .6;
+  public static final double MIN_SPEED = .3;
+  public static final double CRUISE_SPEED = 0.45;
+  public static final double MAX_SPEED = .6;
   public static final int ARM_VELOCITY = 2000;
   // ---------------------------------------------------------------------------
 
@@ -74,8 +74,8 @@ public class Config {
   /*****************************************************************************
   ** PID LOOP CONSTANTS
   *****************************************************************************/
-  public static final double KI = 1;
-  public static final double KD = 1;
-  public static final double KP = 1;
+  public static final double KI = .00000001;
+  public static final double KD = .00001;
+  public static final double KP = .0000001;
   // ---------------------------------------------------------------------------
 }
