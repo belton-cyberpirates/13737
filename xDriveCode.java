@@ -21,7 +21,8 @@ public class xDriveCode extends LinearOpMode {
   private DcMotor arm1;
   private AnalogInput clawpot;
   private double clawComp = 0;
-  
+  private Servo leftServo;
+  private Servo rightServo;
 
   /**
    * This function is executed when this Op Mode is selected from the Driver Station.
@@ -41,6 +42,11 @@ public class xDriveCode extends LinearOpMode {
     armpot = hardwareMap.get(AnalogInput.class, "armpot");
     arm1 = hardwareMap.get(DcMotor.class, "arm1");
     clawpot = hardwareMap.get(AnalogInput.class, "clawpot");
+    leftServo = hardwareMap.get(Servo.class, "leftServo");
+    rightServo = hardwareMap.get(Servo.class, "rightServo");
+
+    leftServo.setPosition(0.5);
+    rightServo.setPosition(0.55);
 
     waitForStart();
     // Put initialization blocks here.
