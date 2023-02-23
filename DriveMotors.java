@@ -38,6 +38,7 @@ public class DriveMotors {
     this.frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     this.backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     this.backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    
   }
 
 
@@ -47,18 +48,19 @@ public class DriveMotors {
     this.backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     this.backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
   }
-
-  private void SetZeroBehavior() {
-    this.frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BREAK);
-    this.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BREAK);
-    this.backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BREAK);
-    this.backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BREAK);
+  
+  
+  private void SetZeroBehaviour() {
+    this.frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    this.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    this.backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    this.backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
   }
 
 
   private void MotorInit() {
     this.Reset();
-    this.SetZeroBehavior();
+    this.SetZeroBehaviour();
     this.SetTargetPositions(0, 0, 0, 0);
     this.SetToRunPosition();
   }
@@ -88,8 +90,13 @@ public class DriveMotors {
     this.backRight.setTargetPosition(br);
   }
   
+  
+  public void Move(Direction dir, int dist) {
+    Move(dir, dist, 1);
+  }
+  
 
-  public void Move(Direction direction, int distance) {
+  public void Move(Direction direction, int distance, double mult) {
     this.MotorInit();
 
     switch(direction) {
@@ -125,8 +132,8 @@ public class DriveMotors {
         this.SetTargetPositions(distance, 0, -distance, 0);
         break;
     }
-    // while motors are running, correct power with gyro angle
-    this.setVelocity(Config.CRUISE_SPEED);
+    // while motors are running, wait
+    this.setVelocity((int)(Config.CRUISE_SPEED * mult));
     this.WaitForMotors();
   }
   
