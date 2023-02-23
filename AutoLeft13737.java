@@ -156,35 +156,37 @@ public class AutoLeft13737 extends LinearOpMode {
       arm.Move(Config.CRUISING_HEIGHT);
 
       // move to MID pole
-      driveMotors.Move(Direction.FORWARD, Config.INITIAL_CORRECTION + (int)(2.05*Config.TILE_LENGTH));
+      driveMotors.Move(Direction.FORWARD, Config.INITIAL_CORRECTION + (int)(2.06*Config.TILE_LENGTH));
       
       // deposit cone
       driveMotors.Turn(130);
       arm.Move(Config.MID_POLE_HEIGHT, true);
-      driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP*1.1));
+      driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP*1.2));
       arm.Move(Config.SIDE_STACK_HEIGHT);
       sleep(500);
       OpenClaw();
       driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP*1.2));
-      driveMotors.Turn(136);
+      driveMotors.Turn(140);
 
       // retrieve 2nd cone
       OpenClaw();
       arm.Move(Config.SIDE_STACK_HEIGHT, true);
-      driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .98));
+      driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .97));
       CloseClaw();
       arm.Move(Config.LOW_POLE_HEIGHT, true);
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .48));
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .47));
       
       
       // place 2nd cone
       driveMotors.Turn(-90);
-      arm.Move(Config.LOW_POLE_HEIGHT + 20);
-      driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP*.3));
+      arm.Move(Config.LOW_POLE_HEIGHT + 10);
+      sleep(500);
+      driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP*.4));
       arm.Move(Config.LOW_POLE_HEIGHT - 25, true);
       OpenClaw();
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP*0.5));
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP*0.6));
       arm.Move(Config.CRUISING_HEIGHT, true);
+      driveMotors.Turn(-90);
  
       // Park
         Park(parkingSpot);
@@ -197,20 +199,21 @@ public class AutoLeft13737 extends LinearOpMode {
 
     switch(target) {
     case 1:
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.6));
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .5));
       break;
       
     case 2:
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .3));
+      driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .5));
       break;
       
     case 3:
-      driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .3));
+      driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.5));
+      break;
 
     default:
       telemetry.addLine(String.format("ERROR: Target %d not in range 1-3", target));
       telemetry.addLine(String.format("PARKING IN DEFAULT SPOT (%d)", Config.DEFAULT_PARKING_SPOT));
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.6));
+      Park(Config.DEFAULT_PARKING_SPOT);
       break;
     }
     telemetry.update();
