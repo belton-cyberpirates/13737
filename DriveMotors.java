@@ -49,10 +49,10 @@ public class DriveMotors {
   }
 
   private void SetZeroBehavior() {
-    this.frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.RUN_TO_POSITION);
-    this.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.RUN_TO_POSITION);
-    this.backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.RUN_TO_POSITION);
-    this.backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.RUN_TO_POSITION);
+    this.frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BREAK);
+    this.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BREAK);
+    this.backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BREAK);
+    this.backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BREAK);
   }
 
 
