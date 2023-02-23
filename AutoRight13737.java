@@ -186,7 +186,7 @@ public class AutoRight13737 extends LinearOpMode {
       break;
       
     case 1:
-      driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .9));
+      driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .95));
       break;
 
     default:
