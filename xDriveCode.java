@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,15 +12,15 @@ import org.firstinspires.ftc.robotcore.external.android.AndroidTextToSpeech;
 @TeleOp(name = "xDriveCode")
 public class xDriveCode extends LinearOpMode {
 
-  private DcMotor m1;
-  private DcMotor m2;
-  private DcMotor m3;
-  private DcMotor m4;
-  private DcMotor arm2;
-  private DcMotor claw;
+  private DcMotorEx m1;
+  private DcMotorEx m2;
+  private DcMotorEx m3;
+  private DcMotorEx m4;
+  private DcMotorEx arm2;
+  private DcMotorEx claw;
   private AndroidTextToSpeech androidTextToSpeech;
   private AnalogInput armpot;
-  private DcMotor arm1;
+  private DcMotorEx arm1;
   private AnalogInput clawpot;
   private double clawComp = 0;
   private Servo leftServo;
@@ -32,15 +34,15 @@ public class xDriveCode extends LinearOpMode {
     int stayClosed;
     double compensation = 1;
 
-    m1 = hardwareMap.get(DcMotor.class, "m1");
-    m2 = hardwareMap.get(DcMotor.class, "m2");
-    m3 = hardwareMap.get(DcMotor.class, "m3");
-    m4 = hardwareMap.get(DcMotor.class, "m4");
-    arm2 = hardwareMap.get(DcMotor.class, "arm2");
-    claw = hardwareMap.get(DcMotor.class, "claw");
+    m1 = hardwareMap.get(DcMotorEx.class, "m1");
+    m2 = hardwareMap.get(DcMotorEx.class, "m2");
+    m3 = hardwareMap.get(DcMotorEx.class, "m3");
+    m4 = hardwareMap.get(DcMotorEx.class, "m4");
+    arm2 = hardwareMap.get(DcMotorEx.class, "arm2");
+    claw = hardwareMap.get(DcMotorEx.class, "claw");
     androidTextToSpeech = new AndroidTextToSpeech();
     armpot = hardwareMap.get(AnalogInput.class, "armpot");
-    arm1 = hardwareMap.get(DcMotor.class, "arm1");
+    arm1 = hardwareMap.get(DcMotorEx.class, "arm1");
     clawpot = hardwareMap.get(AnalogInput.class, "clawpot");
     leftServo = hardwareMap.get(Servo.class, "leftServo");
     rightServo = hardwareMap.get(Servo.class, "rightServo");
@@ -57,7 +59,7 @@ public class xDriveCode extends LinearOpMode {
     arm2.setDirection(DcMotorSimple.Direction.REVERSE);
     claw.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     stayClosed = 0;
-    double speed = .5;
+    double speed = 1100;
     androidTextToSpeech.initialize();
     if (opModeIsActive()) {
       while (opModeIsActive()) {
@@ -70,10 +72,10 @@ public class xDriveCode extends LinearOpMode {
 
         telemetry.addData("gamepad info", gamepad2);
 
-        m2.setPower(((gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x) * SpeedupVal) * speed * compensation);
-        m3.setPower(((-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x) * SpeedupVal) * speed);
-        m4.setPower(((-gamepad1.left_stick_y + -gamepad1.left_stick_x + gamepad1.right_stick_x) * SpeedupVal) * speed);
-        m1.setPower(((gamepad1.left_stick_y + -gamepad1.left_stick_x + gamepad1.right_stick_x) * SpeedupVal) * speed * compensation);
+        m2.setVelocity((int)(((gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x) * SpeedupVal) * speed * compensation));
+        m3.setVelocity((int)(((-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x) * SpeedupVal) * speed));
+        m4.setVelocity((int)(((-gamepad1.left_stick_y + -gamepad1.left_stick_x + gamepad1.right_stick_x) * SpeedupVal) * speed));
+        m1.setVelocity((int)(((gamepad1.left_stick_y + -gamepad1.left_stick_x + gamepad1.right_stick_x) * SpeedupVal) * speed * compensation));
         if (gamepad2.right_stick_y < 0) {
           arm1.setPower(-(gamepad2.right_stick_y / 2));
           arm2.setPower(-(gamepad2.right_stick_y / 2));
