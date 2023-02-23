@@ -155,17 +155,17 @@ public class AutoRight13737 extends LinearOpMode {
       arm.Move(Config.CRUISING_HEIGHT);
 
       // move to MID pole
-      driveMotors.Move(Direction.FORWARD, Config.INITIAL_CORRECTION + (int)(2*Config.TILE_LENGTH));
+      driveMotors.Move(Direction.FORWARD, Config.INITIAL_CORRECTION + (int)(2.05*Config.TILE_LENGTH));
       
       // deposit cone
       driveMotors.Turn(-135);
       arm.Move(Config.MID_POLE_HEIGHT, true);
-      driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP * 1));
-      arm.Move(Config.MID_POLE_HEIGHT - 15);
+      driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP * 1.15));
+      arm.Move(Config.LOW_POLE_HEIGHT);
       sleep(500);
       OpenClaw();
       driveMotors.Move(Direction.BACKWARD, Config.BUMP);
-      driveMotors.Turn(-45);
+      driveMotors.Turn(45);
   
       //Park
       Park(parkingSpot);
@@ -177,21 +177,22 @@ public class AutoRight13737 extends LinearOpMode {
     telemetry.addData("Parking", String.format("PARKING IN SPOT %d", target));
 
     switch(target) {
-    case 1:
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.6));
+    case 3:
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1));
       break;
       
     case 2:
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .3));
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 0.1));
       break;
       
-    case 3:
-      driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .3));
+    case 1:
+      driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .9));
+      break;
 
     default:
       telemetry.addLine(String.format("ERROR: Target %d not in range 1-3", target));
       telemetry.addLine(String.format("PARKING IN DEFAULT SPOT (%d)", Config.DEFAULT_PARKING_SPOT));
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.6));
+      Park(Config.DEFAULT_PARKING_SPOT);
       break;
     }
     telemetry.update();
