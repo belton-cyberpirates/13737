@@ -48,9 +48,17 @@ public class DriveMotors {
     this.backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
   }
 
+  private void SetZeroBehavior() {
+    this.frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.RUN_TO_POSITION);
+    this.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.RUN_TO_POSITION);
+    this.backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.RUN_TO_POSITION);
+    this.backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.RUN_TO_POSITION);
+  }
+
 
   private void MotorInit() {
     this.Reset();
+    this.SetZeroBehavior();
     this.SetTargetPositions(0, 0, 0, 0);
     this.SetToRunPosition();
   }
