@@ -161,7 +161,7 @@ public class AutoRight13737 extends LinearOpMode {
       driveMotors.Turn(-135);
       arm.Move(Config.MID_POLE_HEIGHT, true);
       driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP * 1.15));
-      arm.Move(Config.LOW_POLE_HEIGHT);
+      arm.Move(Config.CRUISING_HEIGHT);
       sleep(500);
       OpenClaw();
       driveMotors.Move(Direction.BACKWARD, Config.BUMP);
