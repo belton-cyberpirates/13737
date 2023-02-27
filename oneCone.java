@@ -31,15 +31,14 @@ import org.firstinspires.ftc.teamcode.Arm;
 import org.firstinspires.ftc.teamcode.Direction;
 import org.firstinspires.ftc.teamcode.Config;
 
-@Autonomous(name = "oneCone")
-public class oneCone extends LinearOpMode {
+
+@Autonomous(name = "AutoLeft")
+public class AutoLeft13737 extends LinearOpMode {
   private OpenCvCamera camera;
   private AprilTagDetectionPipeline aprilTagDetectionPipeline;
   private DriveMotors driveMotors;
   private Arm arm;
   private DcMotor claw;
-
-  
 
 
   /**
@@ -50,8 +49,10 @@ public class oneCone extends LinearOpMode {
     sleep(500);
     CloseClaw();
     arm.Initialize();
-   }
-   
+    claw.setPower(0.5);
+  }
+
+
   /**
    * Attempt to recognize the AprilTag and return which tag we see
    */
@@ -134,19 +135,18 @@ public class oneCone extends LinearOpMode {
 
     // argument order *must* be fr-fl-bl-br
     driveMotors = new DriveMotors(
-      hardwareMap.get(DcMotor.class, "m2"),
-      hardwareMap.get(DcMotor.class, "m3"),
-      hardwareMap.get(DcMotor.class, "m4"),
-      hardwareMap.get(DcMotor.class, "m1")
+      hardwareMap.get(DcMotorEx.class, "m2"),
+      hardwareMap.get(DcMotorEx.class, "m3"),
+      hardwareMap.get(DcMotorEx.class, "m4"),
+      hardwareMap.get(DcMotorEx.class, "m1")
     );
     
     arm = new Arm(
-      hardwareMap.get(DcMotor.class, "arm1"),
-      hardwareMap.get(DcMotor.class, "arm2")
+      hardwareMap.get(DcMotorEx.class, "arm1"),
+      hardwareMap.get(DcMotorEx.class, "arm2")
     );
     claw = hardwareMap.get(DcMotor.class, "claw");
 
-    TFInitialize();
     waitForStart();
 
     if (opModeIsActive()) { // <----------------------------------------------------------------
@@ -155,22 +155,21 @@ public class oneCone extends LinearOpMode {
       MotorSetup();
       arm.Move(Config.CRUISING_HEIGHT);
 
-     // move to MID pole
-      driveMotors.Move(Direction.FORWARD, Config.INITIAL_CORRECTION + (int)(2.05*Config.TILE_LENGTH));
+      // move to MID pole
+      driveMotors.Move(Direction.FORWARD, Config.INITIAL_CORRECTION + (int)(2.06*Config.TILE_LENGTH));
       
       // deposit cone
-      driveMotors.Turn(128);
+      driveMotors.Turn(130);
       arm.Move(Config.MID_POLE_HEIGHT, true);
-      driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP*1.1));
+      driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP*1.2));
       arm.Move(Config.SIDE_STACK_HEIGHT);
       sleep(500);
       OpenClaw();
       driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP*1.2));
-      driveMotors.Turn(136); //130 + 140 = 270 (90*3=270)
-
-      
+      driveMotors.Turn(-45);
+ 
       // Park
-        Park(parkingSpot);
+      Park(parkingSpot);
     }
   }
 
@@ -180,20 +179,21 @@ public class oneCone extends LinearOpMode {
 
     switch(target) {
     case 1:
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.6));
+      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1));
       break;
       
     case 2:
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .3));
+      driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 0));
       break;
       
     case 3:
-      driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .3));
+      driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1));
+      break;
 
     default:
       telemetry.addLine(String.format("ERROR: Target %d not in range 1-3", target));
       telemetry.addLine(String.format("PARKING IN DEFAULT SPOT (%d)", Config.DEFAULT_PARKING_SPOT));
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.6));
+      Park(Config.DEFAULT_PARKING_SPOT);
       break;
     }
     telemetry.update();
@@ -206,8 +206,8 @@ public class oneCone extends LinearOpMode {
     sleep(200);
     claw.setPower(0);
   }
-  
-  
+
+
   public void CloseClaw() {
     claw.setPower(0.9);
     sleep(500);
