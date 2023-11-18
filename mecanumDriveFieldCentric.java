@@ -64,10 +64,11 @@ public class MechanumDriveFieldCentric extends LinearOpMode {
 		final int BASE_SPEED = 1500;
 		final double MAX_BOOST = 0.6; // boost maxes out at an additional 60% of the base speed
 		
+        // Wait for the start button to be pressed
 		waitForStart();
 			
-        // Reset robot heading on startup
-        // MAKE SURE ROBOT IS FACING FORWARD WHEN IT IS STARTED!
+        // Reset robot heading on startup (not initialisation)
+        // MAKE SURE ROBOT IS FACING FORWARD BEFORE HITTING START!
         imu.resetYaw();
 
 		while (opModeIsActive()) {
@@ -86,10 +87,10 @@ public class MechanumDriveFieldCentric extends LinearOpMode {
 
             // Virtually rotate the joystick by the negative angle of the robot
             final double rotatedX = leftStickX * Math.cos(-botHeading) - 
-                          leftStickY * Math.sin(-botHeading);
+                                    leftStickY * Math.sin(-botHeading);
             
             final double rotatedY = leftStickX * Math.sin(-botHeading) + 
-                          leftStickY * Math.cos(-botHeading);
+                                    leftStickY * Math.cos(-botHeading);
 
             rotatedX *= STRAFE_MULT;  // strafing is slower than rolling, bump speed
             
