@@ -68,6 +68,7 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 		imu.resetYaw();
 
 		while (opModeIsActive()) {
+			// Reset Yaw on start button press so that a restart is not needed if Yaw should be reset again.
 			if (gamepad1.start) {
 				imu.resetYaw();
 			}
@@ -141,8 +142,10 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 		}
 	}
 
-	/// if boost trigger unpressed, return base_speed,
-	/// else return base_speed + boost amount
+	/* 
+	if boost trigger unpressed, return base_speed,
+	else return base_speed + boost amount
+	*/
 	double calcMaxSpeed(double triggerVal, int BASE_SPEED, double MAX_BOOST) {
 		double boostRatio = triggerVal * MAX_BOOST;
 		double boostSpeed = boostRatio * BASE_SPEED;
