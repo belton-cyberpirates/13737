@@ -88,17 +88,17 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 				.getYaw(AngleUnit.RADIANS);
 
 			// Virtually rotate the joystick by the negative angle of the robot
-			final double rotatedX =
-				leftStickXGP1 *
-				Math.cos(-botHeading) -
-				leftStickYGP1 *
-				Math.sin(-botHeading);
+			double rotatedX =
+				   leftStickXGP1 *
+				   Math.cos(-botHeading) -
+				   leftStickYGP1 *
+				   Math.sin(-botHeading);
 
-			final double rotatedY =
-				leftStickXGP1 *
-				Math.sin(-botHeading) +
-				leftStickYGP1 *
-				Math.cos(-botHeading);
+			double rotatedY =
+				   leftStickXGP1 *
+				   Math.sin(-botHeading) +
+				   leftStickYGP1 *
+				   Math.cos(-botHeading);
 
 			rotatedX *= STRAFE_MULT; // strafing is slower than rolling, bump speed
 
