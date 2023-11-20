@@ -86,7 +86,6 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 		// Wait for the start button to be pressed
 		waitForStart();
 
-		
 		//NOTE - Reset robot heading on startup (not initialization)
 		//NOTE - MAKE SURE ROBOT IS FACING FORWARD BEFORE HITTING START!
 		imu.resetYaw();
@@ -109,69 +108,70 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 				double rightStickYGP2 = gamepad2.right_stick_y;
 			//!SECTION End GP2
 
-			double maxSpeed = calcMaxSpeed(gamepad1.right_trigger - gamepad1.left_trigger, BASE_SPEED, MAX_BOOST);
+			//SECTION - Base
+				double maxSpeed = calcMaxSpeed(gamepad1.right_trigger - gamepad1.left_trigger, BASE_SPEED, MAX_BOOST);
 
-			// Get the heading of the bot (the angle it is facing) in radians
-			double botHeading = imu
-				.getRobotYawPitchRollAngles()
-				.getYaw(AngleUnit.RADIANS);
+				//NOTE - Get the heading of the bot (the angle it is facing) in radians
+				double botHeading = imu
+					.getRobotYawPitchRollAngles()
+					.getYaw(AngleUnit.RADIANS);
 
-			// Virtually rotate the joystick by the negative angle of the robot
-			double rotatedX =
-				   leftStickXGP1 *
-				   Math.cos(botHeading) -
-				   leftStickYGP1 *
-				   Math.sin(botHeading);
-			double rotatedY =
-				   leftStickXGP1 *
-				   Math.sin(botHeading) +
-				   leftStickYGP1 *
-				   Math.cos(botHeading);
-			rotatedX *= STRAFE_MULT; // strafing is slower than rolling, bump speed
+				//NOTE - Virtually rotate the joystick by the negative angle of the robot
+				double rotatedX =
+					leftStickXGP1 *
+					Math.cos(botHeading) -
+					leftStickYGP1 *
+					Math.sin(botHeading);
+				double rotatedY =
+					leftStickXGP1 *
+					Math.sin(botHeading) +
+					leftStickYGP1 *
+					Math.cos(botHeading);
+				rotatedX *= STRAFE_MULT; // strafing is slower than rolling, bump speed
 
-			// Set the power of the wheels based off the new joystick coordinates
-			// y+x+stick <- [-1,1]
-			// Define caluclated stick values so we don't repeat the same equations
-			double YPX = rotatedY + rotatedX - rightStickXGP1;
-			double YMX = rotatedY - rotatedX - rightStickXGP1;
+				//NOTE - Set the power of the wheels based off the new joystick coordinates
+				//NOTE - y+x+stick <- [-1,1]
+				//NOTE - Define caluclated stick values so we don't repeat the same equations
+				double YPX = rotatedY + rotatedX - rightStickXGP1;
+				double YMX = rotatedY - rotatedX - rightStickXGP1;
 
-			MBackLeft.setVelocity(
-				YPX * maxSpeed
-			);
-			MFrontLeft.setVelocity(
-				YMX * maxSpeed
-			);
-			MBackRight.setVelocity(
-				-YPX * maxSpeed
-			);
-			MFrontRight.setVelocity(
-				-YMX * maxSpeed
-			);
+				MBackLeft.setVelocity(
+					YPX * maxSpeed
+				);
+				MFrontLeft.setVelocity(
+					YMX * maxSpeed
+				);
+				MBackRight.setVelocity(
+					-YPX * maxSpeed
+				);
+				MFrontRight.setVelocity(
+					-YMX * maxSpeed
+				);
 			//!SECTION - End Base
 
 			//SECTION - Arms
-			//NOTE - Set the power of the arm motors
-			MShoulderLeft.setPower(-leftStickYGP2 * SHOULDER_SPEED);
-			MShoulderRight.setPower(leftStickYGP2 * SHOULDER_SPEED);
-			MElbowLeft.setPower(rightStickYGP2 * ELBOW_SPEED);
-			MElbowRight.setPower(-rightStickYGP2 * ELBOW_SPEED);
+				//NOTE - Set the power of the arm motors
+				MShoulderLeft.setPower(-leftStickYGP2 * SHOULDER_SPEED);
+				MShoulderRight.setPower(leftStickYGP2 * SHOULDER_SPEED);
+				MElbowLeft.setPower(rightStickYGP2 * ELBOW_SPEED);
+				MElbowRight.setPower(-rightStickYGP2 * ELBOW_SPEED);
 			//!SECTION - End Arms
 
 			//SECTION - Telemetry
-			telemetry.addData("Speed Mod:", maxSpeed);
-			telemetry.addData(
-				"Left Shoulder:",
-				MShoulderLeft.getCurrentPosition()
-			);
-			telemetry.addData(
-				"Right Shoulder:",
-				MShoulderRight.getCurrentPosition()
-			);
-			telemetry.addData("Left Elbow:", MElbowLeft.getCurrentPosition());
-			telemetry.addData("Right Elbot:", MElbowRight.getCurrentPosition());
-			telemetry.addData("Heading (radians):", botHeading);
+				telemetry.addData("Speed Mod:", maxSpeed);
+				telemetry.addData(
+					"Left Shoulder:",
+					MShoulderLeft.getCurrentPosition()
+				);
+				telemetry.addData(
+					"Right Shoulder:",
+					MShoulderRight.getCurrentPosition()
+				);
+				telemetry.addData("Left Elbow:", MElbowLeft.getCurrentPosition());
+				telemetry.addData("Right Elbot:", MElbowRight.getCurrentPosition());
+				telemetry.addData("Heading (radians):", botHeading);
 
-			telemetry.update();
+				telemetry.update();
 			//!SECTION - End telemetry
 		}
 	}
