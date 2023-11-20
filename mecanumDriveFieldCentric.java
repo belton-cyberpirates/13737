@@ -9,8 +9,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@TeleOp(name = "MechanumDriveFieldCentric")
-public class MechanumDriveFieldCentric extends LinearOpMode {
+@TeleOp(name = "MecanumDriveFieldCentric")
+public class MecanumDriveFieldCentric extends LinearOpMode {
 	// Initialize base motor variables
 	private DcMotorEx MBackLeft;
 	private DcMotorEx MBackRight;
