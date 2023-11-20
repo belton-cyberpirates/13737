@@ -81,7 +81,7 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			double leftStickYGP2 = gamepad2.left_stick_y;
 			double rightStickYGP2 = gamepad2.right_stick_y;
 
-			double maxSpeed = calcMaxSpeed(gamepad1.right_trigger, BASE_SPEED, MAX_BOOST);
+			double maxSpeed = calcMaxSpeed(gamepad1.right_trigger - gamepad1.left_trigger, BASE_SPEED, MAX_BOOST);
 
 			// Get the heading of the bot (the angle it is facing) in radians
 			double botHeading = imu
