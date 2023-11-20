@@ -54,7 +54,7 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 		final int ELBOW_MIN_POS = 5;
 		final double SHOULDER_SPEED = 0.5;
 		final double ELBOW_SPEED = 0.5;
-		final double STRAFE_MULT = 1.41;
+		final double STRAFE_MULT = 1.2;
 
 		// Drive contants
 		final int BASE_SPEED = 1500;
