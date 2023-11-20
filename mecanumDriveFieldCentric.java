@@ -105,18 +105,17 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			// Set the power of the wheels based off the new joystick coordinates
 			// y+x+stick <- [-1,1]
 			MBackLeft.setVelocity(
-				(rotatedY + rotatedX + rightStickXGP1) * maxSpeed
+				(rotatedY + rotatedX - rightStickXGP1) * maxSpeed
 			);
 			MFrontLeft.setVelocity(
-				(rotatedY - rotatedX + rightStickXGP1) * maxSpeed
+				(rotatedY - rotatedX - rightStickXGP1) * maxSpeed
 			);
 			MBackRight.setVelocity(
-				(-rotatedY + rotatedX + rightStickXGP1) * maxSpeed
+				(-rotatedY + rotatedX - rightStickXGP1) * maxSpeed
 			);
 			MFrontRight.setVelocity(
-				(-rotatedY - rotatedX + rightStickXGP1) * maxSpeed
+				(-rotatedY - rotatedX - rightStickXGP1) * maxSpeed
 			);
-			//? should all of the rightStickX be the same? should they be pos or neg?
 
 			// Set the power of the arm motors
 			MShoulderLeft.setPower(-leftStickYGP2 * SHOULDER_SPEED);
