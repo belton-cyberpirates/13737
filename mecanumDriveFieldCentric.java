@@ -180,8 +180,8 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 						clawLeftPassivePower = CLAW_CLOSE_RESIDUAL_POWER;
 					}
 					if (gamepad2.right_trigger > 0) {
-						clawRight.setPower(-CLAW_CLOSE_POWER);
-						clawRightPassivePower = -CLAW_CLOSE_RESIDUAL_POWER;
+						clawRight.setPower(CLAW_CLOSE_POWER * -1); // inverse right claw power
+						clawRightPassivePower = CLAW_CLOSE_RESIDUAL_POWER * -1; // inverse right claw power
 					}
 				}
 				else if (gamepad2.b) {
@@ -190,7 +190,7 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 						clawLeftPassivePower = 0;
 					}
 					if (gamepad2.right_trigger > 0) {
-						clawRight.setPower(CLAW_OPEN_POWER);
+						clawRight.setPower(-CLAW_OPEN_POWER * -1; // inverse right claw power
 						clawRightPassivePower = 0;
 					}
 				}
