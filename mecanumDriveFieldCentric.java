@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@TeleOp(name = "MecanumDriveFieldCentric")
+@TeleOp(name = "FieldCentricDrive")
 public class MecanumDriveFieldCentric extends LinearOpMode {
 	//SECTION - Constants
 		//SECTION - Drive Contants
@@ -176,10 +176,10 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 		}
 	}
 
-	/* 
-	if boost trigger unpressed, return base_speed,
-	else return base_speed + boost amount
-	*/
+	/**
+	 * if boost trigger unpressed, return base_speed,
+	 * else return base_speed + boost amount
+	 */
 	double calcMaxSpeed(double triggerVal, int BASE_SPEED, double MAX_BOOST) {
 		double boostRatio = triggerVal * MAX_BOOST;
 		double boostSpeed = boostRatio * BASE_SPEED;
