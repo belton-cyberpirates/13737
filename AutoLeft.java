@@ -33,30 +33,30 @@ import org.firstinspires.ftc.teamcode.Config;
 
 
 @Autonomous(name = "AutoLeft")
-public class AutoLeft13737 extends LinearOpMode {
+public class AutoLeft extends LinearOpMode {
   private OpenCvCamera camera;
   private AprilTagDetectionPipeline aprilTagDetectionPipeline;
   private DriveMotors driveMotors;
   private Arm arm;
-  private DcMotor claw;
+  private Servo clawLeft;
+  private Servo clawRight;
 
 
   /**
    * Set reliable initial configuration for robot motors
    */
-  public void MotorSetup() {
+  public void MotorSetup() { // TODO add claws to motor setup
+    CloseClaw(clawLeft, clawRight)
     arm.DropArm();
     sleep(500);
-    CloseClaw();
     arm.Initialize();
-    claw.setPower(0.5);
   }
 
 
   /**
    * Attempt to recognize the AprilTag and return which tag we see
    */
-  private int RunDetection() {
+  private int RunAprilTagDetection() {
     for (int numFramesWithoutDetection = 0; numFramesWithoutDetection < Config.MAX_NUM_FRAMES_NO_DETECTION; numFramesWithoutDetection++) {
       // Calling getDetectionsUpdate() will only return an object if there was a new frame
       // processed since the last time we called it. Otherwise, it will return null. This
@@ -108,7 +108,7 @@ public class AutoLeft13737 extends LinearOpMode {
 
 
   /**
-   * This function is executed when this Op Mode is selected from the Driver Station.
+   * This function is executed when this Op Mode is initialized from the Driver Station.
    */
   @Override
   public void runOpMode() {
@@ -150,46 +150,8 @@ public class AutoLeft13737 extends LinearOpMode {
     waitForStart();
 
     if (opModeIsActive()) { // <----------------------------------------------------------------
-      int parkingSpot = RunDetection();
+    
 
-      MotorSetup();
-      arm.Move(Config.CRUISING_HEIGHT);
-
-      // move to MID pole
-      driveMotors.Move(Direction.FORWARD, Config.INITIAL_CORRECTION + (int)(2.06*Config.TILE_LENGTH));
-      
-      // deposit cone
-      driveMotors.Turn(130);
-      arm.Move(Config.MID_POLE_HEIGHT, true);
-      driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP*1.2));
-      arm.Move(Config.SIDE_STACK_HEIGHT);
-      sleep(500);
-      OpenClaw();
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP*1.2));
-      driveMotors.Turn(140);
-
-      // retrieve 2nd cone
-      OpenClaw();
-      arm.Move(Config.SIDE_STACK_HEIGHT, true);
-      driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .97));
-      CloseClaw();
-      arm.Move(Config.LOW_POLE_HEIGHT, true);
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .47));
-      
-      
-      // place 2nd cone
-      driveMotors.Turn(-90);
-      arm.Move(Config.LOW_POLE_HEIGHT + 10);
-      sleep(500);
-      driveMotors.Move(Direction.FORWARD, (int)(Config.BUMP*.4));
-      arm.Move(Config.LOW_POLE_HEIGHT - 25, true);
-      OpenClaw();
-      driveMotors.Move(Direction.BACKWARD, (int)(Config.BUMP*0.6));
-      arm.Move(Config.CRUISING_HEIGHT, true);
-      driveMotors.Turn(-90);
- 
-      // Park
-        Park(parkingSpot);
     }
   }
 
@@ -220,17 +182,26 @@ public class AutoLeft13737 extends LinearOpMode {
   }
 
 
-  public void OpenClaw() {
-    sleep(200);
-    claw.setPower(-0.3);
-    sleep(200);
-    claw.setPower(0);
+  /**
+   * Open the given claw(s)
+   */
+  public void OpenClaw(DcMotor... claws) {
+    for (DcMotor claw : claws) {
+      claw.setPower(-0.3);
+      sleep(200);
+      claw.setPower(0);
+    }
   }
 
 
-  public void CloseClaw() {
-    claw.setPower(0.9);
-    sleep(500);
-    claw.setPower(0.3);
+  /**
+   * Close the given claw(s)
+   */
+  public void CloseClaw(Servo... claws) {
+    for (var claw : claws) {
+      claw.setPower(0.9);
+      sleep(500);
+      claw.setPower(0.3);
+    }
   }
 }
