@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -41,6 +42,11 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			private DcMotorEx MElbowRight;
 		//!SECTION - End arm motors
 
+		//SECTION - Servos
+			private CRServo clawLeft;
+			private CRServo clawRight;
+		//!SECTION - End arm motors
+
 		//NOTE - IMU
 		private IMU imu;
 	//!SECTION - End variable initialzation
@@ -61,6 +67,11 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 				MElbowLeft = hardwareMap.get(DcMotorEx.class, "left_elbow");
 				MElbowRight = hardwareMap.get(DcMotorEx.class, "right_elbow");
 			//!SECTION - End arm motors
+			
+			//SECTION - Servos
+				clawLeft = hardwareMap.get(CRServo.class, "s1");
+				clawRight = hardwareMap.get(CRServo.class, "s2");
+			//!SECTION - End servos
 
 			//NOTE - IMU
 			imu = hardwareMap.get(IMU.class, "imu");
@@ -78,6 +89,11 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 		final double SHOULDER_SPEED = 0.5;
 		final double ELBOW_SPEED = 0.5;
 		final double STRAFE_MULT = 1.2;
+		final double CLAW_OPEN_POWER = 0.5;
+		final double CLAW_CLOSE_POWER = 0.5;
+		final double CLAW_CLOSE_RESIDUAL_POWER = 0.1;
+		double clawLeftPassivePower = 0;
+		double clawRightPassivePower = 0;
 
 		// Drive contants
 		final int BASE_SPEED = 1500;
@@ -155,6 +171,33 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 				MShoulderRight.setPower(leftStickYGP2 * SHOULDER_SPEED);
 				MElbowLeft.setPower(rightStickYGP2 * ELBOW_SPEED);
 				MElbowRight.setPower(-rightStickYGP2 * ELBOW_SPEED);
+			//!SECTION - End Arms
+			
+			//SECTION - Arms
+				if (gamepad2.a) {
+					if (gamepad2.left_trigger > 0) {
+						clawLeft.setPower(CLAW_CLOSE_POWER);
+						clawLeftPassivePower = CLAW_CLOSE_RESIDUAL_POWER;
+					}
+					if (gamepad2.right_trigger > 0) {
+						clawRight.setPower(-CLAW_CLOSE_POWER);
+						clawRightPassivePower = -CLAW_CLOSE_RESIDUAL_POWER;
+					}
+				}
+				else if (gamepad2.b) {
+					if (gamepad2.left_trigger > 0) {
+						clawLeft.setPower(-CLAW_OPEN_POWER);
+						clawLeftPassivePower = 0;
+					}
+					if (gamepad2.right_trigger > 0) {
+						clawRight.setPower(CLAW_OPEN_POWER);
+						clawRightPassivePower = 0;
+					}
+				}
+				else {
+					clawLeft.setPower(clawLeftPassivePower);
+					clawRight.setPower(clawRightPassivePower);
+				}
 			//!SECTION - End Arms
 
 			//SECTION - Telemetry
