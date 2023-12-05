@@ -13,6 +13,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 @TeleOp(name = "FieldCentricDrive")
 public class MecanumDriveFieldCentric extends LinearOpMode {
 	//SECTION - Constants
+		// Drive contants
+			final int BASE_SPEED = 1500;
+			final double MAX_BOOST = 0.6; // boost maxes out at an additional 60% of the base speed
 		//SECTION - Drive Contants
 			final int BASE_SPEED = 1500;
 			final double MAX_BOOST = 0.6; // boost maxes out at an additional 60% of the base speed
@@ -25,6 +28,12 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			final double ELBOW_SPEED = 0.5;
 			final double STRAFE_MULT = 1.41;
 		//!SECTION - End arm constats
+
+		//SECTION - Claw constants
+			final double CLAW_OPEN_POWER = 0.5;
+			final double CLAW_CLOSE_POWER = 0.5;
+			final double CLAW_CLOSE_RESIDUAL_POWER = 0.1;
+		//!SECTION - End claw constants
 	//!SECTION - End constands
 	
 	//SECTION - Variable init
@@ -42,7 +51,7 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			private DcMotorEx MElbowRight;
 		//!SECTION - End arm motors
 
-		//SECTION - Servos
+		//SECTION - Claws
 			private CRServo clawLeft;
 			private CRServo clawRight;
 		//!SECTION - End arm motors
@@ -75,6 +84,11 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 
 			//NOTE - IMU
 			imu = hardwareMap.get(IMU.class, "imu");
+
+			//NOTE - Claw variables
+			private double clawLeftPassivePower = 0;
+			private double clawRightPassivePower = 0;
+
 		//!SECTION - End variable definitions
 
 		//NOTE - Set the zero power behaviour
@@ -82,22 +96,6 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 		MBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 		MFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 		MFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-		// Arm constants
-		final int SHOULDER_MIN_POS = 140;
-		final int ELBOW_MIN_POS = 5;
-		final double SHOULDER_SPEED = 0.5;
-		final double ELBOW_SPEED = 0.5;
-		final double STRAFE_MULT = 1.2;
-		final double CLAW_OPEN_POWER = 0.5;
-		final double CLAW_CLOSE_POWER = 0.5;
-		final double CLAW_CLOSE_RESIDUAL_POWER = 0.1;
-		double clawLeftPassivePower = 0;
-		double clawRightPassivePower = 0;
-
-		// Drive contants
-		final int BASE_SPEED = 1500;
-		final double MAX_BOOST = 0.6; // boost maxes out at an additional 60% of the base speed
 
 		// Wait for the start button to be pressed
 		waitForStart();
@@ -158,40 +156,15 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 				);
 			//!SECTION - End Base
 
-			//SECTION - Arms
+			//SECTION - Arm
 				//NOTE - Set the power of the arm motors
 				MShoulderLeft.setPower(-leftStickYGP2 * SHOULDER_SPEED);
 				MShoulderRight.setPower(leftStickYGP2 * SHOULDER_SPEED);
 				MElbowLeft.setPower(rightStickYGP2 * ELBOW_SPEED);
 				MElbowRight.setPower(-rightStickYGP2 * ELBOW_SPEED);
-			//!SECTION - End Arms
-			
-			//SECTION - Arms
-				if (gamepad2.a) {
-					if (gamepad2.left_trigger > 0) {
-						clawLeft.setPower(CLAW_CLOSE_POWER);
-						clawLeftPassivePower = CLAW_CLOSE_RESIDUAL_POWER;
-					}
-					if (gamepad2.right_trigger > 0) {
-						clawRight.setPower(CLAW_CLOSE_POWER * -1); // inverse right claw power
-						clawRightPassivePower = CLAW_CLOSE_RESIDUAL_POWER * -1; // inverse right claw power
-					}
-				}
-				else if (gamepad2.b) {
-					if (gamepad2.left_trigger > 0) {
-						clawLeft.setPower(-CLAW_OPEN_POWER);
-						clawLeftPassivePower = 0;
-					}
-					if (gamepad2.right_trigger > 0) {
-						clawRight.setPower(-CLAW_OPEN_POWER * -1; // inverse right claw power
-						clawRightPassivePower = 0;
-					}
-				}
-				else {
-					clawLeft.setPower(clawLeftPassivePower);
-					clawRight.setPower(clawRightPassivePower);
-				}
-			//!SECTION - End claws
+			//!SECTION - End Arm
+
+			clawLeftPassivePower, clawRightPassivePower = updateClaws()
 
 			//SECTION - Telemetry
 				telemetry.addData("Speed Mod:", maxSpeed);
@@ -210,6 +183,37 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 				telemetry.update();
 			//!SECTION - End telemetry
 		}
+	}
+
+	int[] updateClaws(double clawLeftPassivePower, double clawRightPassivePower) {
+		if (!(gamepad2.left_trigger || gamepad2.right_trigger)) return;
+
+		if (gamepad2.a) {
+			if (gamepad2.left_trigger > 0) {
+				clawLeft.setPower(CLAW_CLOSE_POWER);
+				clawLeftPassivePower = CLAW_CLOSE_RESIDUAL_POWER;
+			}
+			if (gamepad2.right_trigger > 0) {
+				clawRight.setPower(-CLAW_CLOSE_POWER); // inverse right claw power
+				clawRightPassivePower = -CLAW_CLOSE_RESIDUAL_POWER; // inverse right claw power
+			}
+		}
+		else if (gamepad2.b) {
+			if (gamepad2.left_trigger > 0) {
+				clawLeft.setPower(-CLAW_OPEN_POWER);
+				clawLeftPassivePower = 0;
+			}
+			if (gamepad2.right_trigger > 0) {
+				clawRight.setPower(CLAW_OPEN_POWER; // inverse right claw power
+				clawRightPassivePower = 0;
+			}
+		}
+		else {
+			clawLeft.setPower(clawLeftPassivePower);
+			clawRight.setPower(clawRightPassivePower);
+		}
+
+		return new int[clawLeftPassivePower, clawRightPassivePower]
 	}
 
 	/**
