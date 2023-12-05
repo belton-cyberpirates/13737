@@ -118,34 +118,27 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 
 				//NOTE - Virtually rotate the joystick by the negative angle of the robot
 				double rotatedX =
-					leftStickXGP1 *
-					Math.cos(botHeading) -
-					leftStickYGP1 *
-					Math.sin(botHeading);
+					leftStickXGP1 * Math.cos(botHeading) -
+					leftStickYGP1 * Math.sin(botHeading);
 				double rotatedY =
-					leftStickXGP1 *
-					Math.sin(botHeading) +
-					leftStickYGP1 *
-					Math.cos(botHeading);
+					leftStickXGP1 * Math.sin(botHeading) +
+					leftStickYGP1 * Math.cos(botHeading);
 				rotatedX *= STRAFE_MULT; // strafing is slower than rolling, bump speed
 
-				//NOTE - Set the power of the wheels based off the new joystick coordinates
-				//NOTE - y+x+stick <- [-1,1]
-				//NOTE - Define caluclated stick values so we don't repeat the same equations
-				double YPX = rotatedY + rotatedX - rightStickXGP1;
-				double YMX = rotatedY - rotatedX - rightStickXGP1;
+				// Set the power of the wheels based off the new joystick coordinates
+				// y+x+stick <- [-1,1]
 
 				MBackLeft.setVelocity(
-					YPX * maxSpeed
+					(rotatedY + rotatedX - rightStickXGP1) * maxSpeed
 				);
 				MFrontLeft.setVelocity(
-					YMX * maxSpeed
+					(rotatedY - rotatedX - rightStickXGP1) * maxSpeed
 				);
 				MBackRight.setVelocity(
-					-YPX * maxSpeed
+					(-rotatedY + rotatedX - rightStickXGP1) * maxSpeed
 				);
 				MFrontRight.setVelocity(
-					-YMX * maxSpeed
+					(-rotatedY - rotatedX - rightStickXGP1) * maxSpeed
 				);
 			//!SECTION - End Base
 
