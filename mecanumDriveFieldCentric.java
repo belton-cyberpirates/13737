@@ -164,7 +164,9 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 				MElbowRight.setPower(-rightStickYGP2 * ELBOW_SPEED);
 			//!SECTION - End Arm
 
-			clawLeftPassivePower, clawRightPassivePower = updateClaws()
+			int[] passive_powers = updateClaws()
+			clawLeftPassivePower = passive_powers[0]
+			clawRightPassivePower = passive_powers[1]
 
 			//SECTION - Telemetry
 				telemetry.addData("Speed Mod:", maxSpeed);
