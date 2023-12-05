@@ -206,7 +206,7 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 				clawLeftPassivePower = 0;
 			}
 			if (gamepad2.right_trigger > 0) {
-				clawRight.setPower(CLAW_OPEN_POWER; // inverse right claw power
+				clawRight.setPower(CLAW_OPEN_POWER); // inverse right claw power
 				clawRightPassivePower = 0;
 			}
 		}
