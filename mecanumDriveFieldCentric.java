@@ -13,10 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 @TeleOp(name = "FieldCentricDrive")
 public class MecanumDriveFieldCentric extends LinearOpMode {
 	//SECTION - Constants
-		// Drive contants
-			final int BASE_SPEED = 1500;
-			final double MAX_BOOST = 0.6; // boost maxes out at an additional 60% of the base speed
-		//SECTION - Drive Contants
+		//SECTION Drive contants
 			final int BASE_SPEED = 1500;
 			final double MAX_BOOST = 0.6; // boost maxes out at an additional 60% of the base speed
 		//!SECTION - End drive constants
@@ -86,8 +83,8 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			imu = hardwareMap.get(IMU.class, "imu");
 
 			//NOTE - Claw variables
-			private double clawLeftPassivePower = 0;
-			private double clawRightPassivePower = 0;
+			double clawLeftPassivePower = 0;
+			double clawRightPassivePower = 0;
 
 		//!SECTION - End variable definitions
 
@@ -164,9 +161,31 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 				MElbowRight.setPower(-rightStickYGP2 * ELBOW_SPEED);
 			//!SECTION - End Arm
 
-			int[] passive_powers = updateClaws()
-			clawLeftPassivePower = passive_powers[0]
-			clawRightPassivePower = passive_powers[1]
+		if (!(gamepad2.left_trigger > 0 || gamepad2.right_trigger > 0)) {}
+		else if (gamepad2.a) {
+			if (gamepad2.left_trigger > 0) {
+				clawLeft.setPower(-CLAW_CLOSE_POWER); // inverse right claw power
+				clawLeftPassivePower = -CLAW_CLOSE_RESIDUAL_POWER; // inverse right claw power
+			}
+			if (gamepad2.right_trigger > 0) {
+				clawRight.setPower(CLAW_CLOSE_POWER);
+				clawRightPassivePower = CLAW_CLOSE_RESIDUAL_POWER;
+			}
+		}
+		else if (gamepad2.b) {
+			if (gamepad2.left_trigger > 0) {
+				clawLeft.setPower(CLAW_OPEN_POWER); // inverse right claw power
+				clawLeftPassivePower = 0;
+			}
+			if (gamepad2.right_trigger > 0) {
+				clawRight.setPower(-CLAW_OPEN_POWER);
+				clawRightPassivePower = 0;
+			}
+		}
+		else {
+			clawLeft.setPower(clawLeftPassivePower);
+			clawRight.setPower(clawRightPassivePower);
+		}
 
 			//SECTION - Telemetry
 				telemetry.addData("Speed Mod:", maxSpeed);
@@ -185,37 +204,6 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 				telemetry.update();
 			//!SECTION - End telemetry
 		}
-	}
-
-	int[] updateClaws(double clawLeftPassivePower, double clawRightPassivePower) {
-		if (!(gamepad2.left_trigger || gamepad2.right_trigger)) return;
-
-		if (gamepad2.a) {
-			if (gamepad2.left_trigger > 0) {
-				clawLeft.setPower(CLAW_CLOSE_POWER);
-				clawLeftPassivePower = CLAW_CLOSE_RESIDUAL_POWER;
-			}
-			if (gamepad2.right_trigger > 0) {
-				clawRight.setPower(-CLAW_CLOSE_POWER); // inverse right claw power
-				clawRightPassivePower = -CLAW_CLOSE_RESIDUAL_POWER; // inverse right claw power
-			}
-		}
-		else if (gamepad2.b) {
-			if (gamepad2.left_trigger > 0) {
-				clawLeft.setPower(-CLAW_OPEN_POWER);
-				clawLeftPassivePower = 0;
-			}
-			if (gamepad2.right_trigger > 0) {
-				clawRight.setPower(CLAW_OPEN_POWER); // inverse right claw power
-				clawRightPassivePower = 0;
-			}
-		}
-		else {
-			clawLeft.setPower(clawLeftPassivePower);
-			clawRight.setPower(clawRightPassivePower);
-		}
-
-		return new int[clawLeftPassivePower, clawRightPassivePower]
 	}
 
 	/**
