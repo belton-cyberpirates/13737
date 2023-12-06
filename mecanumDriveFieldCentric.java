@@ -75,8 +75,8 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			//!SECTION - End arm motors
 			
 			//SECTION - Servos
-				clawLeft = hardwareMap.get(CRServo.class, "s1");
-				clawRight = hardwareMap.get(CRServo.class, "s2");
+				clawLeft = hardwareMap.get(CRServo.class, "s2");
+				clawRight = hardwareMap.get(CRServo.class, "s1");
 			//!SECTION - End servos
 
 			//NOTE - IMU
@@ -161,31 +161,27 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 				MElbowRight.setPower(-rightStickYGP2 * ELBOW_SPEED);
 			//!SECTION - End Arm
 
-		if (!(gamepad2.left_trigger > 0 || gamepad2.right_trigger > 0)) {}
-		else if (gamepad2.a) {
+			//SECTION - Claws
 			if (gamepad2.left_trigger > 0) {
-				clawLeft.setPower(-CLAW_CLOSE_POWER); // inverse right claw power
-				clawLeftPassivePower = -CLAW_CLOSE_RESIDUAL_POWER; // inverse right claw power
+				clawLeft.setPower(gamepad2.left_trigger * CLAW_CLOSE_POWER);
+				clawLeftPassivePower = CLAW_CLOSE_RESIDUAL_POWER;
 			}
-			if (gamepad2.right_trigger > 0) {
-				clawRight.setPower(CLAW_CLOSE_POWER);
-				clawRightPassivePower = CLAW_CLOSE_RESIDUAL_POWER;
-			}
-		}
-		else if (gamepad2.b) {
-			if (gamepad2.left_trigger > 0) {
-				clawLeft.setPower(CLAW_OPEN_POWER); // inverse right claw power
+			else if (gamepad2.left_bumper) {
+				clawLeft.setPower(-CLAW_OPEN_POWER);
 				clawLeftPassivePower = 0;
 			}
+			else clawLeft.setPower(clawLeftPassivePower);
+	
 			if (gamepad2.right_trigger > 0) {
-				clawRight.setPower(-CLAW_OPEN_POWER);
+				clawRight.setPower(-gamepad2.right_trigger * CLAW_CLOSE_POWER);
+				clawRightPassivePower = CLAW_CLOSE_RESIDUAL_POWER;
+			}
+			else if (gamepad2.right_bumper) {
+				clawRight.setPower(CLAW_OPEN_POWER);
 				clawRightPassivePower = 0;
 			}
-		}
-		else {
-			clawLeft.setPower(clawLeftPassivePower);
-			clawRight.setPower(clawRightPassivePower);
-		}
+			else clawRight.setPower(-clawRightPassivePower);
+			//!SECTION End claws
 
 			//SECTION - Telemetry
 				telemetry.addData("Speed Mod:", maxSpeed);
