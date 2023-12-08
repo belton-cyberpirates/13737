@@ -75,8 +75,8 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			//!SECTION - End arm motors
 			
 			//SECTION - Servos
-				clawLeft = hardwareMap.get(CRServo.class, "s2");
-				clawRight = hardwareMap.get(CRServo.class, "s1");
+				clawLeft = hardwareMap.get(CRServo.class, "s1");
+				clawRight = hardwareMap.get(CRServo.class, "s2");
 			//!SECTION - End servos
 
 			//NOTE - IMU
@@ -162,6 +162,10 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			//!SECTION - End Arm
 
 			//SECTION - Claws
+			if (gamepad2.left_stick_y != 0 || gamepad2.right_stick_y != 0) {
+				clawLeft.setPower(CLAW_CLOSE_POWER)
+				clawRight.setPower(-CLAW_CLOSE_POWER)
+			}
 			if (gamepad2.left_trigger > 0) {
 				clawLeft.setPower(gamepad2.left_trigger * CLAW_CLOSE_POWER);
 				clawLeftPassivePower = CLAW_CLOSE_RESIDUAL_POWER;
