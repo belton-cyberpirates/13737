@@ -21,8 +21,8 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 		//SECTION - Arm Constants
 			final int SHOULDER_MIN_POS = 140;
 			final int ELBOW_MIN_POS = 5;
-			final double SHOULDER_SPEED = 0.5;
-			final double ELBOW_SPEED = 0.5;
+			final double SHOULDER_SPEED = 0.35;
+			final double ELBOW_SPEED = 0.35;
 			final double STRAFE_MULT = 1.41;
 		//!SECTION - End arm constats
 
