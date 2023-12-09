@@ -32,8 +32,8 @@ import org.firstinspires.ftc.teamcode.Direction;
 import org.firstinspires.ftc.teamcode.Config;
 
 
-@Autonomous(name = "AutoLeft")
-public class AutoLeft extends LinearOpMode {
+@Autonomous(name = "AutoBlueLeft")
+public class AutoBlueLeft extends LinearOpMode {
   private OpenCvCamera camera;
   private AprilTagDetectionPipeline aprilTagDetectionPipeline;
   private DriveMotors driveMotors;
@@ -150,7 +150,11 @@ public class AutoLeft extends LinearOpMode {
     waitForStart();
 
     if (opModeIsActive()) { // <----------------------------------------------------------------
-    
+      MotorSetup()
+      driveMotors.Move(Direction.FORWARD, Config.TILE_LENGTH);
+      driveMotors.Turn(-90);
+      driveMotors.Move(Direction.FORWARD, Config.TILE_LENGTH * 1.5);
+      Arm.
 
     }
   }
