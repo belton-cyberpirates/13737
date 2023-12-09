@@ -10,12 +10,16 @@ import org.firstinspires.ftc.teamcode.Direction;
 
 public class Arm {
   Telemetry telemetry;
-  private DcMotorEx arm1;
-  private DcMotorEx arm2;
+  private DcMotorEx leftShoulder;
+  private DcMotorEx rightShoulder;
+  private DcMotorEx leftElbow;
+  private DcMotorEx rightElbow;
 
-  public Arm(DcMotorEx arm1, DcMotorEx arm2) {
-    this.arm1 = arm1;
-    this.arm2 = arm2;
+  public Arm(DcMotorEx leftShoulder, DcMotorEx rightShoulder, DcMotorEx leftElbow, DcMotorEx rightElbow) {
+    this.leftShoulder = leftShoulder;
+    this.rightShoulder = rightShoulder;
+    this.leftElbow = leftElbow;
+    this.rightElbow = rightElbow;
   }
   
   public void DropArm(){
@@ -47,8 +51,8 @@ public class Arm {
     this.arm2.setTargetPosition(-position);
   }
   
-  
-    public void Move(int position, boolean waitForDone) {
+
+public void Move(int position, boolean waitForDone) {
     this.Move(position);
     
     if (waitForDone){
