@@ -31,24 +31,24 @@ public class Arm {
   }
   
   public void DropArm() {
-    this.motors.forEach( (motor) -> { motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); } )
-    this.motors.forEach( (motor) -> { motor.setPower(-.5); } )
+    foreach(DcMotorEx motor : this.motors) motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    foreach(DcMotorEx motor : this.motors) motor.setPower(-.5);
   }
 
   
   public void Initialize() {
-    this.motors.forEach( (motor) -> { motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); } )
-    this.motors.forEach( (motor) -> { motor.setTargetPosition(0); } )
-    this.motors.forEach( (motor) -> { motor.setMode(DcMotor.RunMode.RUN_TO_POSITION); } )
+    foreach(DcMotorEx motor : this.motors) motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    foreach(DcMotorEx motor : this.motors) motor.setTargetPosition(0);
+    foreach(DcMotorEx motor : this.motors) motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
   }
   
   private void setVelocity(int velocity) {
-    this.motors.forEach( (motor) -> { motor.setVelocity(velocity) } )
+    foreach(DcMotorEx motor : this.motors) motor.setVelocity(velocity);
   }
   
   public void Move(int position) {
     this.setVelocity(Config.ARM_VELOCITY);
-    this.motors.forEach( (motor) -> { motor.setTargetPosition(position); } )
+    foreach(DcMotorEx motor : this.motors) motor.setTargetPosition(position);
   }
   
 
@@ -62,7 +62,7 @@ public void Move(int position, boolean waitForDone) {
   public void Move(int position, boolean waitForDone, int tempVelocity) {
     this.setVelocity(tempVelocity);
 
-    this.motors.forEach( (motor) -> { motor.setTargetPosition(position); } )
+    foreach(DcMotorEx motor : this.motors) motor.setTargetPosition(position);
     
     if (waitForDone)
       WaitForMotors();
