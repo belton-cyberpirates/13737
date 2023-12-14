@@ -158,10 +158,10 @@ public class AutoBlueLeft extends LinearOpMode {
 	if (opModeIsActive()) { // <----------------------------------------------------------------
 	  MotorSetup();
 	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.1));
-	  driveMotors.Turn(-90);
+	  driveMotors.Turn(90);
 	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.5));
-	  
-
+	  driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 1.2));
+	  driveMotors.Turn(-90);
 	}
   }
 

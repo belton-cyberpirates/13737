@@ -161,8 +161,8 @@ public class AutoBlueRight extends LinearOpMode {
 	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.2));
 	  driveMotors.Turn(-90);
 	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 3.5));
-	  
-
+	  driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 1.2));
+	  driveMotors.Turn(90);
 	}
   }
 
