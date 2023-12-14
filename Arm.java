@@ -12,22 +12,20 @@ public class Arm {
   Telemetry telemetry;
   private DcMotorEx leftShoulder;
   private DcMotorEx rightShoulder;
-  private DcMotorEx leftElbow;
-  private DcMotorEx rightElbow;
+  private DcMotorEx Elbow;
   private DcMotorEx[] motors;
 
-  public Arm(DcMotorEx leftShoulder, DcMotorEx rightShoulder, DcMotorEx leftElbow, DcMotorEx rightElbow) {
+  // leftShoulder, rightShoulder, leftElbow, rightElbow
+  public Arm(DcMotorEx leftShoulder, DcMotorEx rightShoulder, DcMotorEx Elbow) {
 	this.leftShoulder = leftShoulder;
 	this.rightShoulder = rightShoulder;
-	this.leftElbow = leftElbow;
-	this.rightElbow = rightElbow;
+	this.Elbow = Elbow;
 
 	// reverse left motors
-	this.leftShoulder.setDirection(DcMotor.Direction.REVERSE);
-	this.leftElbow.setDirection(DcMotor.Direction.REVERSE);
+	this.rightShoulder.setDirection(DcMotor.Direction.REVERSE);
 
 	// create list of motors to make code cleaner
-	this.motors = new DcMotorEx[]{this.leftShoulder, this.rightShoulder, this.leftElbow, this.rightElbow};
+	this.motors = new DcMotorEx[]{this.leftShoulder, this.rightShoulder, this.Elbow};
   }
   
   public void DropArm() {
@@ -69,7 +67,7 @@ public void Move(int position, boolean waitForDone) {
   }
   
   private void WaitForMotors() {
-	while (this.leftShoulder.isBusy() || this.rightShoulder.isBusy() || this.leftElbow.isBusy() || this.rightElbow.isBusy()) {}
+	while (this.leftShoulder.isBusy() || this.rightShoulder.isBusy() || this.Elbow.isBusy()) {}
 	this.setVelocity(Config.ARM_VELOCITY);
   }
 }

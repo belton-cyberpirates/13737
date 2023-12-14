@@ -198,7 +198,8 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			if (gamepad2.y) DroneServo.setPosition(0.5);
 
 			if (gamepad2.a) Winch.setPower(-1);
-			if (gamepad2.b) Winch.setPower(1);
+			else if (gamepad2.b) Winch.setPower(1);
+			else Winch.setPower(0)
 			
 			//SECTION - Telemetry
 				telemetry.addData("Speed Mod:", maxSpeed);
