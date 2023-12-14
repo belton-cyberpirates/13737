@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -21,8 +22,8 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 		//SECTION - Arm Constants
 			final int SHOULDER_MIN_POS = 140;
 			final int ELBOW_MIN_POS = 5;
-			final double SHOULDER_SPEED = 0.35;
-			final double ELBOW_SPEED = 0.35;
+			final double SHOULDER_SPEED = 0.6;
+			final double ELBOW_SPEED = 0.6;
 			final double STRAFE_MULT = 1.41;
 		//!SECTION - End arm constats
 
@@ -44,8 +45,9 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 		//SECTION - Arm Motors
 			private DcMotorEx MShoulderLeft;
 			private DcMotorEx MShoulderRight;
-			private DcMotorEx MElbowLeft;
-			private DcMotorEx MElbowRight;
+			private DcMotorEx MElbow;
+			private DcMotorEx Winch;
+			private Servo DroneServo;
 		//!SECTION - End arm motors
 
 		//SECTION - Claws
@@ -70,8 +72,9 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			//SECTION - Arm Motors
 				MShoulderLeft = hardwareMap.get(DcMotorEx.class, "left_shoulder");
 				MShoulderRight = hardwareMap.get(DcMotorEx.class, "right_shoulder");
-				MElbowLeft = hardwareMap.get(DcMotorEx.class, "left_elbow");
-				MElbowRight = hardwareMap.get(DcMotorEx.class, "right_elbow");
+				MElbow = hardwareMap.get(DcMotorEx.class, "right_elbow");
+				Winch = hardwareMap.get(DcMotorEx.class, "winch");
+				DroneServo = hardwareMap.get(Servo.class, "drone_servo");
 			//!SECTION - End arm motors
 			
 			//SECTION - Servos
@@ -100,6 +103,9 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 		//NOTE - Reset robot heading on startup (not initialization)
 		//NOTE - MAKE SURE ROBOT IS FACING FORWARD BEFORE HITTING START!
 		imu.resetYaw();
+		
+		//NOTE set servo start position
+		DroneServo.setPosition(0);
 
 		while (opModeIsActive()) {
 			//NOTE - Reset Yaw on start button press so that a restart is not needed if Yaw should be reset again.
@@ -157,36 +163,43 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 				//NOTE - Set the power of the arm motors
 				MShoulderLeft.setPower(-leftStickYGP2 * SHOULDER_SPEED);
 				MShoulderRight.setPower(leftStickYGP2 * SHOULDER_SPEED);
-				MElbowLeft.setPower(rightStickYGP2 * ELBOW_SPEED);
-				MElbowRight.setPower(-rightStickYGP2 * ELBOW_SPEED);
+				MElbow.setPower(-rightStickYGP2 * ELBOW_SPEED);
 			//!SECTION - End Arm
 
 			//SECTION - Claws
-			if (gamepad2.left_stick_y != 0 || gamepad2.right_stick_y != 0) {
-				clawLeft.setPower(CLAW_CLOSE_POWER);
-				clawRight.setPower(-CLAW_CLOSE_POWER);
+			if (gamepad2.left_stick_y < 0 || gamepad2.right_stick_y < 0) {
+				clawLeft.setPower(-CLAW_CLOSE_POWER);
+				clawRight.setPower(CLAW_CLOSE_POWER);
 			}
 			else if (gamepad2.left_trigger > 0) {
-				clawLeft.setPower(gamepad2.left_trigger * CLAW_CLOSE_POWER);
+				clawLeft.setPower(gamepad2.left_trigger * -CLAW_CLOSE_POWER);
 				clawLeftPassivePower = CLAW_CLOSE_RESIDUAL_POWER;
 			}
 			else if (gamepad2.left_bumper) {
-				clawLeft.setPower(-CLAW_OPEN_POWER);
+				clawLeft.setPower(CLAW_OPEN_POWER);
 				clawLeftPassivePower = 0;
 			}
-			else clawLeft.setPower(clawLeftPassivePower);
+			else clawLeft.setPower(-clawLeftPassivePower);
+	
+	
 	
 			if (gamepad2.right_trigger > 0) {
-				clawRight.setPower(-gamepad2.right_trigger * CLAW_CLOSE_POWER);
+				clawRight.setPower(-gamepad2.right_trigger * -CLAW_CLOSE_POWER);
 				clawRightPassivePower = CLAW_CLOSE_RESIDUAL_POWER;
 			}
 			else if (gamepad2.right_bumper) {
-				clawRight.setPower(CLAW_OPEN_POWER);
+				clawRight.setPower(-CLAW_OPEN_POWER);
 				clawRightPassivePower = 0;
 			}
-			else clawRight.setPower(-clawRightPassivePower);
+			else clawRight.setPower(clawRightPassivePower);
 			//!SECTION End claws
+			
+			if (gamepad2.x) DroneServo.setPosition(0);
+			if (gamepad2.y) DroneServo.setPosition(0.5);
 
+			if (gamepad2.a) Winch.setPower(-1);
+			if (gamepad2.b) Winch.setPower(1);
+			
 			//SECTION - Telemetry
 				telemetry.addData("Speed Mod:", maxSpeed);
 				telemetry.addData(
@@ -197,8 +210,7 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 					"Right Shoulder:",
 					MShoulderRight.getCurrentPosition()
 				);
-				telemetry.addData("Left Elbow:", MElbowLeft.getCurrentPosition());
-				telemetry.addData("Right Elbot:", MElbowRight.getCurrentPosition());
+				telemetry.addData("Elbow:", MElbow.getCurrentPosition());
 				telemetry.addData("Heading (radians):", botHeading);
 
 				telemetry.update();
