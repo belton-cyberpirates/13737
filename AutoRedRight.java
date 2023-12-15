@@ -35,8 +35,8 @@ import org.firstinspires.ftc.teamcode.Direction;
 import org.firstinspires.ftc.teamcode.Config;
 
 
-@Autonomous(name = "AutoBlueLeft")
-public class AutoBlueLeft extends LinearOpMode {
+@Autonomous(name = "AutoRedRight")
+public class AutoRedRight extends LinearOpMode {
   private OpenCvCamera camera;
   //private AprilTagDetectionPipeline aprilTagDetectionPipeline;
   private DriveMotors driveMotors;
@@ -49,6 +49,7 @@ public class AutoBlueLeft extends LinearOpMode {
    * Set reliable initial configuration for robot motors
    */
   public void MotorSetup() { // TODO add claws to motor setup
+	clawLeft.setDirection(DcMotor.Direction.REVERSE);
 	CloseClaw(clawLeft, clawRight);
 	arm.DropArm();
 	sleep(500);
@@ -147,7 +148,6 @@ public class AutoBlueLeft extends LinearOpMode {
 	arm = new Arm(
 	  hardwareMap.get(DcMotorEx.class, "left_shoulder"),
 	  hardwareMap.get(DcMotorEx.class, "right_shoulder"),
-	  hardwareMap.get(DcMotorEx.class, "left_elbow"),
 	  hardwareMap.get(DcMotorEx.class, "right_elbow")
 	);
 	clawLeft = hardwareMap.get(CRServo.class, "s1");
@@ -157,11 +157,13 @@ public class AutoBlueLeft extends LinearOpMode {
 
 	if (opModeIsActive()) { // <----------------------------------------------------------------
 	  MotorSetup();
+	  arm.Move(25);
 	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.1));
 	  driveMotors.Turn(90);
 	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.5));
-	  driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 1.2));
+	  driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 1.05));
 	  driveMotors.Turn(-90);
+	  driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .2));
 	}
   }
 
