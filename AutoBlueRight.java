@@ -49,7 +49,7 @@ public class AutoBlueRight extends LinearOpMode {
    * Set reliable initial configuration for robot motors
    */
   public void MotorSetup() { // TODO add claws to motor setup
-    clawLeft.setDirection(DcMotor.Direction.REVERSE);
+	clawLeft.setDirection(DcMotor.Direction.REVERSE);
 	CloseClaw(clawLeft, clawRight);
 	arm.DropArm();
 	sleep(500);
@@ -160,9 +160,11 @@ public class AutoBlueRight extends LinearOpMode {
 	  arm.Move(25);
 	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.2));
 	  driveMotors.Turn(-90);
+	  sleep(10000);
 	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 3.5));
-	  driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 1.2));
 	  driveMotors.Turn(90);
+	  arm.Move(0);
+	  sleep(1000);
 	}
   }
 

@@ -164,6 +164,8 @@ public class AutoRedRight extends LinearOpMode {
 	  driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 1.05));
 	  driveMotors.Turn(-90);
 	  driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .2));
+	  arm.Move(0);
+	  sleep(1000);
 	}
   }
 
