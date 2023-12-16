@@ -165,6 +165,7 @@ public class AutoBlueRight extends LinearOpMode {
 	  driveMotors.Turn(90);
 	  arm.Move(0);
 	  sleep(1000);
+	  OpenClaw(clawLeft, clawRight);
 	}
   }
 
@@ -198,8 +199,8 @@ public class AutoBlueRight extends LinearOpMode {
   /**
    * Open the given claw(s)
    */
-  public void OpenClaw(DcMotor... claws) {
-	for (DcMotor claw : claws) {
+  public void OpenClaw(CRServo... claws) {
+	for (CRServo claw : claws) {
 	  claw.setPower(-0.3);
 	  sleep(200);
 	  claw.setPower(0);
