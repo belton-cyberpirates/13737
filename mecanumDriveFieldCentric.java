@@ -20,10 +20,8 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 		//!SECTION - End drive constants
 
 		//SECTION - Arm Constants
-			final int SHOULDER_MIN_POS = 140;
-			final int ELBOW_MIN_POS = 5;
 			final double SHOULDER_SPEED = 0.6;
-			final double ELBOW_SPEED = 0.6;
+			final double SLIDE_SPEED = 0.9;
 			final double STRAFE_MULT = 1.41;
 		//!SECTION - End arm constats
 
@@ -43,9 +41,8 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 		//!SECTION - End Drive motors
 
 		//SECTION - Arm Motors
-			private DcMotorEx MShoulderLeft;
-			private DcMotorEx MShoulderRight;
-			private DcMotorEx MElbow;
+			private DcMotorEx MShoulder;
+			private DcMotorEx MSlide;
 			private DcMotorEx Winch;
 			private Servo DroneServo;
 		//!SECTION - End arm motors
@@ -70,9 +67,8 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			//!SECTION - End drive motors
 
 			//SECTION - Arm Motors
-				MShoulderLeft = hardwareMap.get(DcMotorEx.class, "left_shoulder");
-				MShoulderRight = hardwareMap.get(DcMotorEx.class, "right_shoulder");
-				MElbow = hardwareMap.get(DcMotorEx.class, "right_elbow");
+				MShoulder = hardwareMap.get(DcMotorEx.class, "shoulder");
+				MSlide = hardwareMap.get(DcMotorEx.class, "lift");
 				Winch = hardwareMap.get(DcMotorEx.class, "winch");
 				DroneServo = hardwareMap.get(Servo.class, "drone_servo");
 			//!SECTION - End arm motors
@@ -161,9 +157,9 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 
 			//SECTION - Arm
 				//NOTE - Set the power of the arm motors
-				MShoulderLeft.setPower(-leftStickYGP2 * SHOULDER_SPEED);
-				MShoulderRight.setPower(leftStickYGP2 * SHOULDER_SPEED);
-				MElbow.setPower(-rightStickYGP2 * ELBOW_SPEED);
+				MShoulder.setPower(leftStickYGP2 * SHOULDER_SPEED);
+				
+				MSlide.setPower(rightStickYGP2 * SLIDE_SPEED);
 			//!SECTION - End Arm
 
 			//SECTION - Claws
@@ -204,14 +200,9 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			//SECTION - Telemetry
 				telemetry.addData("Speed Mod:", maxSpeed);
 				telemetry.addData(
-					"Left Shoulder:",
-					MShoulderLeft.getCurrentPosition()
+					"Shoulder:",
+					MShoulder.getCurrentPosition()
 				);
-				telemetry.addData(
-					"Right Shoulder:",
-					MShoulderRight.getCurrentPosition()
-				);
-				telemetry.addData("Elbow:", MElbow.getCurrentPosition());
 				telemetry.addData("Heading (radians):", botHeading);
 
 				telemetry.update();
