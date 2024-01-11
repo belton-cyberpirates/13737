@@ -169,12 +169,15 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			if (gamepad2.right_trigger > 0) clawRight.setPosition(0);
 			else if (gamepad2.right_bumper) clawRight.setPosition(1);
 			//!SECTION End claws
-			
-			if (gamepad2.x) DroneLauncher.setPosition(0);
-			if (gamepad2.y) DroneLauncher.setPosition(0.5);
 
-			if (gamepad2.a) Winch.setPower(-1);
-			else if (gamepad2.b) Winch.setPower(1);
+			if (gamepad2.a) wrist.setPosition(0);
+			if (gamepad2.b) wrist.setPosition(1);
+			
+			if (gamepad1.x) DroneLauncher.setPosition(0);
+			if (gamepad1.y) DroneLauncher.setPosition(0.5);
+
+			if (gamepad2.x) Winch.setPower(-1);
+			else if (gamepad2.y) Winch.setPower(1);
 			else Winch.setPower(0);
 			
 			//SECTION - Telemetry
