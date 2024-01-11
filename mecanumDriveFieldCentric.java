@@ -74,10 +74,10 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			//!SECTION - End arm motors
 			
 			//SECTION - Servos
-				DroneLauncher = hardwareMap.get(Servo.class, "drone_servo");
-				clawLeft = hardwareMap.get(Servo.class, "claw_left");
-				clawRight = hardwareMap.get(Servo.class, "claw_right");
-				clawRight = hardwareMap.get(Servo.class, "wrist");
+				//DroneLauncher = hardwareMap.get(Servo.class, "drone_servo");
+				clawLeft = hardwareMap.get(Servo.class, "clawLeft");
+				clawRight = hardwareMap.get(Servo.class, "clawRight");
+				wrist = hardwareMap.get(Servo.class, "wrist");
 			//!SECTION - End servos
 
 			//NOTE - IMU
@@ -163,18 +163,18 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			//!SECTION - End Arm
 
 			//SECTION - Claws
-			if (gamepad2.left_trigger > 0) clawLeft.setPosition(1);
-			else if (gamepad2.left_bumper) clawLeft.setPosition(0);
+			if (gamepad2.left_trigger > 0) clawLeft.setPosition(.62);
+			else if (gamepad2.left_bumper) clawLeft.setPosition(.2);
 	
-			if (gamepad2.right_trigger > 0) clawRight.setPosition(0);
-			else if (gamepad2.right_bumper) clawRight.setPosition(1);
+			if (gamepad2.right_trigger > 0) clawRight.setPosition(.38);
+			else if (gamepad2.right_bumper) clawRight.setPosition(.8);
 			//!SECTION End claws
 
 			if (gamepad2.a) wrist.setPosition(0);
 			if (gamepad2.b) wrist.setPosition(1);
 			
-			if (gamepad1.x) DroneLauncher.setPosition(0);
-			if (gamepad1.y) DroneLauncher.setPosition(0.5);
+			//if (gamepad1.x) DroneLauncher.setPosition(0);
+			//if (gamepad1.y) DroneLauncher.setPosition(0.5);
 
 			if (gamepad2.x) Winch.setPower(-1);
 			else if (gamepad2.y) Winch.setPower(1);
