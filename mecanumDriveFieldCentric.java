@@ -34,23 +34,24 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 	
 	//SECTION - Variable init
 		//SECTION - Drive Motors
-			private DcMotorEx MBackLeft;
-			private DcMotorEx MBackRight;
-			private DcMotorEx MFrontLeft;
-			private DcMotorEx MFrontRight;
+			private DcMotorEx BackLeft;
+			private DcMotorEx FrontLeft;
+			private DcMotorEx FrontRight;
+			private DcMotorEx BackRight;
 		//!SECTION - End Drive motors
 
 		//SECTION - Arm Motors
-			private DcMotorEx MShoulder;
-			private DcMotorEx MSlide;
+			private DcMotorEx Shoulder;
+			private DcMotorEx Slide;
 			private DcMotorEx Winch;
-			private Servo DroneServo;
 		//!SECTION - End arm motors
 
-		//SECTION - Claws
-			private CRServo clawLeft;
-			private CRServo clawRight;
-		//!SECTION - End arm motors
+		//SECTION - Servos
+			private Servo DroneLauncher;
+			private Servo clawLeft;
+			private Servo clawRight;
+			private Servo wrist;
+		//!SECTION - End servos
 
 		//NOTE - IMU
 		private IMU imu;
@@ -60,38 +61,35 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 	public void runOpMode() throws InterruptedException {
 		//SECTION - Define Variables
 			//SECTION - Drive motors
-				MBackLeft = hardwareMap.get(DcMotorEx.class, "m1");
-				MFrontLeft = hardwareMap.get(DcMotorEx.class, "m2");
-				MFrontRight = hardwareMap.get(DcMotorEx.class, "m3");
-				MBackRight = hardwareMap.get(DcMotorEx.class, "m4");
+				BackLeft = hardwareMap.get(DcMotorEx.class, "m1");
+				FrontLeft = hardwareMap.get(DcMotorEx.class, "m2");
+				FrontRight = hardwareMap.get(DcMotorEx.class, "m3");
+				BackRight = hardwareMap.get(DcMotorEx.class, "m4");
 			//!SECTION - End drive motors
 
 			//SECTION - Arm Motors
-				MShoulder = hardwareMap.get(DcMotorEx.class, "shoulder");
-				MSlide = hardwareMap.get(DcMotorEx.class, "lift");
+				Shoulder = hardwareMap.get(DcMotorEx.class, "shoulder");
+				Slide = hardwareMap.get(DcMotorEx.class, "lift");
 				Winch = hardwareMap.get(DcMotorEx.class, "winch");
-				DroneServo = hardwareMap.get(Servo.class, "drone_servo");
 			//!SECTION - End arm motors
 			
 			//SECTION - Servos
-				clawLeft = hardwareMap.get(CRServo.class, "s1");
-				clawRight = hardwareMap.get(CRServo.class, "s2");
+				DroneLauncher = hardwareMap.get(Servo.class, "drone_servo");
+				clawLeft = hardwareMap.get(Servo.class, "claw_left");
+				clawRight = hardwareMap.get(Servo.class, "claw_right");
+				clawRight = hardwareMap.get(Servo.class, "wrist");
 			//!SECTION - End servos
 
 			//NOTE - IMU
 			imu = hardwareMap.get(IMU.class, "imu");
 
-			//NOTE - Claw variables
-			double clawLeftPassivePower = 0;
-			double clawRightPassivePower = 0;
-
 		//!SECTION - End variable definitions
 
 		//NOTE - Set the zero power behaviour
-		MBackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-		MBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-		MFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-		MFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+		BackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+		FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+		FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+		BackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 		// Wait for the start button to be pressed
 		waitForStart();
@@ -101,7 +99,9 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 		imu.resetYaw();
 		
 		//NOTE set servo start position
-		DroneServo.setPosition(0);
+		clawLeft.setPosition(0.5);
+		clawRight.setPosition(0.5);
+		wrist.setPosition(1);
 
 		while (opModeIsActive()) {
 			//NOTE - Reset Yaw on start button press so that a restart is not needed if Yaw should be reset again.
@@ -141,57 +141,37 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 				// Set the power of the wheels based off the new joystick coordinates
 				// y+x+stick <- [-1,1]
 
-				MBackLeft.setVelocity(
+				BackLeft.setVelocity(
 					(rotatedY + rotatedX - rightStickXGP1) * maxSpeed
 				);
-				MFrontLeft.setVelocity(
+				FrontLeft.setVelocity(
 					(rotatedY - rotatedX - rightStickXGP1) * maxSpeed
 				);
-				MBackRight.setVelocity(
-					(-rotatedY + rotatedX - rightStickXGP1) * maxSpeed
-				);
-				MFrontRight.setVelocity(
+				FrontRight.setVelocity(
 					(-rotatedY - rotatedX - rightStickXGP1) * maxSpeed
+				);
+				BackRight.setVelocity(
+					(-rotatedY + rotatedX - rightStickXGP1) * maxSpeed
 				);
 			//!SECTION - End Base
 
 			//SECTION - Arm
 				//NOTE - Set the power of the arm motors
-				MShoulder.setPower(leftStickYGP2 * SHOULDER_SPEED);
+				Shoulder.setPower(leftStickYGP2 * SHOULDER_SPEED);
+				Slide.setPower(rightStickYGP2 * SLIDE_SPEED);
 				
-				MSlide.setPower(rightStickYGP2 * SLIDE_SPEED);
 			//!SECTION - End Arm
 
 			//SECTION - Claws
-			if (gamepad2.left_stick_y < 0 || gamepad2.right_stick_y < 0) {
-				clawLeft.setPower(-CLAW_CLOSE_POWER);
-				clawRight.setPower(CLAW_CLOSE_POWER);
-			}
-			else if (gamepad2.left_trigger > 0) {
-				clawLeft.setPower(gamepad2.left_trigger * -CLAW_CLOSE_POWER);
-				clawLeftPassivePower = CLAW_CLOSE_RESIDUAL_POWER;
-			}
-			else if (gamepad2.left_bumper) {
-				clawLeft.setPower(CLAW_OPEN_POWER);
-				clawLeftPassivePower = 0;
-			}
-			else clawLeft.setPower(-clawLeftPassivePower);
+			if (gamepad2.left_trigger > 0) clawLeft.setPosition(1);
+			else if (gamepad2.left_bumper) clawLeft.setPosition(0);
 	
-	
-	
-			if (gamepad2.right_trigger > 0) {
-				clawRight.setPower(-gamepad2.right_trigger * -CLAW_CLOSE_POWER);
-				clawRightPassivePower = CLAW_CLOSE_RESIDUAL_POWER;
-			}
-			else if (gamepad2.right_bumper) {
-				clawRight.setPower(-CLAW_OPEN_POWER);
-				clawRightPassivePower = 0;
-			}
-			else clawRight.setPower(clawRightPassivePower);
+			if (gamepad2.right_trigger > 0) clawRight.setPosition(0);
+			else if (gamepad2.right_bumper) clawRight.setPosition(1);
 			//!SECTION End claws
 			
-			if (gamepad2.x) DroneServo.setPosition(0);
-			if (gamepad2.y) DroneServo.setPosition(0.5);
+			if (gamepad2.x) DroneLauncher.setPosition(0);
+			if (gamepad2.y) DroneLauncher.setPosition(0.5);
 
 			if (gamepad2.a) Winch.setPower(-1);
 			else if (gamepad2.b) Winch.setPower(1);
@@ -201,7 +181,7 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 				telemetry.addData("Speed Mod:", maxSpeed);
 				telemetry.addData(
 					"Shoulder:",
-					MShoulder.getCurrentPosition()
+					Shoulder.getCurrentPosition()
 				);
 				telemetry.addData("Heading (radians):", botHeading);
 
