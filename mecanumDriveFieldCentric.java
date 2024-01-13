@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -23,6 +24,7 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			final double SHOULDER_SPEED = 0.6;
 			final double SLIDE_SPEED = 0.9;
 			final double STRAFE_MULT = 1.41;
+			final double WRIST_MAX = .9;
 		//!SECTION - End arm constats
 
 		//SECTION - Claw constants
@@ -52,9 +54,13 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			private Servo clawRight;
 			private Servo wrist;
 		//!SECTION - End servos
+		
+		private TouchSensor magnet;
 
 		//NOTE - IMU
 		private IMU imu;
+		
+		private boolean slideFrozen;
 	//!SECTION - End variable initialzation
 
 	@Override
@@ -74,11 +80,13 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			//!SECTION - End arm motors
 			
 			//SECTION - Servos
-				//DroneLauncher = hardwareMap.get(Servo.class, "drone_servo");
+				DroneLauncher = hardwareMap.get(Servo.class, "drone_servo");
 				clawLeft = hardwareMap.get(Servo.class, "clawLeft");
 				clawRight = hardwareMap.get(Servo.class, "clawRight");
 				wrist = hardwareMap.get(Servo.class, "wrist");
 			//!SECTION - End servos
+			
+			magnet = hardwareMap.get(TouchSensor.class, "magnet");
 
 			//NOTE - IMU
 			imu = hardwareMap.get(IMU.class, "imu");
@@ -90,6 +98,7 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 		FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 		FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 		BackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+		Slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 		// Wait for the start button to be pressed
 		waitForStart();
@@ -101,7 +110,7 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 		//NOTE set servo start position
 		clawLeft.setPosition(0.5);
 		clawRight.setPosition(0.5);
-		wrist.setPosition(1);
+		wrist.setPosition(WRIST_MAX);
 
 		while (opModeIsActive()) {
 			//NOTE - Reset Yaw on start button press so that a restart is not needed if Yaw should be reset again.
@@ -158,23 +167,28 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			//SECTION - Arm
 				//NOTE - Set the power of the arm motors
 				Shoulder.setPower(leftStickYGP2 * SHOULDER_SPEED);
-				Slide.setPower(rightStickYGP2 * SLIDE_SPEED);
+				
+				double slide_power = rightStickYGP2 * SLIDE_SPEED;
+				if (magnet.isPressed()) slideFrozen = true;
+				if (slide_power < 0) slideFrozen = false;
+				if (slideFrozen) slide_power = Math.min(slide_power, 0);
+				Slide.setPower(slide_power);
 				
 			//!SECTION - End Arm
 
 			//SECTION - Claws
-			if (gamepad2.left_trigger > 0) clawLeft.setPosition(.62);
-			else if (gamepad2.left_bumper) clawLeft.setPosition(.2);
-	
-			if (gamepad2.right_trigger > 0) clawRight.setPosition(.38);
-			else if (gamepad2.right_bumper) clawRight.setPosition(.8);
+				if (gamepad2.left_trigger > 0) clawLeft.setPosition(.62);
+				else if (gamepad2.left_bumper) clawLeft.setPosition(.2);
+		
+				if (gamepad2.right_trigger > 0) clawRight.setPosition(.38);
+				else if (gamepad2.right_bumper) clawRight.setPosition(.8);
 			//!SECTION End claws
 
 			if (gamepad2.a) wrist.setPosition(0);
-			if (gamepad2.b) wrist.setPosition(1);
+			if (gamepad2.b) wrist.setPosition(WRIST_MAX);
 			
-			//if (gamepad1.x) DroneLauncher.setPosition(0);
-			//if (gamepad1.y) DroneLauncher.setPosition(0.5);
+			if (gamepad1.x) DroneLauncher.setPosition(0);
+			if (gamepad1.y) DroneLauncher.setPosition(0.5);
 
 			if (gamepad2.x) Winch.setPower(-1);
 			else if (gamepad2.y) Winch.setPower(1);
