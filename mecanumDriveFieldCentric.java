@@ -166,7 +166,7 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 
 			//SECTION - Arm
 				//NOTE - Set the power of the arm motors
-				Shoulder.setPower(leftStickYGP2 * SHOULDER_SPEED);
+				Shoulder.setPower(leftStickYGP2 * SHOULDER_SPEED * (gamepad2.dpad_down ? .5 : 1));
 				
 				double slide_power = rightStickYGP2 * SLIDE_SPEED;
 				if (magnet.isPressed()) slideFrozen = true;
