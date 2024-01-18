@@ -5,8 +5,8 @@ public class Config {
   /*****************************************************************************
   ** DISTANCE CALIBRATION CONSTANTS
   *****************************************************************************/
-  public static final int TICKS_PER_360_DEG = 2150; // TODO
-  public static final int TILE_LENGTH = 800; // TODO
+  public static final int TICKS_PER_360_DEG = 4475;
+  public static final int TILE_LENGTH = 1250;
 
   public static final int DEFAULT_SPIKE_MARK = 3;
   // ---------------------------------------------------------------------------
@@ -15,10 +15,9 @@ public class Config {
   /*****************************************************************************
   ** DRIVE SPEED CONSTANTS
   *****************************************************************************/
-  public static final int MIN_SPEED = 450; // TODO
-  public static final int CRUISE_SPEED = 1000; // TODO
-  public static final int MAX_SPEED = 900; // TODO
-  public static final int ARM_VELOCITY = 2000; // TODO
+  public static final int CRUISE_SPEED = 1400;
+  public static final int ARM_VELOCITY = 500;
+  public static final int SLIDE_VELOCITY = 1200;
   // ---------------------------------------------------------------------------
 
 
@@ -31,6 +30,17 @@ public class Config {
   public static final int CRUISING_HEIGHT = 30; // TODO
   public static final int TOP = 125; // TODO
   // ---------------------------------------------------------------------------
+  
+  
+  /*****************************************************************************
+  ** CLAW CALIBRATION CONSTANTS
+  *****************************************************************************/
+  public static final double CLAW_LEFT_OPEN = .2;
+  public static final double CLAW_LEFT_CLOSE = .62;
+  public static final double CLAW_RIGHT_OPEN = .8;
+  public static final double CLAW_RIGHT_CLOSE = .38;
+  // ---------------------------------------------------------------------------
+
 
 
   /*****************************************************************************
