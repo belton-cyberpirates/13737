@@ -146,10 +146,10 @@ public class AutoBlueLeft extends LinearOpMode {
 	);
 	
 	arm = new Arm(
-	  hardwareMap.get(DcMotorEx.class, "left_shoulder"),
-	  hardwareMap.get(DcMotorEx.class, "right_shoulder"),
-	  hardwareMap.get(DcMotorEx.class, "right_elbow")
+	  hardwareMap.get(DcMotorEx.class, "shoulder"),
+	  hardwareMap.get(DcMotorEx.class, "slide")
 	);
+	
 	clawLeft = hardwareMap.get(CRServo.class, "s1");
 	clawRight = hardwareMap.get(CRServo.class, "s2");
 

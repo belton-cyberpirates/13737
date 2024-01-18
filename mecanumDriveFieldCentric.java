@@ -108,8 +108,8 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 		imu.resetYaw();
 		
 		//NOTE set servo start position
-		clawLeft.setPosition(0.5);
-		clawRight.setPosition(0.5);
+		clawLeft.setPosition(0.62);
+		clawRight.setPosition(0.38);
 		wrist.setPosition(WRIST_MAX);
 
 		while (opModeIsActive()) {
