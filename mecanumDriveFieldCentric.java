@@ -26,6 +26,8 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			final double SLIDE_SPEED = 0.9;
 			final double STRAFE_MULT = 1.41;
 			final double WRIST_MAX = .9;
+			final double ARM_MAX = 1.35;
+			final double ARM_MIN = .63;
 		//!SECTION - End arm constats
 
 		//SECTION - Claw constants
@@ -171,8 +173,8 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 				//NOTE - Set the power of the arm motors
 				
 				double shoulderPower = leftStickYGP2 * SHOULDER_SPEED;
-				if (shoulderPot.getVoltage() <= .63) shoulderPower = Math.min(shoulderPower, 0);
-				if (shoulderPot.getVoltage() >= 1.35) shoulderPower = Math.max(shoulderPower, 0);
+				if (shoulderPot.getVoltage() <= ARM_MIN) shoulderPower = Math.min(shoulderPower, 0);
+				if (shoulderPot.getVoltage() >= ARM_MAX) shoulderPower = Math.max(shoulderPower, 0);
 				Shoulder.setPower(shoulderPower);
 				
 				double slide_power = rightStickYGP2 * SLIDE_SPEED;
