@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -56,6 +57,7 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 		//!SECTION - End servos
 		
 		private TouchSensor magnet;
+		private AnalogInput shoulderPot;
 
 		//NOTE - IMU
 		private IMU imu;
@@ -87,6 +89,7 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			//!SECTION - End servos
 			
 			magnet = hardwareMap.get(TouchSensor.class, "magnet");
+			shoulderPot = hardwareMap.get(AnalogInput.class, "shoulder_pot");
 
 			//NOTE - IMU
 			imu = hardwareMap.get(IMU.class, "imu");
@@ -166,7 +169,11 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 
 			//SECTION - Arm
 				//NOTE - Set the power of the arm motors
-				Shoulder.setPower(leftStickYGP2 * SHOULDER_SPEED * (gamepad2.dpad_down ? .5 : 1));
+				
+				double shoulderPower = leftStickYGP2 * SHOULDER_SPEED;
+				if (shoulderPot.getVoltage() <= .63) shoulderPower = Math.min(shoulderPower, 0);
+				if (shoulderPot.getVoltage() >= 1.35) shoulderPower = Math.max(shoulderPower, 0);
+				Shoulder.setPower(shoulderPower);
 				
 				double slide_power = rightStickYGP2 * SLIDE_SPEED;
 				if (magnet.isPressed()) slideFrozen = true;
@@ -196,10 +203,8 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			
 			//SECTION - Telemetry
 				telemetry.addData("Speed Mod:", maxSpeed);
-				telemetry.addData(
-					"Shoulder:",
-					Shoulder.getCurrentPosition()
-				);
+				telemetry.addData("Shoulder Encoder:", Shoulder.getCurrentPosition());
+				telemetry.addData("Shoulder Pot:", shoulderPot.getVoltage());
 				telemetry.addData("Heading (radians):", botHeading);
 
 				telemetry.update();
