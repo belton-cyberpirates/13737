@@ -35,11 +35,12 @@ public class Config {
   /*****************************************************************************
   ** CLAW CALIBRATION CONSTANTS
   *****************************************************************************/
-  public static final double CLAW_LEFT_OPEN = .2; // TODO
-  public static final double CLAW_LEFT_CLOSE = .62; // TODO
-  public static final double CLAW_RIGHT_OPEN = .8; // TODO
-  public static final double CLAW_RIGHT_CLOSE = .38; // TODO
+  public static final double CLAW_LEFT_OPEN = .2;
+  public static final double CLAW_LEFT_CLOSE = .62;
+  public static final double CLAW_RIGHT_OPEN = .8;
+  public static final double CLAW_RIGHT_CLOSE = .38;
   // ---------------------------------------------------------------------------
+
 
 
   /*****************************************************************************
