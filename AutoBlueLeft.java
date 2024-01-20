@@ -34,7 +34,7 @@ import org.firstinspires.ftc.teamcode.Direction;
 import org.firstinspires.ftc.teamcode.Config;
 
 
-@Autonomous(name = "AutoBlueLeft")
+@Autonomous(name = "AutoBlueLeft", preselectTeleOp="MecanumDriveFieldCentric")
 public class AutoBlueLeft extends LinearOpMode {
   private OpenCvCamera camera;
   //private AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -56,7 +56,7 @@ public class AutoBlueLeft extends LinearOpMode {
 	CloseClaw();
 	MoveWrist(.85);
 	arm.DropArm();
-	sleep(1000);
+	sleep(1500);
 	arm.Initialize();
   }
 
@@ -169,7 +169,10 @@ public class AutoBlueLeft extends LinearOpMode {
 	  MotorSetup(); // arm between 0 and -2500
 	  
 	  arm.MoveShoulder(-1750);
-	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.1));
+	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .1));
+	  sleep(200);
+	  driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 1));
+	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.2));
 	  
 	  // driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * .2));
 	  // OpenClaw(false, true);
@@ -177,7 +180,7 @@ public class AutoBlueLeft extends LinearOpMode {
 	  
 	  driveMotors.Turn(-90);
 	  
-	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.8));
+	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .9));
 	  
 	  arm.MoveSlide(-300, true);
 	  OpenClaw(true, false);
@@ -186,19 +189,19 @@ public class AutoBlueLeft extends LinearOpMode {
 	  
 	  
 	  arm.MoveShoulder(-2500);
-	  arm.MoveSlide(-50, true);
+	  arm.MoveSlide(-50);
 	  MoveWrist(1);
 	  
 	  driveMotors.Turn(180);
-	  driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * .25));
-	  arm.MoveShoulder(-100, true);
+	  //driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * .25));
+	  arm.MoveShoulder(-200, true);
 	  OpenClaw(false, true);
-	  sleep(100000);
+	  MoveWrist(0);
+	  arm.MoveShoulder(-350);
 	  
-	  driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 1));
-	  driveMotors.Turn(90);
-	  driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .2));
-	  arm.MoveShoulder(0);
+	  driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 1.6));
+	  driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .6));
+	  
 	}
   }
 
