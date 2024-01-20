@@ -35,7 +35,7 @@ import org.firstinspires.ftc.teamcode.Direction;
 import org.firstinspires.ftc.teamcode.Config;
 
 
-@Autonomous(name = "AutoRedLeft")
+@Autonomous(name = "AutoRedLeft", preselectTeleOp="MecanumDriveFieldCentric")
 public class AutoRedLeft extends LinearOpMode {
   private OpenCvCamera camera;
   //private AprilTagDetectionPipeline aprilTagDetectionPipeline;
