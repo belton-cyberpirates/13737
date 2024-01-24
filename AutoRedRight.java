@@ -153,21 +153,47 @@ public class AutoRedRight extends LinearOpMode {
 	
 	clawLeft = hardwareMap.get(Servo.class, "clawLeft");
 	clawRight = hardwareMap.get(Servo.class, "clawRight");
+	wrist = hardwareMap.get(Servo.class, "wrist");
 
 	waitForStart();
 
 	if (opModeIsActive()) { // <----------------------------------------------------------------
-	  MotorSetup();
-	  arm.MoveShoulder(25);
-	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.1));
-	  driveMotors.Turn(90);
-	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.5));
-	  driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 1.05));
+	  MotorSetup(); // arm between 0 and -2500
+	  
+	  arm.MoveShoulder(-1750);
+	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .1));
+	  sleep(200);
+	  driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 1));
+	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.2));
+	  
+	  // driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * .2));
+	  // OpenClaw(false, true);
+	  // driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * .2));
+	  
 	  driveMotors.Turn(-90);
-	  driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .2));
-	  arm.MoveShoulder(0);
-	  sleep(1000);
-	  OpenClaw(clawLeft, clawRight);
+	  
+	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .9));
+	  
+	  arm.MoveSlide(-300, true);
+	  OpenClaw(true, false);
+	  sleep(350);
+	  driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .775));
+	  
+	  
+	  arm.MoveShoulder(-2500);
+	  arm.MoveSlide(-50);
+	  MoveWrist(1);
+	  
+	  driveMotors.Turn(180);
+	  //driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * .25));
+	  arm.MoveShoulder(-200, true);
+	  OpenClaw(false, true);
+	  MoveWrist(0);
+	  arm.MoveShoulder(-350);
+	  
+	  driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 1.6));
+	  driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .6));
+	  
 	}
   }
 

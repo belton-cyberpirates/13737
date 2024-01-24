@@ -35,24 +35,25 @@ import org.firstinspires.ftc.teamcode.Direction;
 import org.firstinspires.ftc.teamcode.Config;
 
 
-@Autonomous(name = "AutoBlueRight", preselectTeleOp="MecanumDriveFieldCentric")
+@Autonomous(name = "AutoBlueRight")
 public class AutoBlueRight extends LinearOpMode {
   private OpenCvCamera camera;
   //private AprilTagDetectionPipeline aprilTagDetectionPipeline;
   private DriveMotors driveMotors;
   private Arm arm;
-  private CRServo clawLeft;
-  private CRServo clawRight;
+  private Servo wrist;
+  private Servo clawLeft;
+  private Servo clawRight;
 
 
   /**
    * Set reliable initial configuration for robot motors
    */
-  public void MotorSetup() { // TODO add claws to motor setup
-	clawLeft.setDirection(DcMotor.Direction.REVERSE);
-	CloseClaw(clawLeft, clawRight);
+  public void MotorSetup() { 
+	CloseClaw();
+	MoveWrist(0);
 	arm.DropArm();
-	sleep(500);
+	sleep(1000);
 	arm.Initialize();
   }
 
@@ -146,24 +147,25 @@ public class AutoBlueRight extends LinearOpMode {
 	);
 	
 	arm = new Arm(
-	  hardwareMap.get(DcMotorEx.class, "left_shoulder"),
-	  hardwareMap.get(DcMotorEx.class, "right_shoulder"),
-	  hardwareMap.get(DcMotorEx.class, "right_elbow")
+	  hardwareMap.get(DcMotorEx.class, "shoulder"),
+	  hardwareMap.get(DcMotorEx.class, "lift")
 	);
-	clawLeft = hardwareMap.get(CRServo.class, "s1");
-	clawRight = hardwareMap.get(CRServo.class, "s2");
+	
+	clawLeft = hardwareMap.get(Servo.class, "clawLeft");
+	clawRight = hardwareMap.get(Servo.class, "clawRight");
+	
 
 	waitForStart();
 
 	if (opModeIsActive()) { // <----------------------------------------------------------------
 	  MotorSetup();
-	  arm.Move(25);
+	  arm.MoveShoulder(-250);
 	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.2));
 	  driveMotors.Turn(-90);
-	  sleep(10000);
+	  sleep(15000);
 	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 3.5));
 	  driveMotors.Turn(90);
-	  arm.Move(0);
+	  arm.MoveShoulder(0);
 	  sleep(1000);
 	  OpenClaw(clawLeft, clawRight);
 	}
@@ -199,23 +201,22 @@ public class AutoBlueRight extends LinearOpMode {
   /**
    * Open the given claw(s)
    */
-  public void OpenClaw(CRServo... claws) {
-	for (CRServo claw : claws) {
-	  claw.setPower(-0.3);
-	  sleep(200);
-	  claw.setPower(0);
-	}
+  public void OpenClaw(Servo... claws) {
+	  clawLeft.setPosition(Config.CLAW_LEFT_OPEN);
+	  clawRight.setPosition(Config.CLAW_RIGHT_OPEN);
+  }
+  
+  
+  public void MoveWrist(double position) {
+	  wrist.setPosition(position);
   }
 
 
   /**
    * Close the given claw(s)
    */
-  public void CloseClaw(CRServo... claws) {
-	for (CRServo claw : claws) {
-	  claw.setPower(0.9);
-	  sleep(500);
-	  claw.setPower(0.3);
-	}
+  public void CloseClaw(Servo... claws) {
+	  clawLeft.setPosition(Config.CLAW_LEFT_CLOSE);
+	  clawRight.setPosition(Config.CLAW_RIGHT_CLOSE);
   }
 }
