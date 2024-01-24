@@ -1,10 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.vision.tfod.TfodProcessor;
-import org.firstinspires.ftc.vision.VisionPortal;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -21,6 +18,10 @@ import java.util.List;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+//import org.firstinspires.ftc.robotcore.external.navigation.VuforiaCurrentGame;
+//import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+//import org.firstinspires.ftc.robotcore.external.tfod.Tfod;
 //import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 //import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -34,8 +35,8 @@ import org.firstinspires.ftc.teamcode.Direction;
 import org.firstinspires.ftc.teamcode.Config;
 
 
-@Autonomous(name = "ParkRedRight", preselectTeleOp="MecanumDriveFieldCentric")
-public class ParkRedRight extends LinearOpMode {
+@Autonomous(name = "ParkRedLeft")
+public class ParkRedLeft extends LinearOpMode {
   private OpenCvCamera camera;
   //private AprilTagDetectionPipeline aprilTagDetectionPipeline;
   private DriveMotors driveMotors;
@@ -48,9 +49,9 @@ public class ParkRedRight extends LinearOpMode {
   /**
    * Set reliable initial configuration for robot motors
    */
-  public void MotorSetup() {
+  public void MotorSetup() { 
 	CloseClaw();
-	MoveWrist(0);
+	MoveWrist(.9);
 	arm.DropArm();
 	sleep(1000);
 	arm.Initialize();
@@ -159,14 +160,17 @@ public class ParkRedRight extends LinearOpMode {
 	if (opModeIsActive()) { // <----------------------------------------------------------------
 	  MotorSetup();
 	  arm.MoveShoulder(-250);
-	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.1));
+	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 2.25));
 	  driveMotors.Turn(90);
-	  sleep(15000);
-	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 3.5));
-	  driveMotors.Turn(-90);
-	  arm.MoveShoulder(0);
 	  sleep(1000);
-	  OpenClaw(clawLeft, clawRight);
+	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 3.5));
+	  MoveWrist(.9);
+	  sleep(500);
+	  OpenClaw();
+	  sleep(500);
+	  MoveWrist(0);
+	  sleep(500);
+	  driveMotors.Turn(-90);
 	}
   }
 

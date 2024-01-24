@@ -34,10 +34,14 @@ import org.firstinspires.ftc.teamcode.Direction;
 import org.firstinspires.ftc.teamcode.Config;
 
 
-@Autonomous(name = "ParkRedRight", preselectTeleOp="MecanumDriveFieldCentric")
-public class ParkRedRight extends LinearOpMode {
+@Autonomous(name = "ParkBlueLeft")
+public class ParkBlueLeft extends LinearOpMode {
   private OpenCvCamera camera;
   //private AprilTagDetectionPipeline aprilTagDetectionPipeline;
+  private TfodProcessor myTfodProcessor;
+  private VisionPortal myVisionPortal;
+  private boolean USE_WEBCAM = true;
+  
   private DriveMotors driveMotors;
   private Arm arm;
   private Servo wrist;
@@ -50,7 +54,7 @@ public class ParkRedRight extends LinearOpMode {
    */
   public void MotorSetup() {
 	CloseClaw();
-	MoveWrist(0);
+	MoveWrist(.9);
 	arm.DropArm();
 	sleep(1000);
 	arm.Initialize();
@@ -154,19 +158,19 @@ public class ParkRedRight extends LinearOpMode {
 	clawRight = hardwareMap.get(Servo.class, "clawRight");
 	wrist = hardwareMap.get(Servo.class, "wrist");
 
+	CloseClaw();
+	wrist.setPosition(0);
+	
+	initTfod();
+
 	waitForStart();
 
 	if (opModeIsActive()) { // <----------------------------------------------------------------
 	  MotorSetup();
-	  arm.MoveShoulder(-250);
-	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.1));
-	  driveMotors.Turn(90);
-	  sleep(15000);
-	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 3.5));
-	  driveMotors.Turn(-90);
-	  arm.MoveShoulder(0);
-	  sleep(1000);
-	  OpenClaw(clawLeft, clawRight);
+	  
+	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .1));
+	  driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 1.4));
+	  driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .1));
 	}
   }
 
@@ -195,27 +199,88 @@ public class ParkRedRight extends LinearOpMode {
 	}
 	telemetry.update();
   }
-
-
-  /**
-   * Open the given claw(s)
-   */
-  public void OpenClaw(Servo... claws) {
-	  clawLeft.setPosition(Config.CLAW_LEFT_OPEN);
-	  clawRight.setPosition(Config.CLAW_RIGHT_OPEN);
-  }
   
   
   public void MoveWrist(double position) {
 	  wrist.setPosition(position);
   }
+  
+  
+  public void OpenClaw() {
+  	OpenClaw(true, true);
+  }
+  
+
+  public void OpenClaw(boolean openLeft, boolean openRight) {
+	  if (openLeft) clawLeft.setPosition(Config.CLAW_LEFT_OPEN);
+	  if (openRight) clawRight.setPosition(Config.CLAW_RIGHT_OPEN);
+  }
+  
+  
+  public void CloseClaw() {
+	  CloseClaw(true, true);
+  }
 
 
-  /**
-   * Close the given claw(s)
-   */
-  public void CloseClaw(Servo... claws) {
-	  clawLeft.setPosition(Config.CLAW_LEFT_CLOSE);
-	  clawRight.setPosition(Config.CLAW_RIGHT_CLOSE);
+  public void CloseClaw(boolean closeLeft, boolean closeRight) {
+	  if (closeLeft) clawLeft.setPosition(Config.CLAW_LEFT_CLOSE);
+	  if (closeRight) clawRight.setPosition(Config.CLAW_RIGHT_CLOSE);
+  }
+  
+  private void initTfod() {
+	TfodProcessor.Builder myTfodProcessorBuilder;
+	VisionPortal.Builder myVisionPortalBuilder;
+
+	// First, create a TfodProcessor.Builder.
+	myTfodProcessorBuilder = new TfodProcessor.Builder();
+	// Set the name of the file where the model can be found.
+	myTfodProcessorBuilder.setModelFileName("CenterStage.tflite");
+	// Set the full ordered list of labels the model is trained to recognize.
+	myTfodProcessorBuilder.setModelLabels(JavaUtil.createListWith("ball", "cube"));
+	// Set the aspect ratio for the images used when the model was created.
+	myTfodProcessorBuilder.setModelAspectRatio(16 / 9);
+	// Create a TfodProcessor by calling build.
+	myTfodProcessor = myTfodProcessorBuilder.build();
+	// Next, create a VisionPortal.Builder and set attributes related to the camera.
+	myVisionPortalBuilder = new VisionPortal.Builder();
+	if (USE_WEBCAM) {
+	  // Use a webcam.
+	  myVisionPortalBuilder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
+	} else {
+	  // Use the device's back camera.
+	  myVisionPortalBuilder.setCamera(BuiltinCameraDirection.BACK);
+	}
+	// Add myTfodProcessor to the VisionPortal.Builder.
+	myVisionPortalBuilder.addProcessor(myTfodProcessor);
+	// Create a VisionPortal by calling build.
+	myVisionPortal = myVisionPortalBuilder.build();
+  }
+  
+  private void telemetryTfod() {
+	List<Recognition> myTfodRecognitions;
+	Recognition myTfodRecognition;
+	float x;
+	float y;
+
+	// Get a list of recognitions from TFOD.
+	myTfodRecognitions = myTfodProcessor.getRecognitions();
+	telemetry.addData("# Objects Detected", JavaUtil.listLength(myTfodRecognitions));
+	// Iterate through list and call a function to display info for each recognized object.
+	for (Recognition myTfodRecognition_item : myTfodRecognitions) {
+	  myTfodRecognition = myTfodRecognition_item;
+	  // Display info about the recognition.
+	  telemetry.addLine("");
+	  // Display label and confidence.
+	  // Display the label and confidence for the recognition.
+	  telemetry.addData("Image", myTfodRecognition.getLabel() + " (" + JavaUtil.formatNumber(myTfodRecognition.getConfidence() * 100, 0) + " % Conf.)");
+	  // Display position.
+	  x = (myTfodRecognition.getLeft() + myTfodRecognition.getRight()) / 2;
+	  y = (myTfodRecognition.getTop() + myTfodRecognition.getBottom()) / 2;
+	  // Display the position of the center of the detection boundary for the recognition
+	  telemetry.addData("- Position", JavaUtil.formatNumber(x, 0) + ", " + JavaUtil.formatNumber(y, 0));
+	  // Display size
+	  // Display the size of detection boundary for the recognition
+	  telemetry.addData("- Size", JavaUtil.formatNumber(myTfodRecognition.getWidth(), 0) + " x " + JavaUtil.formatNumber(myTfodRecognition.getHeight(), 0));
+	}
   }
 }
