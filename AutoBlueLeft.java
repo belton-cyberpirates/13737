@@ -188,9 +188,11 @@ public class AutoBlueLeft extends LinearOpMode {
 
 	private int GetPropPos() { // 0 = left, 1 = center, 2 = right
 		Recognition recognition = highestConfidence();
+
 		if (recognition != null) {
-			double x = (recognition.getLeft() + recognition.getRight()) / 2 ;
-			if ((CameraResoX / 2) > x) {
+			double propX = (recognition.getLeft() + recognition.getRight()) / 2 ;
+
+			if ((CameraResoX / 2) > propX) {
 				return 1;
 			}
 			return 2;
@@ -200,8 +202,10 @@ public class AutoBlueLeft extends LinearOpMode {
 
 	private Recognition highestConfidence() {
 		Recognition recognition = null;
+
 		for (int i = 0; i <= 1000; i++) {
 			List<Recognition> currentRecognitions = tfod.getRecognitions();
+
 			if (currentRecognitions.size() < 1) {
 				sleep(10);
 				continue;
@@ -209,6 +213,7 @@ public class AutoBlueLeft extends LinearOpMode {
 			
 			// Select highest confidence object
 			for (Recognition potentialRecognition : currentRecognitions) {
+
 				if (recognition != null && recognition.getConfidence() > potentialRecognition.getConfidence()) {
 					continue;
 				}
@@ -216,7 +221,6 @@ public class AutoBlueLeft extends LinearOpMode {
 			}
 			return recognition;
 		}
-
 		return recognition;
 	}
 }
