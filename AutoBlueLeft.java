@@ -102,8 +102,30 @@ public class AutoBlueLeft extends LinearOpMode {
 
 	if (opModeIsActive()) { // <----------------------------------------------------------------
 	  MotorSetup(); // arm between 0 and -2500
+
+	  switch(position) {
+		case 0:
+			driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .7));
+			driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * .6));
+			OpenClaw(false, true);
+			sleep(350);
+			break;
+		case 1:
+			driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * .2));
+			driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.11));
+			OpenClaw(false, true);
+			sleep(350);
+			break;
+		case 2:
+			driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1));
+			driveMotors.Turn(45);
+			driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 0.2));
+			OpenClaw(false, true);
+			sleep(350);
+			break;
+	}
 	  
-	  arm.MoveShoulder(-1750);
+	  /*arm.MoveShoulder(-1750);
 	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .1));
 	  sleep(200);
 	  driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 1));
@@ -130,7 +152,7 @@ public class AutoBlueLeft extends LinearOpMode {
 	  arm.MoveShoulder(-350);
 	  
 	  driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 1.6));
-	  driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .6));
+	  driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .6));*/
 	  
 	}
   }
