@@ -153,14 +153,14 @@ public class AutoBlueRight extends LinearOpMode {
 	
 	clawLeft = hardwareMap.get(Servo.class, "clawLeft");
 	clawRight = hardwareMap.get(Servo.class, "clawRight");
-	
+	wrist = hardwareMap.get(Servo.class, "wrist");
 
 	waitForStart();
 
 	if (opModeIsActive()) { // <----------------------------------------------------------------
 	  MotorSetup();
 	  arm.MoveShoulder(-250);
-	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.2));
+	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 2.2));
 	  driveMotors.Turn(-90);
 	  sleep(15000);
 	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 3.5));
