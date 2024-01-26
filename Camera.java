@@ -1,16 +1,30 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import org.firstinspires.ftc.vision.tfod.TfodProcessor;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.vision.tfod.TfodProcessor;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.vision.tfod.TfodProcessor;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Config;
+import java.util.List;
 
 
-public class Camera {
-    private TfodProcessor tfod;
-    private VisionPortal visionPortal;
+
+public class Camera extends LinearOpMode {
+	private TfodProcessor tfod;
+	private VisionPortal visionPortal;
 
 	private static final int CameraResoX = 640;
 
@@ -22,8 +36,11 @@ public class Camera {
 		"BLUE",
 		"RED",
 	};
+	
 
-    public void Init() {
+	public void runOpMode() {}
+
+	public void Init(WebcamName camera) {
 
 		// Create the TensorFlow processor by using a builder.
 		tfod = new TfodProcessor.Builder()
@@ -35,7 +52,7 @@ public class Camera {
 		VisionPortal.Builder builder = new VisionPortal.Builder();
 
 		// Set the camera (webcam vs. built-in RC phone camera).
-		builder.setCamera(hardwareMap.get(WebcamName.class, Config.CAMERA_CONFIG_NAME));
+		builder.setCamera(camera);
 
 		// Set and enable the processor.
 		builder.addProcessor(tfod);
