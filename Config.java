@@ -5,8 +5,8 @@ public class Config {
   /*****************************************************************************
   ** DISTANCE CALIBRATION CONSTANTS
   *****************************************************************************/
-  public static final int TICKS_PER_360_DEG = 4475; // TODO
-  public static final int TILE_LENGTH = 1250; // TODO
+  public static final int TICKS_PER_360_DEG = 4475;
+  public static final int TILE_LENGTH = 1250;
 
   public static final int DEFAULT_SPIKE_MARK = 3;
   // ---------------------------------------------------------------------------
@@ -15,32 +15,37 @@ public class Config {
   /*****************************************************************************
   ** DRIVE SPEED CONSTANTS
   *****************************************************************************/
-  //public static final int MIN_SPEED = 450; // TODO
-  public static final int CRUISE_SPEED = 1400; // TODO
-  //public static final int MAX_SPEED = 900; // TODO
-  public static final int ARM_VELOCITY = 1250; // TODO
-  public static final int SLIDE_VELOCITY = 1200; // TODO
+  public static final int CRUISE_SPEED = 1400;
+  public static final int ARM_VELOCITY = 1250;
+  public static final int SLIDE_VELOCITY = 1200;
   // ---------------------------------------------------------------------------
 
 
   /*****************************************************************************
   ** ARM CALIBRATION CONSTANTS
   *****************************************************************************/
-  public static final int BOARD_HEIGHT = 70; // TODO
+  public static final int BOARD_HEIGHT = 70;
   
-  public static final int BOTTOM = 0; // TODO
-  public static final int CRUISING_HEIGHT = 30; // TODO
-  public static final int TOP = 125; // TODO
+  public static final int BOTTOM = 0;
+  public static final int CRUISING_HEIGHT = 30;
+  public static final int TOP = 125;
   // ---------------------------------------------------------------------------
   
   
   /*****************************************************************************
   ** CLAW CALIBRATION CONSTANTS
   *****************************************************************************/
-  public static final double CLAW_LEFT_OPEN = .2; // TODO
-  public static final double CLAW_LEFT_CLOSE = .62; // TODO
-  public static final double CLAW_RIGHT_OPEN = .8; // TODO
-  public static final double CLAW_RIGHT_CLOSE = .38; // TODO
+  public static final double CLAW_LEFT_OPEN = .2; 
+  public static final double CLAW_LEFT_CLOSE = .62; 
+  public static final double CLAW_RIGHT_OPEN = .8;
+  public static final double CLAW_RIGHT_CLOSE = .38;
+  // ---------------------------------------------------------------------------
+
+
+  /*****************************************************************************
+  ** CAMERA ASSIGNING CONSTANTS
+  *****************************************************************************/
+  public static final String CAMERA_CONFIG_NAME = "Webcam 1";
   // ---------------------------------------------------------------------------
 
 
