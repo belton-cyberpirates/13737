@@ -15,90 +15,74 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @TeleOp(name = "FieldCentricDrive")
 public class MecanumDriveFieldCentric extends LinearOpMode {
-	//SECTION - Constants
-		//SECTION Drive contants
-			final int BASE_SPEED = 1500;
-			final double MAX_BOOST = 0.6; // boost maxes out at an additional 60% of the base speed
-		//!SECTION - End drive constants
 
-		//SECTION - Arm Constants
-			final double SHOULDER_SPEED = 0.6;
-			final double SLIDE_SPEED = 0.9;
-			final double STRAFE_MULT = 1.41;
-			final double WRIST_MAX = .9;
-			final double ARM_MAX = 1.35;
-			final double ARM_MIN = .63;
-		//!SECTION - End arm constats
+	// Drive constants
+	final int BASE_SPEED = 1500;
+	final double MAX_BOOST = 0.6; // boost maxes out at an additional 60% of the base speed
 
-		//SECTION - Claw constants
-			final double CLAW_OPEN_POWER = 0.5;
-			final double CLAW_CLOSE_POWER = 0.5;
-			final double CLAW_CLOSE_RESIDUAL_POWER = 0.1;
-		//!SECTION - End claw constants
-	//!SECTION - End constands
+	// Arm constants
+	final double SHOULDER_SPEED = 0.6;
+	final double SLIDE_SPEED = 0.9;
+	final double STRAFE_MULT = 1.41;
+	final double WRIST_MAX = .9;
+	final double ARM_MAX = 1.35;
+	final double ARM_MIN = .63;
+
+	// Claw constants
+	final double CLAW_OPEN_POWER = 0.5;
+	final double CLAW_CLOSE_POWER = 0.5;
+	final double CLAW_CLOSE_RESIDUAL_POWER = 0.1;
 	
-	//SECTION - Variable init
-		//SECTION - Drive Motors
-			private DcMotorEx BackLeft;
-			private DcMotorEx FrontLeft;
-			private DcMotorEx FrontRight;
-			private DcMotorEx BackRight;
-		//!SECTION - End Drive motors
+	// Drive motors
+	private DcMotorEx BackLeft;
+	private DcMotorEx FrontLeft;
+	private DcMotorEx FrontRight;
+	private DcMotorEx BackRight;
 
-		//SECTION - Arm Motors
-			private DcMotorEx Shoulder;
-			private DcMotorEx Slide;
-			private DcMotorEx Winch;
-		//!SECTION - End arm motors
-
-		//SECTION - Servos
-			private Servo DroneLauncher;
-			private Servo clawLeft;
-			private Servo clawRight;
-			private Servo wrist;
-		//!SECTION - End servos
-		
-		private TouchSensor magnet;
-		private AnalogInput shoulderPot;
-
-		//NOTE - IMU
-		private IMU imu;
-		
-		private boolean slideFrozen;
-	//!SECTION - End variable initialzation
+	// Arm motors
+	private DcMotorEx Shoulder;
+	private DcMotorEx Slide;
+	private DcMotorEx Winch;
+	
+	// Servos
+	private Servo DroneLauncher;
+	private Servo clawLeft;
+	private Servo clawRight;
+	private Servo wrist;
+	
+	// Sensors
+	private TouchSensor magnet;
+	private AnalogInput shoulderPot;
+	private IMU imu;
+	
+	// Other variables
+	private boolean slideFrozen;
 
 	@Override
 	public void runOpMode() throws InterruptedException {
-		//SECTION - Define Variables
-			//SECTION - Drive motors
-				BackLeft = hardwareMap.get(DcMotorEx.class, "m1");
-				FrontLeft = hardwareMap.get(DcMotorEx.class, "m2");
-				FrontRight = hardwareMap.get(DcMotorEx.class, "m3");
-				BackRight = hardwareMap.get(DcMotorEx.class, "m4");
-			//!SECTION - End drive motors
+		// Assign drive motors
+		BackLeft = hardwareMap.get(DcMotorEx.class, "m1");
+		FrontLeft = hardwareMap.get(DcMotorEx.class, "m2");
+		FrontRight = hardwareMap.get(DcMotorEx.class, "m3");
+		BackRight = hardwareMap.get(DcMotorEx.class, "m4");
 
-			//SECTION - Arm Motors
-				Shoulder = hardwareMap.get(DcMotorEx.class, "shoulder");
-				Slide = hardwareMap.get(DcMotorEx.class, "lift");
-				Winch = hardwareMap.get(DcMotorEx.class, "winch");
-			//!SECTION - End arm motors
+		// Assign arm motors
+		Shoulder = hardwareMap.get(DcMotorEx.class, "shoulder");
+		Slide = hardwareMap.get(DcMotorEx.class, "lift");
+		Winch = hardwareMap.get(DcMotorEx.class, "winch");
+		
+		// Assign servos
+		DroneLauncher = hardwareMap.get(Servo.class, "drone_servo");
+		clawLeft = hardwareMap.get(Servo.class, "clawLeft");
+		clawRight = hardwareMap.get(Servo.class, "clawRight");
+		wrist = hardwareMap.get(Servo.class, "wrist");
 			
-			//SECTION - Servos
-				DroneLauncher = hardwareMap.get(Servo.class, "drone_servo");
-				clawLeft = hardwareMap.get(Servo.class, "clawLeft");
-				clawRight = hardwareMap.get(Servo.class, "clawRight");
-				wrist = hardwareMap.get(Servo.class, "wrist");
-			//!SECTION - End servos
-			
-			magnet = hardwareMap.get(TouchSensor.class, "magnet");
-			shoulderPot = hardwareMap.get(AnalogInput.class, "shoulder_pot");
-
-			//NOTE - IMU
-			imu = hardwareMap.get(IMU.class, "imu");
-
-		//!SECTION - End variable definitions
-
-		//NOTE - Set the zero power behaviour
+		// Assign sensors
+		magnet = hardwareMap.get(TouchSensor.class, "magnet");
+		shoulderPot = hardwareMap.get(AnalogInput.class, "shoulder_pot");
+		imu = hardwareMap.get(IMU.class, "imu");
+		
+		// Set zero power behaviours
 		BackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 		FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 		FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -108,113 +92,117 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 		// Wait for the start button to be pressed
 		waitForStart();
 
-		//NOTE - Reset robot heading on startup (not initialization)
-		//NOTE - MAKE SURE ROBOT IS FACING FORWARD BEFORE HITTING START!
+		// Reset robot heading on startup (not initialization)
 		imu.resetYaw();
 		
-		//NOTE set servo start position
+		// set servo start position
 		clawLeft.setPosition(0.62);
 		clawRight.setPosition(0.38);
 		wrist.setPosition(WRIST_MAX);
 
 		while (opModeIsActive()) {
-			//NOTE - Reset Yaw on start button press so that a restart is not needed if Yaw should be reset again.
+			// Reset yaw when start button is pressed so that a restart is not needed if the yaw should be reset again.
 			if (gamepad1.start) {
 				imu.resetYaw();
 			}
+
 			
-			//SECTION GP1
-				double leftStickXGP1 = gamepad1.left_stick_x;
-				double leftStickYGP1 = gamepad1.left_stick_y;
-				double rightStickXGP1 = gamepad1.right_stick_x;
-				double rightStickYGP1 = gamepad1.right_stick_y;
-			//!SECTION End GP1
+			// Gamepad variables
+			double leftStickXGP1 = gamepad1.left_stick_x;
+			double leftStickYGP1 = gamepad1.left_stick_y;
+			double rightStickXGP1 = gamepad1.right_stick_x;
+			double rightStickYGP1 = gamepad1.right_stick_y;
 			
-			//SECTION GP2
-				double leftStickYGP2 = gamepad2.left_stick_y;
-				double rightStickYGP2 = gamepad2.right_stick_y;
-			//!SECTION End GP2
+			double leftStickYGP2 = gamepad2.left_stick_y;
+			double rightStickYGP2 = gamepad2.right_stick_y;
 
-			//SECTION - Base
-				double maxSpeed = calcMaxSpeed(gamepad1.right_trigger - gamepad1.left_trigger, BASE_SPEED, MAX_BOOST);
 
-				//NOTE - Get the heading of the bot (the angle it is facing) in radians
-				double botHeading = imu
-					.getRobotYawPitchRollAngles()
-					.getYaw(AngleUnit.RADIANS);
+			// Get the speed the bot would go with the joystick pushed all the way
+			double maxSpeed = calcMaxSpeed(gamepad1.right_trigger - gamepad1.left_trigger, BASE_SPEED, MAX_BOOST);
 
-				//NOTE - Virtually rotate the joystick by the negative angle of the robot
-				double rotatedX =
-					leftStickXGP1 * Math.cos(botHeading) -
-					leftStickYGP1 * Math.sin(botHeading);
-				double rotatedY =
-					leftStickXGP1 * Math.sin(botHeading) +
-					leftStickYGP1 * Math.cos(botHeading);
-				rotatedX *= STRAFE_MULT; // strafing is slower than rolling, bump speed
+			// Get the heading of the bot (the angle it is facing) in radians
+			double botHeading = imu .getRobotYawPitchRollAngles() .getYaw(AngleUnit.RADIANS);
 
-				// Set the power of the wheels based off the new joystick coordinates
-				// y+x+stick <- [-1,1]
 
-				BackLeft.setVelocity(
-					(rotatedY + rotatedX - rightStickXGP1) * maxSpeed
-				);
-				FrontLeft.setVelocity(
-					(rotatedY - rotatedX - rightStickXGP1) * maxSpeed
-				);
-				FrontRight.setVelocity(
-					(-rotatedY - rotatedX - rightStickXGP1) * maxSpeed
-				);
-				BackRight.setVelocity(
-					(-rotatedY + rotatedX - rightStickXGP1) * maxSpeed
-				);
-			//!SECTION - End Base
+			// Virtually rotate the joystick by the negative angle of the robot
+			double rotatedX =
+				leftStickXGP1 * Math.cos(botHeading) -
+				leftStickYGP1 * Math.sin(botHeading);
+			double rotatedY =
+				leftStickXGP1 * Math.sin(botHeading) +
+				leftStickYGP1 * Math.cos(botHeading);
+			rotatedX *= STRAFE_MULT; // strafing is slower than rolling, bump speed
 
-			//SECTION - Arm
-				//NOTE - Set the power of the arm motors
-				
-				double shoulderPower = leftStickYGP2 * SHOULDER_SPEED;
 
-				if (shoulderPot.getVoltage() <= ARM_MIN) shoulderPower = Math.min(shoulderPower, 0);
-				if (shoulderPot.getVoltage() >= ARM_MAX) shoulderPower = Math.max(shoulderPower, 0);
+			// Set the power of the wheels based off the new joystick coordinates
+			// y+x+stick <- [-1,1]
+			BackLeft.setVelocity(
+				(rotatedY + rotatedX - rightStickXGP1) * maxSpeed
+			);
+			FrontLeft.setVelocity(
+				(rotatedY - rotatedX - rightStickXGP1) * maxSpeed
+			);
+			FrontRight.setVelocity(
+				(-rotatedY - rotatedX - rightStickXGP1) * maxSpeed
+			);
+			BackRight.setVelocity(
+				(-rotatedY + rotatedX - rightStickXGP1) * maxSpeed
+			);
+			
 
-				Shoulder.setPower(shoulderPower);
-				
-				double slide_power = rightStickYGP2 * SLIDE_SPEED;
+			// Set the power of the shoulder based off left joystick y
+			double shoulderPower = leftStickYGP2 * SHOULDER_SPEED;
+			
+			if (shoulderPot.getVoltage() <= ARM_MIN) // Dont move shoulder down if below min
+				shoulderPower = Math.min(shoulderPower, 0);
 
-				if (magnet.isPressed()) slideFrozen = true;
-				if (slide_power < 0) slideFrozen = false;
-				if (slideFrozen) slide_power = Math.min(slide_power, 0);
-				
-				Slide.setPower(slide_power);
-				
-			//!SECTION - End Arm
+			if (shoulderPot.getVoltage() >= ARM_MAX) // Dont move shoulder up if above max
+				shoulderPower = Math.max(shoulderPower, 0);
 
-			//SECTION - Claws
-				if (gamepad2.left_trigger > 0) clawLeft.setPosition(.62);
-				else if (gamepad2.left_bumper) clawLeft.setPosition(.2);
-		
-				if (gamepad2.right_trigger > 0) clawRight.setPosition(.38);
-				else if (gamepad2.right_bumper) clawRight.setPosition(.8);
-			//!SECTION End claws
+			Shoulder.setPower(shoulderPower);
+			
 
+			// Set the power of the slide based off right joystick y
+			double slide_power = rightStickYGP2 * SLIDE_SPEED;
+
+			if (magnet.isPressed()) slideFrozen = true; // Freeze slide back if magnet on
+			if (slide_power < 0) slideFrozen = false; // Unfreeze slide when its extended
+			if (slideFrozen) slide_power = Math.min(slide_power, 0); // If slide is frozen dont let it move backward
+			
+			Slide.setPower(slide_power);
+			
+
+			// Open claws with respective triggers, close with respective bumpers
+			if (gamepad2.left_trigger > 0) clawLeft.setPosition(.62);
+			else if (gamepad2.left_bumper) clawLeft.setPosition(.2);
+	
+			if (gamepad2.right_trigger > 0) clawRight.setPosition(.38);
+			else if (gamepad2.right_bumper) clawRight.setPosition(.8);
+			
+
+			// Move wrist down with B, and up with A
 			if (gamepad2.a) wrist.setPosition(0);
 			if (gamepad2.b) wrist.setPosition(WRIST_MAX);
 			
+
+			// Launch drone with Y, reload drone launcher with X
 			if (gamepad1.x) DroneLauncher.setPosition(0);
 			if (gamepad1.y) DroneLauncher.setPosition(0.5);
 
+
+			// Winch code
 			if (gamepad2.x) Winch.setPower(-1);
 			else if (gamepad2.y) Winch.setPower(1);
 			else Winch.setPower(0);
 			
-			//SECTION - Telemetry
-				telemetry.addData("Speed Mod:", maxSpeed);
-				telemetry.addData("Shoulder Encoder:", Shoulder.getCurrentPosition());
-				telemetry.addData("Shoulder Pot:", shoulderPot.getVoltage());
-				telemetry.addData("Heading (radians):", botHeading);
 
-				telemetry.update();
-			//!SECTION - End telemetry
+			// Telemetry
+			telemetry.addData("Speed Mod:", maxSpeed);
+			telemetry.addData("Shoulder Encoder:", Shoulder.getCurrentPosition());
+			telemetry.addData("Shoulder Pot:", shoulderPot.getVoltage());
+			telemetry.addData("Heading (radians):", botHeading);
+
+			telemetry.update();
 		}
 	}
 
