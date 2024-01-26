@@ -172,11 +172,7 @@ public class AutoRedRight extends LinearOpMode {
 			driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .1));
 			driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 1.9));
 			driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.05));
-			
-			// driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * .2));
-			// OpenClaw(false, true);
-			// driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * .2));
-			
+
 			driveMotors.Turn(90);
 			driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .15));
 			arm.MoveSlide(-550, true);
@@ -198,32 +194,6 @@ public class AutoRedRight extends LinearOpMode {
 		}
 	}
 
-
-	private void Park(int target) {
-		telemetry.addData("Parking", String.format("PARKING IN SPOT %d", target));
-
-		switch(target) {
-			case 1:
-			driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .5));
-			break;
-			
-			case 2:
-			driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .5));
-			break;
-			
-			case 3:
-			driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.5));
-			break;
-
-			default:
-			telemetry.addLine(String.format("ERROR: Target %d not in range 1-3", target));
-			//telemetry.addLine(String.format("PARKING IN DEFAULT SPOT (%d)", Config.DEFAULT_PARKING_SPOT));
-			//Park(Config.DEFAULT_PARKING_SPOT);
-			break;
-		}
-		telemetry.update();
-	}
-	
 	
 	public void MoveWrist(double position) {
 		wrist.setPosition(position);
