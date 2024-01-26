@@ -100,9 +100,6 @@ public class TestingObjectDetection extends LinearOpMode {
                 }
                 
                 telemetry.update();
-                
-                // Share the CPU.
-                sleep(20);
             }
         }
 
@@ -175,23 +172,12 @@ public class TestingObjectDetection extends LinearOpMode {
         for (Recognition recognition : currentRecognitions) {
             double x = (recognition.getLeft() + recognition.getRight()) / 2 ;
             double y = (recognition.getTop()  + recognition.getBottom()) / 2 ;
-
-            telemetry.addData(""," ");
-            telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
-            telemetry.addData("- Position", "%.0f / %.0f", x, y);
-            telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
-        }   // end for() loop
+        }
 
         Recognition highestConf = highestConfidence();
         if (highestConf != null) {
         double x = (highestConf.getLeft() + highestConf.getRight()) / 2 ;
         double y = (highestConf.getTop()  + highestConf.getBottom()) / 2 ;
-        telemetry.addData("Highest Conf"," ");
-        telemetry.addData("Image", "%s (%.0f %% Conf.)", highestConf.getLabel(), highestConf.getConfidence() * 100);
-        telemetry.addData("- Position", "%.0f / %.0f", x, y);
-        telemetry.addData("- Size", "%.0f x %.0f", highestConf.getWidth(), highestConf.getHeight());
         }
-
-    }   // end method telemetryTfod()
-
-}   // end class
+    }
+}
