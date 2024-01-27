@@ -27,6 +27,7 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 	final double ARM_MIN = .63;
 
 	final double SLIDE_SPEED = 0.9;
+	final double SLIDE_OPTIMAL_POS = -300;
 
 	final double WRIST_MAX = .9;
 
@@ -90,7 +91,10 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 		FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 		FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 		BackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 		Slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    	Slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+		Slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER)
 
 		// Wait for the start button to be pressed
 		waitForStart();
@@ -164,16 +168,23 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 
 			Shoulder.setPower(shoulderPower);
 			
-
 			// Set the power of the slide based off right joystick y
 			double slide_power = rightStickYGP2 * SLIDE_SPEED;
 
-			if (magnet.isPressed()) slideFrozen = true; // Freeze slide if magnet on
-			if (slide_power < 0) slideFrozen = false; // Unfreeze slide if extendeding
-			if (slideFrozen) slide_power = Math.min(slide_power, 0); // If slide is frozen dont let it move backward
+			if (slide_power != 0) {
+				slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER)
+				if (magnet.isPressed()) slideFrozen = true; // Freeze slide if magnet on
+				if (slide_power < 0) slideFrozen = false; // Unfreeze slide if extending
+				if (slideFrozen) slide_power = Math.min(slide_power, 0); // If slide is frozen dont let it move backward
+
+				Slide.setPower(slide_power);
+			} 
 			
-			Slide.setPower(slide_power);
-			
+			else if (gamepad2.dpad_down) {
+				Slide.setPosition(SLIDE_OPTIMAL_POS);
+				Slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+				Slide.setPower(.9);
+			}
 
 			// Open claws with respective triggers, close with respective bumpers
 			if (gamepad2.left_trigger > 0) clawLeft.setPosition(.62);
@@ -186,6 +197,7 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			// Move wrist down with B, and up with A
 			if (gamepad2.a) wrist.setPosition(0);
 			if (gamepad2.b) wrist.setPosition(WRIST_MAX);
+			if (gamepad2.dpad_up && gamepad2.dpad_left) wrist.setPosition(1);
 			
 
 			// Launch drone with Y, reload drone launcher with X
