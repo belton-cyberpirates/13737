@@ -21,9 +21,7 @@ import java.util.List;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-//import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
-//import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvInternalCamera2;
@@ -36,11 +34,19 @@ import org.firstinspires.ftc.teamcode.Config;
 
 @Autonomous(name = "AutoRedRight")
 public class AutoRedRight extends LinearOpMode {
-	private OpenCvCamera camera;
-	//private AprilTagDetectionPipeline aprilTagDetectionPipeline;
-	private TfodProcessor myTfodProcessor;
-	private VisionPortal myVisionPortal;
-	private boolean USE_WEBCAM = true;
+	private TfodProcessor tfod;
+  private VisionPortal visionPortal;
+
+	private static final int CameraResoX = 640;
+
+	// TFOD_MODEL_FILE points to a model file stored onboard the Robot Controller's storage,
+	private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/teampiece.tflite";
+
+	// Define the labels recognized in the model for TFOD (must be in training order!)
+	private static final String[] LABELS = {
+		"BLUE",
+		"RED",
+	};
 	
 	private DriveMotors driveMotors;
 	private Arm arm;
@@ -162,35 +168,86 @@ public class AutoRedRight extends LinearOpMode {
 		wrist.setPosition(0);
 		
 		initTfod();
+		int position = GetPropPos();
+	  
+		telemetry.addData("position", position);
+		telemetry.update();
 
 		waitForStart();
 
 		if (opModeIsActive()) { // <----------------------------------------------------------------
 			MotorSetup(); // arm between 0 and -2500
-	  
-			arm.MoveShoulder(-1450);
-			driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .1));
-			driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 1.9));
-			driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.05));
 
-			driveMotors.Turn(90);
-			driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .15));
+			switch(position) {
+				case 0:
+
+					// Move to the right spike mark
+					driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1));
+					driveMotors.Turn(-45);
+					driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 0.225));
+					// Drop purple pixel
+					OpenClaw(false, true);
+					MoveWrist(0);
+					sleep(350);
+
+					// Move to a starting point for scoring / parking auto
+					driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 0.225));
+					driveMotors.Turn(45);
+					driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 0.9));
+					// Rotate towards board
+					driveMotors.Turn(90);
+					break;
+				case 1:
+					// Move to the center spike mark
+					driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * .1));
+					driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.11));
+					// Drop pixel
+					OpenClaw(false, true);
+					MoveWrist(0);
+					sleep(350);
+					// Move to a starting point for scoring / parking auto
+					driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * .8));
+					driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .11));
+					// Rotate towards board
+					driveMotors.Turn(90);
+					break;
+				case 2:
+					// Move to the left spike mark
+					driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .7));
+					driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * .5));
+					// Drop pixel
+					OpenClaw(false, true);
+					MoveWrist(0);
+					sleep(350);
+					
+					// Move to a starting point for scoring / parking auto
+					driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * .45));
+					// Rotate towards board
+					driveMotors.Turn(90);
+					break;
+			}
+
+			arm.MoveShoulder(-1250);  
+			switch(position) {
+			case 0:
+				driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 0.3));
+				break;
+			case 1:
+				driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 0.12));
+				break;
+			case 2:
+				driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 0.2));
+				break;
+			}
+			driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1));
+
 			arm.MoveSlide(-550, true);
+			MoveWrist(0.5);
+			sleep(450);
 			OpenClaw(true, false);
 			sleep(350);
-			driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.7));
-			
-			arm.MoveShoulder(-1600);
-			arm.MoveSlide(-50, true);
-			MoveWrist(1);
-			
-			driveMotors.Turn(180);
-			driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * .1));
-			arm.MoveShoulder(-100, true);
-			OpenClaw(false, true);
-			MoveWrist(0);
-			driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 1.2));
-			driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 1.6));
+			driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .2));
+			driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 1.5));
 		}
 	}
 
@@ -222,59 +279,61 @@ public class AutoRedRight extends LinearOpMode {
 	}
 	
 	private void initTfod() {
-		TfodProcessor.Builder myTfodProcessorBuilder;
-		VisionPortal.Builder myVisionPortalBuilder;
 
-		// First, create a TfodProcessor.Builder.
-		myTfodProcessorBuilder = new TfodProcessor.Builder();
-		// Set the name of the file where the model can be found.
-		myTfodProcessorBuilder.setModelFileName("CenterStage.tflite");
-		// Set the full ordered list of labels the model is trained to recognize.
-		myTfodProcessorBuilder.setModelLabels(JavaUtil.createListWith("ball", "cube"));
-		// Set the aspect ratio for the images used when the model was created.
-		myTfodProcessorBuilder.setModelAspectRatio(16 / 9);
-		// Create a TfodProcessor by calling build.
-		myTfodProcessor = myTfodProcessorBuilder.build();
-		// Next, create a VisionPortal.Builder and set attributes related to the camera.
-		myVisionPortalBuilder = new VisionPortal.Builder();
-		if (USE_WEBCAM) {
-		// Use a webcam.
-		myVisionPortalBuilder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
-		} else {
-		// Use the device's back camera.
-		myVisionPortalBuilder.setCamera(BuiltinCameraDirection.BACK);
-		}
-		// Add myTfodProcessor to the VisionPortal.Builder.
-		myVisionPortalBuilder.addProcessor(myTfodProcessor);
-		// Create a VisionPortal by calling build.
-		myVisionPortal = myVisionPortalBuilder.build();
+		// Create the TensorFlow processor by using a builder.
+		tfod = new TfodProcessor.Builder()
+			.setModelFileName(TFOD_MODEL_FILE)
+			.setModelLabels(LABELS)
+			.build();
+
+		// Create the vision portal by using a builder.
+		VisionPortal.Builder builder = new VisionPortal.Builder();
+
+		// Set the camera (webcam vs. built-in RC phone camera).
+		builder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
+
+		// Set and enable the processor.
+		builder.addProcessor(tfod);
+
+		// Build the Vision Portal, using the above settings.
+		visionPortal = builder.build();
 	}
-	
-	private void telemetryTfod() {
-		List<Recognition> myTfodRecognitions;
-		Recognition myTfodRecognition;
-		float x;
-		float y;
 
-		// Get a list of recognitions from TFOD.
-		myTfodRecognitions = myTfodProcessor.getRecognitions();
-		telemetry.addData("# Objects Detected", JavaUtil.listLength(myTfodRecognitions));
-		// Iterate through list and call a function to display info for each recognized object.
-		for (Recognition myTfodRecognition_item : myTfodRecognitions) {
-			myTfodRecognition = myTfodRecognition_item;
-			// Display info about the recognition.
-			telemetry.addLine("");
-			// Display label and confidence.
-			// Display the label and confidence for the recognition.
-			telemetry.addData("Image", myTfodRecognition.getLabel() + " (" + JavaUtil.formatNumber(myTfodRecognition.getConfidence() * 100, 0) + " % Conf.)");
-			// Display position.
-			x = (myTfodRecognition.getLeft() + myTfodRecognition.getRight()) / 2;
-			y = (myTfodRecognition.getTop() + myTfodRecognition.getBottom()) / 2;
-			// Display the position of the center of the detection boundary for the recognition
-			telemetry.addData("- Position", JavaUtil.formatNumber(x, 0) + ", " + JavaUtil.formatNumber(y, 0));
-			// Display size
-			// Display the size of detection boundary for the recognition
-			telemetry.addData("- Size", JavaUtil.formatNumber(myTfodRecognition.getWidth(), 0) + " x " + JavaUtil.formatNumber(myTfodRecognition.getHeight(), 0));
+	private int GetPropPos() { // 0 = left, 1 = center, 2 = right
+		Recognition recognition = highestConfidence();
+
+		if (recognition != null) {
+			double propX = (recognition.getLeft() + recognition.getRight()) / 2 ;
+
+			if ((CameraResoX / 2) > propX) {
+				return 1;
+			}
+			return 2;
 		}
+		return 0;
+	}
+
+	private Recognition highestConfidence() {
+		Recognition recognition = null;
+
+		for (int i = 0; i <= 1000; i++) {
+			List<Recognition> currentRecognitions = tfod.getRecognitions();
+
+			if (currentRecognitions.size() < 1) {
+				sleep(10);
+				continue;
+			}
+			
+			// Select highest confidence object
+			for (Recognition potentialRecognition : currentRecognitions) {
+
+				if (recognition != null && recognition.getConfidence() > potentialRecognition.getConfidence()) {
+					continue;
+				}
+				recognition = potentialRecognition;
+			}
+			return recognition;
+		}
+		return recognition;
 	}
 }
