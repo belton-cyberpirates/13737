@@ -19,20 +19,23 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 	// Drive constants
 	final int BASE_SPEED = 1500;
 	final double MAX_BOOST = 0.6; // boost maxes out at an additional 60% of the base speed
+	final double STRAFE_MULT = 1.41;
 
 	// Arm constants
 	final double SHOULDER_SPEED = 0.6;
-	final double SLIDE_SPEED = 0.9;
-	final double STRAFE_MULT = 1.41;
-	final double WRIST_MAX = .9;
 	final double ARM_MAX = 1.35;
 	final double ARM_MIN = .63;
+
+	final double SLIDE_SPEED = 0.9;
+
+	final double WRIST_MAX = .9;
 
 	// Claw constants
 	final double CLAW_OPEN_POWER = 0.5;
 	final double CLAW_CLOSE_POWER = 0.5;
 	final double CLAW_CLOSE_RESIDUAL_POWER = 0.1;
 	
+
 	// Drive motors
 	private DcMotorEx BackLeft;
 	private DcMotorEx FrontLeft;
@@ -165,8 +168,8 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			// Set the power of the slide based off right joystick y
 			double slide_power = rightStickYGP2 * SLIDE_SPEED;
 
-			if (magnet.isPressed()) slideFrozen = true; // Freeze slide back if magnet on
-			if (slide_power < 0) slideFrozen = false; // Unfreeze slide when its extended
+			if (magnet.isPressed()) slideFrozen = true; // Freeze slide if magnet on
+			if (slide_power < 0) slideFrozen = false; // Unfreeze slide if extendeding
 			if (slideFrozen) slide_power = Math.min(slide_power, 0); // If slide is frozen dont let it move backward
 			
 			Slide.setPower(slide_power);
