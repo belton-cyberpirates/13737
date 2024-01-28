@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import org.firstinspires.ftc.vision.tfod.TfodProcessor;
+import org.firstinspires.ftc.vision.VisionPortal;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -35,10 +37,21 @@ import org.firstinspires.ftc.teamcode.Direction;
 import org.firstinspires.ftc.teamcode.Config;
 
 
-@Autonomous(name = "AutoRedLeft", preselectTeleOp="MecanumDriveFieldCentric")
+@Autonomous(name = "AutoRedLeft")
 public class AutoRedLeft extends LinearOpMode {
-  private OpenCvCamera camera;
-  //private AprilTagDetectionPipeline aprilTagDetectionPipeline;
+  private TfodProcessor tfod;
+  private VisionPortal visionPortal;
+
+	private static final int CameraResoX = 640;
+
+	// TFOD_MODEL_FILE points to a model file stored onboard the Robot Controller's storage,
+	private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/teampiece.tflite";
+
+	// Define the labels recognized in the model for TFOD (must be in training order!)
+	private static final String[] LABELS = {
+		"BLUE",
+		"RED",
+	};
   private DriveMotors driveMotors;
   private Arm arm;
   private Servo wrist;
@@ -49,9 +62,9 @@ public class AutoRedLeft extends LinearOpMode {
   /**
    * Set reliable initial configuration for robot motors
    */
-  public void MotorSetup() {
+  public void MotorSetup() { 
 	CloseClaw();
-	MoveWrist(0);
+	MoveWrist(.9);
 	arm.DropArm();
 	sleep(1000);
 	arm.Initialize();
@@ -154,20 +167,64 @@ public class AutoRedLeft extends LinearOpMode {
 	clawLeft = hardwareMap.get(Servo.class, "clawLeft");
 	clawRight = hardwareMap.get(Servo.class, "clawRight");
 	wrist = hardwareMap.get(Servo.class, "wrist");
+	initTfod();
 
 	waitForStart();
+	int position = GetPropPos();
+		telemetry.addData("position", position);
+		telemetry.update();
 
 	if (opModeIsActive()) { // <----------------------------------------------------------------
 	  MotorSetup();
+	  switch(position) {
+		case 0:
+			// Move to the left spike mark
+			driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .7));
+			driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * .6));
+			// Drop pixel
+			OpenClaw(false, true);
+			MoveWrist(0);
+			sleep(350);
+			
+			break;
+		case 1:
+			// Move to the center spike mark
+			driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * .2));
+			driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.11));
+			// Drop pixel
+			OpenClaw(false, true);
+			MoveWrist(0);
+			sleep(350);
+		
+			break;
+		case 2:
+			// Move to the right spike mark
+			driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1));
+			driveMotors.Turn(45);
+			driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 0.2));
+			// Drop purple pixel
+			OpenClaw(false, true);
+			MoveWrist(0);
+			sleep(350);
+			break;
+	}
+	  /*
 	  arm.MoveShoulder(-250);
-	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.1));
-	  driveMotors.Turn(90);
-	  sleep(15000);
-	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 3.5));
+	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 2.25));
 	  driveMotors.Turn(-90);
+	  sleep(1000);
+	  driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 3.5));
+	  MoveWrist(.9);
+	  sleep(500);
+	  OpenClaw();
+	  sleep(500);
+	  MoveWrist(0);
+	  sleep(500);
+	  driveMotors.Turn(90);
 	  arm.MoveShoulder(0);
 	  sleep(1000);
 	  OpenClaw(clawLeft, clawRight);
+	  */
 	}
   }
 
@@ -198,25 +255,91 @@ public class AutoRedLeft extends LinearOpMode {
   }
 
 
-  /**
-   * Open the given claw(s)
-   */
-  public void OpenClaw(Servo... claws) {
-	  clawLeft.setPosition(Config.CLAW_LEFT_OPEN);
-	  clawRight.setPosition(Config.CLAW_RIGHT_OPEN);
-  }
-  
-  
   public void MoveWrist(double position) {
 	  wrist.setPosition(position);
   }
-
-
-  /**
-   * Close the given claw(s)
-   */
-  public void CloseClaw(Servo... claws) {
-	  clawLeft.setPosition(Config.CLAW_LEFT_CLOSE);
-	  clawRight.setPosition(Config.CLAW_RIGHT_CLOSE);
+  
+  
+  public void OpenClaw() {
+  	OpenClaw(true, true);
   }
+  
+
+  public void OpenClaw(boolean openLeft, boolean openRight) {
+	  if (openLeft) clawLeft.setPosition(Config.CLAW_LEFT_OPEN);
+	  if (openRight) clawRight.setPosition(Config.CLAW_RIGHT_OPEN);
+  }
+  
+  
+  public void CloseClaw() {
+	  CloseClaw(true, true);
+  }
+
+
+  public void CloseClaw(boolean closeLeft, boolean closeRight) {
+	  if (closeLeft) clawLeft.setPosition(Config.CLAW_LEFT_CLOSE);
+	  if (closeRight) clawRight.setPosition(Config.CLAW_RIGHT_CLOSE);
+  }
+  
+	/**
+	 * Initialize the TensorFlow Object Detection processor.
+	 */
+	private void initTfod() {
+
+		// Create the TensorFlow processor by using a builder.
+		tfod = new TfodProcessor.Builder()
+			.setModelFileName(TFOD_MODEL_FILE)
+			.setModelLabels(LABELS)
+			.build();
+
+		// Create the vision portal by using a builder.
+		VisionPortal.Builder builder = new VisionPortal.Builder();
+
+		// Set the camera (webcam vs. built-in RC phone camera).
+		builder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
+
+		// Set and enable the processor.
+		builder.addProcessor(tfod);
+
+		// Build the Vision Portal, using the above settings.
+		visionPortal = builder.build();
+	}
+
+	private int GetPropPos() { // 0 = left, 1 = center, 2 = right
+		Recognition recognition = highestConfidence();
+
+		if (recognition != null) {
+			double propX = (recognition.getLeft() + recognition.getRight()) / 2 ;
+
+			if ((CameraResoX / 2) > propX) {
+				return 1;
+			}
+			return 2;
+		}
+		return 0;
+	}
+
+	private Recognition highestConfidence() {
+		Recognition recognition = null;
+
+		for (int i = 0; i <= 500; i++) {
+			List<Recognition> currentRecognitions = tfod.getRecognitions();
+
+			if (currentRecognitions.size() < 1) {
+				sleep(10);
+				continue;
+			}
+			
+			// Select highest confidence object
+			for (Recognition potentialRecognition : currentRecognitions) {
+
+				if (recognition != null && recognition.getConfidence() > potentialRecognition.getConfidence()) {
+					continue;
+				}
+				recognition = potentialRecognition;
+			}
+			return recognition;
+		}
+		return recognition;
+	}
 }

@@ -93,12 +93,11 @@ public class AutoBlueLeft extends LinearOpMode {
 	wrist.setPosition(0);
 	
 	initTfod();
-	int position = GetPropPos();
-	  
-	telemetry.addData("position", position);
-	telemetry.update();
 
 	waitForStart();
+	int position = GetPropPos();
+		telemetry.addData("position", position);
+		telemetry.update();
 
 	if (opModeIsActive()) { // <----------------------------------------------------------------
 	  MotorSetup(); // arm between 0 and -2500
@@ -110,6 +109,7 @@ public class AutoBlueLeft extends LinearOpMode {
 			driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * .6));
 			// Drop pixel
 			OpenClaw(false, true);
+			MoveWrist(0.5);
 			sleep(350);
 			// Move to a starting point for scoring / parking auto
 			driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .3));
@@ -123,9 +123,10 @@ public class AutoBlueLeft extends LinearOpMode {
 			driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.11));
 			// Drop pixel
 			OpenClaw(false, true);
+			MoveWrist(0.5);
 			sleep(350);
 			// Move to a starting point for scoring / parking auto
-			driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * .8));
+			driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * .65));
 			driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .11));
 			// Rotate towards board
 			driveMotors.Turn(-90);
@@ -137,11 +138,12 @@ public class AutoBlueLeft extends LinearOpMode {
 			driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 0.2));
 			// Drop purple pixel
 			OpenClaw(false, true);
+			MoveWrist(0.5);
 			sleep(350);
 			// Move to a starting point for scoring / parking auto
 			driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 0.2));
 			driveMotors.Turn(-45);
-			driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 1));
+			driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * .8));
 			// Rotate towards board
 			driveMotors.Turn(-90);
 			break;
@@ -154,21 +156,21 @@ public class AutoBlueLeft extends LinearOpMode {
 			driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 0.3));
 			break;
 		case 1:
-			driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 0.12));
+			driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 0.25));
 			break;
 		case 2:
-			driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 0.2));
+			driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 0.6));
 			break;
 		}
 		driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1));
 
-		arm.MoveSlide(-550, true);
+		arm.MoveSlide(-525, true);
 		MoveWrist(0.5);
 		sleep(450);
 		OpenClaw(true, false);
 		sleep(350);
 		driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .2));
-		driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 1.5));
+		driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 1.5));
 	}
   }
   
@@ -240,7 +242,7 @@ public class AutoBlueLeft extends LinearOpMode {
 	private Recognition highestConfidence() {
 		Recognition recognition = null;
 
-		for (int i = 0; i <= 1000; i++) {
+		for (int i = 0; i <= 500; i++) {
 			List<Recognition> currentRecognitions = tfod.getRecognitions();
 
 			if (currentRecognitions.size() < 1) {

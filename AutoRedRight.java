@@ -206,7 +206,7 @@ public class AutoRedRight extends LinearOpMode {
 					MoveWrist(0);
 					sleep(350);
 					// Move to a starting point for scoring / parking auto
-					driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * .8));
+					driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * .7));
 					driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .11));
 					// Rotate towards board
 					driveMotors.Turn(90);
@@ -227,7 +227,7 @@ public class AutoRedRight extends LinearOpMode {
 					break;
 			}
 
-			arm.MoveShoulder(-1250);  
+			arm.MoveShoulder(-1150);  
 			switch(position) {
 			case 0:
 				driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 0.3));
@@ -241,7 +241,7 @@ public class AutoRedRight extends LinearOpMode {
 			}
 			driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1));
 
-			arm.MoveSlide(-550, true);
+			arm.MoveSlide(-570, true);
 			MoveWrist(0.5);
 			sleep(450);
 			OpenClaw(true, false);
