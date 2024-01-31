@@ -3,6 +3,23 @@ package org.firstinspires.ftc.teamcode;
 
 public class Config {
   /*****************************************************************************
+  ** HARDWARE CONSTANTS
+  *****************************************************************************/
+  public static final String FRONT_RIGHT_WHEEL_NAME = "m3";
+  public static final String FRONT_LEFT_WHEEL_NAME = "m2";
+  public static final String BACK_LEFT_WHEEL_NAME = "m1";
+  public static final String BACK_RIGHT_WHEEL_NAME = "m4";
+  
+  public static final String SHOULDER_NAME = "shoulder";
+  public static final String SLIDE_NAME = "lift";
+  
+  public static final String CLAW_LEFT_NAME = "clawLeft";
+  public static final String CLAW_RIGHT_NAME = "clawRight";
+  public static final String WRIST_NAME = "wrist";
+  // ---------------------------------------------------------------------------
+
+
+  /*****************************************************************************
   ** DISTANCE CALIBRATION CONSTANTS
   *****************************************************************************/
   public static final int TICKS_PER_360_DEG = 4475;
@@ -24,11 +41,11 @@ public class Config {
   /*****************************************************************************
   ** ARM CALIBRATION CONSTANTS
   *****************************************************************************/
-  public static final int BOARD_HEIGHT = 70;
+  //public static final int BOARD_HEIGHT = 70;
   
-  public static final int BOTTOM = 0;
-  public static final int CRUISING_HEIGHT = 30;
-  public static final int TOP = 125;
+  //public static final int BOTTOM = 0;
+  //public static final int CRUISING_HEIGHT = 30;
+  //public static final int TOP = 125;
   // ---------------------------------------------------------------------------
   
   
@@ -43,9 +60,15 @@ public class Config {
 
 
   /*****************************************************************************
-  ** CAMERA ASSIGNING CONSTANTS
+  ** CAMERA CONSTANTS
   *****************************************************************************/
-  public static final String CAMERA_CONFIG_NAME = "Webcam 1";
+  public static final String CAMERA_NAME = "Webcam 1";
+	public static final int CAMERA_RESO_X = 640;
+	public static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/teampiece.tflite";
+	public static final String[] LABELS = { // Define the labels used in our model (must be in training order!)
+		"BLUE",
+		"RED",
+	};
   // ---------------------------------------------------------------------------
 
 
