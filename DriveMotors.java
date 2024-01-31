@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.Direction;
 import org.firstinspires.ftc.teamcode.Config;
 
 
-public class DriveMotors {
+public class DriveMotors extends LinearOpMode {
   private DcMotorEx frontLeft;
   private DcMotorEx frontRight;
   private DcMotorEx backLeft;
@@ -22,14 +22,11 @@ public class DriveMotors {
   static Orientation angles;
 
 
-  public DriveMotors(DcMotorEx frontRight,
-                     DcMotorEx frontLeft,
-                     DcMotorEx backLeft,
-                     DcMotorEx backRight) {
-    this.frontRight = frontRight;
-    this.frontLeft = frontLeft;
-    this.backLeft = backLeft;
-    this.backRight = backRight;
+  public DriveMotors() {
+    this.frontRight = hardwareMap.get(DcMotorEx.class, Config.FRONT_RIGHT_WHEEL_NAME);
+    this.frontLeft = hardwareMap.get(DcMotorEx.class, Config.FRONT_LEFT_WHEEL_NAME);
+    this.backLeft = hardwareMap.get(DcMotorEx.class, Config.BACK_LEFT_WHEEL_NAME);
+    this.backRight = hardwareMap.get(DcMotorEx.class, Config.BACK_RIGHT_WHEEL_NAME);
   }
 
 
