@@ -30,19 +30,10 @@ public abstract class Auto extends LinearOpMode {
     public Arm arm;
     public Intake intake;
     public ObjectDetection camera;
-
-    /**
-     * Set reliable initial configuration for robot motors
-     */
-    private void motorSetup() {
-	    CloseClaw();
-	    MoveWrist(0);
-        arm.DropArm();
-        sleep(1500);
-        arm.Initialize();
-    }
     
-
+    /**
+     * Initialize classes used by autos
+     */
     public void Initialize() {
         driveMotors = new DriveMotors();
         arm = new Arm();
@@ -50,5 +41,16 @@ public abstract class Auto extends LinearOpMode {
         camera = new ObjectDetection();
 
         camera.Initialize();
+    }
+
+    /**
+     * Set reliable initial configuration for robot motors
+     */
+    public void MotorSetup() {
+	    intake.CloseClaws(0);
+	    intake.MoveWrist(0);
+        arm.DropArm();
+        sleep(1500);
+        arm.Initialize();
     }
 }
