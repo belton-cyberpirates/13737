@@ -55,8 +55,8 @@ public class AutoBlueLeft extends Auto {
 				driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .7));
 				driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * .6));
 				// Drop pixel
-				OpenClaw(false, true);
-				MoveWrist(0.5);
+				intake.OpenRight(0);
+				intake.MoveWrist(0.5);
 				sleep(350);
 				// Move to a starting point for scoring / parking auto
 				driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .3));
@@ -69,8 +69,8 @@ public class AutoBlueLeft extends Auto {
 				driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * .2));
 				driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.11));
 				// Drop pixel
-				OpenClaw(false, true);
-				MoveWrist(0.5);
+				intake.OpenRight(0);
+				intake.MoveWrist(0.5);
 				sleep(350);
 				// Move to a starting point for scoring / parking auto
 				driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * .65));
@@ -84,8 +84,8 @@ public class AutoBlueLeft extends Auto {
 				driveMotors.Turn(45);
 				driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 0.2));
 				// Drop purple pixel
-				OpenClaw(false, true);
-				MoveWrist(0.5);
+				intake.OpenRight(0);
+				intake.MoveWrist(0.5);
 				sleep(350);
 				// Move to a starting point for scoring / parking auto
 				driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 0.2));
@@ -114,9 +114,9 @@ public class AutoBlueLeft extends Auto {
 		driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1));
 
 		arm.MoveSlide(-525, true);
-		MoveWrist(0.5);
+		intake.MoveWrist(0.5);
 		sleep(450);
-		OpenClaw(true, false);
+		intake.OpenLeft(0);
 		sleep(350);
 		driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .2));
 		driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 1.5));
