@@ -30,7 +30,7 @@ public class ObjectDetection extends LinearOpMode {
 	public void runOpMode() {}
 
 
-	public void Initialize(WebcamName camera) {
+	public void Initialize() {
 
 		// Create the TensorFlow processor by using a builder.
 		tfod = new TfodProcessor.Builder()
