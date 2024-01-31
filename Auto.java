@@ -25,7 +25,7 @@ import org.firstinspires.ftc.teamcode.ObjectDetection;
 
 import java.util.List;
 
-public class Auto extends LinearOpMode {
+public abstract class Auto extends LinearOpMode {
     public DriveMotors driveMotors;
     public Arm arm;
     public Intake intake;
