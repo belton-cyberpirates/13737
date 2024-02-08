@@ -179,12 +179,12 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 
 				Slide.setPower(slide_power);
 			} 
-			
 			else if (gamepad2.dpad_down) {
 				Slide.setPosition(SLIDE_OPTIMAL_POS);
 				Slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 				Slide.setPower(.9);
 			}
+			else Slide.setPower(0);
 
 			// Open claws with respective triggers, close with respective bumpers
 			if (gamepad2.left_trigger > 0) clawLeft.setPosition(.62);
