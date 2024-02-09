@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
@@ -8,18 +9,20 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Direction;
 
 
-public class Arm {
+public class Arm extends LinearOpMode {
 	private DcMotorEx Shoulder;
 	private DcMotorEx Slide;
 	private DcMotorEx[] motors;
 
-	public Arm() {
-		Shoulder =  hardwareMap.get(DcMotorEx.class, Config.SHOULDER_NAME);
-		Slide = hardwareMap.get(DcMotorEx.class, Config.SLIDE_NAME);
+	public Arm(shoulder, slide) {
+		this.Shoulder = shoulder;
+		this.Slide = slide;
 
 		// create list of motors to make code cleaner
-		motors = new DcMotorEx[]{Shoulder, Slide};
+		motors = new DcMotorEx[]{this.Shoulder, this.Slide};
   	}
+  	
+  
   
 	public void DropArm() {
 		for(DcMotorEx motor : motors) motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
