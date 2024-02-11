@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
@@ -9,24 +9,26 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Direction;
 
 
-public class Arm extends LinearOpMode {
-	private DcMotorEx Shoulder;
-	private DcMotorEx Slide;
+public class Arm {
+	private LinearOpMode auto;
+	private DcMotorEx shoulder;
+	private DcMotorEx slide;
 	private DcMotorEx[] motors;
 
-	public Arm(shoulder, slide) {
-		this.Shoulder = shoulder;
-		this.Slide = slide;
+
+	public Arm(LinearOpMode auto) {
+		this.auto = auto
+		this.shoulder = auto.hardwareMap.get(DcMotorEx.class, Config.SHOULDER_NAME);
+		this.slide = auto.hardwareMap.get(DcMotorEx.class, Config.SLIDE_NAME);
 
 		// create list of motors to make code cleaner
-		motors = new DcMotorEx[]{this.Shoulder, this.Slide};
+		motors = new DcMotorEx[]{this.shoulder, this.slide};
   	}
-  	
-  
+
   
 	public void DropArm() {
 		for(DcMotorEx motor : motors) motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-		Shoulder.setPower(.3);
+		shoulder.setPower(.3);
 	}
 
   
@@ -37,13 +39,13 @@ public class Arm extends LinearOpMode {
 	}
   
 	private void setVelocity(int shoulderVelocity, int slideVelocity) {
-		Shoulder.setVelocity(shoulderVelocity);
-		Slide.setVelocity(slideVelocity);
+		shoulder.setVelocity(shoulderVelocity);
+		slide.setVelocity(slideVelocity);
 	}
   
 	public void MoveShoulder(int position) {
 		setVelocity(Config.ARM_VELOCITY, Config.SLIDE_VELOCITY);
-		Shoulder.setTargetPosition(position);
+		shoulder.setTargetPosition(position);
 	}
 
 	public void MoveShoulder(int position, boolean waitForDone) {
@@ -55,7 +57,7 @@ public class Arm extends LinearOpMode {
 	public void MoveShoulder(int position, boolean waitForDone, int tempArmVelocity, int tempSlideVelocity) {
 		setVelocity(tempArmVelocity, Config.SLIDE_VELOCITY);
 
-		Shoulder.setTargetPosition(position);
+		shoulder.setTargetPosition(position);
 		
 		if (waitForDone) WaitForMotors();
 	}
@@ -63,7 +65,7 @@ public class Arm extends LinearOpMode {
 
 	public void MoveSlide(int position) {
 		setVelocity(Config.ARM_VELOCITY, Config.SLIDE_VELOCITY);
-		Slide.setTargetPosition(position);
+		slide.setTargetPosition(position);
 	}
 
 	public void MoveSlide(int position, boolean waitForDone) {
@@ -75,13 +77,13 @@ public class Arm extends LinearOpMode {
 	public void MoveSlide(int position, boolean waitForDone, int tempSlideVelocity) {
 		setVelocity(Config.ARM_VELOCITY, tempSlideVelocity);
 
-		Slide.setTargetPosition(position);
+		slide.setTargetPosition(position);
 		
 		if (waitForDone) WaitForMotors();
 	}
 	
 	private void WaitForMotors() {
-		while (Shoulder.isBusy() || Slide.isBusy()) {}
+		while (shoulder.isBusy() || slide.isBusy()) {}
 		
 		setVelocity(Config.ARM_VELOCITY, Config.SLIDE_VELOCITY);
 	}

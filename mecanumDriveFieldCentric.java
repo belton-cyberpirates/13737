@@ -172,7 +172,7 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			double slide_power = rightStickYGP2 * SLIDE_SPEED;
 
 			if (slide_power != 0) {
-				slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER)
+				Slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 				if (magnet.isPressed()) slideFrozen = true; // Freeze slide if magnet on
 				if (slide_power < 0) slideFrozen = false; // Unfreeze slide if extending
 				if (slideFrozen) slide_power = Math.min(slide_power, 0); // If slide is frozen dont let it move backward
@@ -180,7 +180,7 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 				Slide.setPower(slide_power);
 			} 
 			else if (gamepad2.dpad_down) {
-				Slide.setPosition(SLIDE_OPTIMAL_POS);
+				Slide.setTargetPosition(SLIDE_OPTIMAL_POS);
 				Slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 				Slide.setPower(.9);
 			}

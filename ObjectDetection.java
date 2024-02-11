@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -23,14 +22,17 @@ import java.util.List;
 
 
 
-public class ObjectDetection extends LinearOpMode {
+public class ObjectDetection {
+	private LinearOpMode auto;
 	private TfodProcessor tfod;
 	private VisionPortal visionPortal;
 
 
-	public ObjectDetection(camera) {
+	public ObjectDetection(LinearOpMode auto) {
+		this.auto = auto;
+
 		// Create the TensorFlow processor by using a builder.
-		this.tfod = new TfodProcessor.Builder()
+		tfod = new TfodProcessor.Builder()
 			.setModelFileName(Config.TFOD_MODEL_FILE)
 			.setModelLabels(Config.LABELS)
 			.build();
@@ -39,7 +41,7 @@ public class ObjectDetection extends LinearOpMode {
 		VisionPortal.Builder builder = new VisionPortal.Builder();
 
 		// Set the camera (webcam vs. built-in RC phone camera).
-		builder.setCamera(camera);
+		builder.setCamera(auto.hardwareMap.get(Config.CAMERA_NAME));
 
 		// Set and enable the processor.
 		builder.addProcessor(tfod);

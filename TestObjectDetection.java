@@ -50,7 +50,7 @@
   */
  @Autonomous(name = "Concept: TensorFlow Object Detection", group = "Concept")
  
- public class TestingObjectDetection extends LinearOpMode {
+ public class TestObjectDetection extends LinearOpMode {
  
 	 private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 	 private static final int CameraResoX = 640;
