@@ -22,7 +22,7 @@ public class Arm {
 		this.slide = auto.hardwareMap.get(DcMotorEx.class, Config.SLIDE_NAME);
 
 		// create list of motors to make code cleaner
-		motors = new DcMotorEx[]{this.shoulder, this.slide};
+		motors = new DcMotorEx[]{ this.shoulder, this.slide };
   	}
 
   
