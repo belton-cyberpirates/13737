@@ -79,6 +79,7 @@ public class AutoRedLeft extends Auto {
 					break;
 			}
 		}
+		saveHeading();
 	}
 }
 

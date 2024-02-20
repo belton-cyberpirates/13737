@@ -115,6 +115,7 @@ public class AutoRedRight extends Auto {
 			driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .2));
 			driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * 1.5));
 		}
+		saveHeading();
 	}
 }
 

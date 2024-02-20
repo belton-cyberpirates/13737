@@ -116,5 +116,6 @@ public class AutoBlueLeft extends Auto {
 		driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * .2));
 		driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * 1.5));
 	}
+	saveHeading();
   }
 }
