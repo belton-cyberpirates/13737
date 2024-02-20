@@ -56,7 +56,7 @@ public class AutoBlueRight extends Auto {
 					driveMotors.Turn(-45);
 					driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 0.2));
 					// Drop purple pixel
-					OpenClaw(false, true);
+					intake.OpenClaw(false, true);
 					sleep(350);
 					// Move to a starting point for scoring / parking auto
 					driveMotors.Move(Direction.BACKWARD, (int)(Config.TILE_LENGTH * 0.2));
@@ -70,7 +70,7 @@ public class AutoBlueRight extends Auto {
 					driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * .2));
 					driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * 1.11));
 					// Drop pixel
-					OpenClaw(false, true);
+					intake.OpenClaw(false, true);
 					sleep(350);
 					// Move to a starting point for scoring / parking auto
 					driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * .8));
@@ -83,7 +83,7 @@ public class AutoBlueRight extends Auto {
 					driveMotors.Move(Direction.FORWARD, (int)(Config.TILE_LENGTH * .7));
 					driveMotors.Move(Direction.RIGHT, (int)(Config.TILE_LENGTH * .6));
 					// Drop pixel
-					OpenClaw(false, true);
+					intake.OpenClaw(false, true);
 					sleep(350);
 					// Move to a starting point for scoring / parking auto
 					driveMotors.Move(Direction.LEFT, (int)(Config.TILE_LENGTH * .6));
