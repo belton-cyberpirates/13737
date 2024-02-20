@@ -51,4 +51,12 @@ public abstract class Auto extends LinearOpMode {
 		sleep(1500);
 		arm.Initialize();
 	}
+
+	protected void saveHeading(double heading) {
+		FileWriter writer = new FileWriter("heading.text", true);
+		String strHeading = Double.toString(heading);
+
+		writer.write(strHeading);
+		writer.close();
+	}
 }
