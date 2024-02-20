@@ -17,7 +17,7 @@ public class Arm {
 
 
 	public Arm(LinearOpMode auto) {
-		this.auto = auto
+		this.auto = auto;
 		this.shoulder = auto.hardwareMap.get(DcMotorEx.class, Config.SHOULDER_NAME);
 		this.slide = auto.hardwareMap.get(DcMotorEx.class, Config.SLIDE_NAME);
 
