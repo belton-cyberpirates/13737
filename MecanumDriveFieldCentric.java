@@ -101,6 +101,7 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 
 		// Reset robot heading on startup (not initialization)
 		imu.resetYaw();
+		double savedHeading = getSavedHeading()
 		
 		// set servo start position
 		clawLeft.setPosition(0.62);
@@ -128,7 +129,7 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			double maxSpeed = calcMaxSpeed(gamepad1.right_trigger - gamepad1.left_trigger, BASE_SPEED, MAX_BOOST);
 
 			// Get the heading of the bot (the angle it is facing) in radians
-			double botHeading = imu .getRobotYawPitchRollAngles() .getYaw(AngleUnit.RADIANS);
+			double botHeading = (savedHeading + imu .getRobotYawPitchRollAngles() .getYaw(AngleUnit.RADIANS));
 
 
 			// Virtually rotate the joystick by the negative angle of the robot
@@ -229,5 +230,21 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 		double boostRatio = triggerVal * MAX_BOOST;
 		double boostSpeed = boostRatio * BASE_SPEED;
 		return BASE_SPEED + boostSpeed;
+	}
+
+	double getSavedHeading() {
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("heading.txt"));
+			String line = br.readLine();
+
+			return (double)(line);
+			br.close();
+
+			Files.newBufferedWriter("heading.txt" , StandardOpenOption.TRUNCATE_EXISTING);
+
+			telemetry.addData("Retrieved saved heading:", true);
+		} catch {
+			telemetry.addData("Retrieved saved heading:", false);
+		}
 	}
 }
