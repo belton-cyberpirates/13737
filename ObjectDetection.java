@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -41,7 +42,7 @@ public class ObjectDetection {
 		VisionPortal.Builder builder = new VisionPortal.Builder();
 
 		// Set the camera (webcam vs. built-in RC phone camera).
-		builder.setCamera(auto.hardwareMap.get(Config.CAMERA_NAME));
+		builder.setCamera(auto.hardwareMap.get(CameraName.class, Config.CAMERA_NAME));
 
 		// Set and enable the processor.
 		builder.addProcessor(tfod);
@@ -73,7 +74,7 @@ public class ObjectDetection {
 			List<Recognition> currentRecognitions = tfod.getRecognitions();
 
 			if (currentRecognitions.size() < 1) {
-				sleep(10);
+				auto.sleep(10);
 				continue;
 			}
 			
