@@ -26,31 +26,29 @@ import org.firstinspires.ftc.teamcode.ObjectDetection;
 import java.util.List;
 
 public abstract class Auto extends LinearOpMode {
-    public DriveMotors driveMotors;
-    public Arm arm;
-    public Intake intake;
-    public ObjectDetection camera;
-    
-    /**
-     * Initialize classes used by autos
-     */
-    public void Initialize() {
-        driveMotors = new DriveMotors(this);
-        arm = new Arm(this);
-        intake = new Intake(this);
-        camera = new ObjectDetection(this);
+	public DriveMotors driveMotors;
+	public Arm arm;
+	public Intake intake;
+	public ObjectDetection camera;
+	
+	/**
+	 * Initialize classes used by autos
+	 */
+	public void Initialize() {
+		driveMotors = new DriveMotors(this);
+		arm = new Arm(this);
+		intake = new Intake(this);
+		camera = new ObjectDetection(this);
+	}
 
-        camera.Initialize();
-    }
-
-    /**
-     * Set reliable initial configuration for robot motors
-     */
-    public void MotorSetup() {
-	    intake.CloseClaws(0);
-	    intake.MoveWrist(0);
-        arm.DropArm();
-        sleep(1500);
-        arm.Initialize();
-    }
+	/**
+	 * Set reliable initial configuration for robot motors
+	 */
+	public void MotorSetup() {
+		intake.CloseClaws(0);
+		intake.MoveWrist(0);
+		arm.DropArm();
+		sleep(1500);
+		arm.Initialize();
+	}
 }
