@@ -57,7 +57,7 @@ public abstract class Auto extends LinearOpMode {
 	}
 
 	protected void saveHeading() {
-		double heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS)
+		double heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
 		FileWriter writer = new FileWriter("heading.text", true);
 		String strHeading = Double.toString(heading);
