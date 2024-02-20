@@ -94,7 +94,7 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 
 		Slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     	Slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-		Slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER)
+		Slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 		// Wait for the start button to be pressed
 		waitForStart();
