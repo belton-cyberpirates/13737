@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import org.firstinspires.ftc.teamcode.Heading;
 
 @TeleOp(name = "FieldCentricDrive")
 public class MecanumDriveFieldCentric extends LinearOpMode {
@@ -241,6 +242,9 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 	}
 
 	double getSavedHeading() {
+		Heading heading = new Heading();
+		return heading.getHeading();
+		/*
 		try {
 			BufferedReader br = new BufferedReader(new FileReader("heading.txt"));
 			String line = br.readLine();
@@ -253,6 +257,6 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 		} catch(Exception e) {
 			telemetry.addData("Retrieved saved heading:", false);
 			return 0d;
-		}
+		}*/
 	}
 }

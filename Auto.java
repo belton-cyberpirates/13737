@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -22,6 +23,8 @@ import org.firstinspires.ftc.teamcode.Arm;
 import org.firstinspires.ftc.teamcode.Config;
 import org.firstinspires.ftc.teamcode.DriveMotors;
 import org.firstinspires.ftc.teamcode.ObjectDetection;
+import org.firstinspires.ftc.teamcode.Heading;
+
 
 import java.util.List;
 
@@ -31,6 +34,7 @@ public abstract class Auto extends LinearOpMode {
 	protected Intake intake;
 	protected ObjectDetection camera;
 	protected IMU imu;
+	protected Heading heading;
 	
 	/**
 	 * Initialize classes used by autos
@@ -57,7 +61,9 @@ public abstract class Auto extends LinearOpMode {
 	}
 
 	protected void saveHeading() {
-		double heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+		double _heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+		this.heading.setHeading(_heading);
+		/*
 		String strHeading = Double.toString(heading);
 
 		File file = new File("heading");
@@ -66,6 +72,6 @@ public abstract class Auto extends LinearOpMode {
 
 		fw.write(strHeading);
 
-		writer.close();
+		writer.close();*/
 	}
 }
