@@ -58,11 +58,14 @@ public abstract class Auto extends LinearOpMode {
 
 	protected void saveHeading() {
 		double heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-
-		FileWriter writer = new FileWriter("heading.text", true);
 		String strHeading = Double.toString(heading);
 
-		writer.write(strHeading);
+		File file = new File("heading");
+		FileWriter fw = new FileWriter(file, false);
+		fw.flush();
+
+		fw.write(strHeading);
+
 		writer.close();
 	}
 }
