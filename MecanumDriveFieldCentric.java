@@ -12,6 +12,13 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.StandardOpenOption;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 @TeleOp(name = "FieldCentricDrive")
 public class MecanumDriveFieldCentric extends LinearOpMode {
@@ -27,7 +34,7 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 	final double ARM_MIN = .63;
 
 	final double SLIDE_SPEED = 0.9;
-	final double SLIDE_OPTIMAL_POS = -300;
+	final int SLIDE_OPTIMAL_POS = -300;
 
 	final double WRIST_MAX = .9;
 
@@ -101,7 +108,7 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 
 		// Reset robot heading on startup (not initialization)
 		imu.resetYaw();
-		double savedHeading = getSavedHeading()
+		double savedHeading = getSavedHeading();
 		
 		// set servo start position
 		clawLeft.setPosition(0.62);
@@ -216,6 +223,7 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			telemetry.addData("Speed Mod:", maxSpeed);
 			telemetry.addData("Shoulder Encoder:", Shoulder.getCurrentPosition());
 			telemetry.addData("Shoulder Pot:", shoulderPot.getVoltage());
+			telemetry.addData("Slide Pos:", Slide.getCurrentPosition());
 			telemetry.addData("Heading (radians):", botHeading);
 
 			telemetry.update();
@@ -237,14 +245,14 @@ public class MecanumDriveFieldCentric extends LinearOpMode {
 			BufferedReader br = new BufferedReader(new FileReader("heading.txt"));
 			String line = br.readLine();
 
-			return (double)(line);
 			br.close();
 
-			Files.newBufferedWriter("heading.txt" , StandardOpenOption.TRUNCATE_EXISTING);
-
 			telemetry.addData("Retrieved saved heading:", true);
-		} catch {
+			
+			return Double.parseDouble(line);
+		} catch(Exception e) {
 			telemetry.addData("Retrieved saved heading:", false);
+			return 0d;
 		}
 	}
 }
