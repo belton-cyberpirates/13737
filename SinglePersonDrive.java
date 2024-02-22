@@ -146,21 +146,18 @@ public class SinglePersonDrive extends LinearOpMode {
 
 			// Set the power of the wheels based off the new joystick coordinates
 			// y+x+stick <- [-1,1]
-            if (gamepad1.left_bumper) {
-                rotatedX = 0;
-                rotatedY = 0;
-            }
+            mult = gamepad1.left_bumper ? 0 : 1;
 			BackLeft.setVelocity(
-				(rotatedY + rotatedX - rightStickXGP1) * maxSpeed
+				(rotatedY + rotatedX - rightStickXGP1) * maxSpeed * mult
 			);
 			FrontLeft.setVelocity(
-				(rotatedY - rotatedX - rightStickXGP1) * maxSpeed
+				(rotatedY - rotatedX - rightStickXGP1) * maxSpeed * mult
 			);
 			FrontRight.setVelocity(
-				(-rotatedY - rotatedX - rightStickXGP1) * maxSpeed
+				(-rotatedY - rotatedX - rightStickXGP1) * maxSpeed * mult
 			);
 			BackRight.setVelocity(
-				(-rotatedY + rotatedX - rightStickXGP1) * maxSpeed
+				(-rotatedY + rotatedX - rightStickXGP1) * maxSpeed * mult
 			);
 			
 
