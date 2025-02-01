@@ -1,28 +1,31 @@
 package org.firstinspires.ftc.teamcode;
 
 
-public class Config {
+public class BotConfig {
   /*****************************************************************************
   ** HARDWARE CONSTANTS
   *****************************************************************************/
-  public static final String FRONT_RIGHT_WHEEL_NAME = "m3";
-  public static final String FRONT_LEFT_WHEEL_NAME = "m2";
-  public static final String BACK_LEFT_WHEEL_NAME = "m1";
-  public static final String BACK_RIGHT_WHEEL_NAME = "m4";
+  public static final String FRONT_RIGHT_WHEEL_NAME = "front_right";
+  public static final String FRONT_LEFT_WHEEL_NAME = "front_left";
+  public static final String BACK_LEFT_WHEEL_NAME = "back_left";
+  public static final String BACK_RIGHT_WHEEL_NAME = "back_right";
   
-  public static final String SHOULDER_NAME = "shoulder";
-  public static final String SLIDE_NAME = "lift";
+  public static final String ARM_LEFT_NAME = "left_arm";
+  public static final String ARM_RIGHT_NAME = "right_arm";
   
-  public static final String CLAW_LEFT_NAME = "clawLeft";
-  public static final String CLAW_RIGHT_NAME = "clawRight";
+  public static final String CLAW_LEFT_NAME = "claw_left";
+  public static final String CLAW_RIGHT_NAME = "claw_right";
   public static final String WRIST_NAME = "wrist";
+  
+  //public static final String LEFT_DISTANCE_SENSOR_NAME = "left_distance_sensor";
+  //public static final String RIGHT_DISTANCE_SENSOR_NAME = "right_distance_sensor";
   // ---------------------------------------------------------------------------
 
 
   /*****************************************************************************
   ** DISTANCE CALIBRATION CONSTANTS
   *****************************************************************************/
-  public static final int TICKS_PER_360_DEG = 4475;
+  public static final int TICKS_PER_360_DEG = 4150;
   public static final int TILE_LENGTH = 1250;
 
   public static final int DEFAULT_SPIKE_MARK = 3;
@@ -32,30 +35,28 @@ public class Config {
   /*****************************************************************************
   ** DRIVE SPEED CONSTANTS
   *****************************************************************************/
-  public static final int CRUISE_SPEED = 1400;
-  public static final int ARM_VELOCITY = 1250;
-  public static final int SLIDE_VELOCITY = 1200;
+  public static final int CRUISE_SPEED = 2000;
+  public static final double STRAFE_MULT = .5;
+  public static final int ARM_VELOCITY = 1000;
   // ---------------------------------------------------------------------------
 
 
   /*****************************************************************************
   ** ARM CALIBRATION CONSTANTS
   *****************************************************************************/
-  //public static final int BOARD_HEIGHT = 70;
-  
-  //public static final int BOTTOM = 0;
-  //public static final int CRUISING_HEIGHT = 30;
-  //public static final int TOP = 125;
+  public static final int BAR_HEIGHT = -450;
+  public static final int BASKET_HEIGHT = 950;
+  public static final int SPECIMEN_HEIGHT = 1490;
   // ---------------------------------------------------------------------------
   
   
   /*****************************************************************************
   ** CLAW CALIBRATION CONSTANTS
   *****************************************************************************/
-  public static final double CLAW_LEFT_OPEN = .2; 
-  public static final double CLAW_LEFT_CLOSE = .62; 
-  public static final double CLAW_RIGHT_OPEN = .8;
-  public static final double CLAW_RIGHT_CLOSE = .38;
+  public static final double CLAW_LEFT_OPEN_POS = 0.3;
+	public static final double CLAW_LEFT_CLOSE_POS = 0.07;
+	public static final double CLAW_RIGHT_OPEN_POS = 0.7;
+	public static final double CLAW_RIGHT_CLOSE_POS = 0.93;
   // ---------------------------------------------------------------------------
 
 
